@@ -289,6 +289,18 @@
   .dsr button:disabled{opacity:.25}
   .dsx{font:inherit;color:var(--muted);background:none;border:0;text-decoration:underline;margin-top:10px;cursor:pointer;padding:6px 0}
   @media (prefers-reduced-motion:reduce){.ryi.n3{animation:none}}
+
+  /* ---------- version de prueba premium, encuesta e informe ---------- */
+  .pl{display:none;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:3px 9px;margin-left:8px;vertical-align:middle}
+  [data-plan="premium"] .pl{display:inline-block}
+  .enc{padding:18px 16px;margin-bottom:26px;display:none}[data-plan="premium"] .enc{display:block}
+  .enc b{font-size:18px;color:var(--strong)}.enc p{margin:6px 0 12px}
+  .encb{display:grid;gap:8px}.encb a{display:block;text-decoration:none;text-align:center;font-weight:700;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06)}
+  .sgc{margin-top:14px;padding:18px 16px}.sgc h3{margin:0 0 4px;font-size:18px}.sgc .sb{font-size:14px;color:var(--muted)}
+  .sgc .cod{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all;color:var(--muted);margin-top:10px}
+  .sgb{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.sgb a,.sgb button{font:inherit;font-weight:700;font-size:14px;text-decoration:none;color:inherit;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+  @media print{body{background:#fff!important;color:#000!important;padding:0}body>*:not(main),main>*:not(#seguro),.tab,.rdo,#sgForm,.sgb{display:none!important}
+    #seguro{background:#fff!important}#seguro *{color:#000!important}.sgc{border:1px solid #999!important;box-shadow:none!important;background:#fff!important}[data-rv]{opacity:1!important;transform:none!important}}
 </style>
 </head>
 <body>
@@ -342,7 +354,7 @@
     <div class="wrap">
       <div class="brand">
         <svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>
-        Aviso Sul
+        Aviso Sul<span class="pl">Premium</span>
       </div>
       <div class="seg" role="group" aria-label="Idioma">
         <button type="button" data-set="pt">Português</button>
@@ -532,6 +544,18 @@
 </section>
 </main>
 
+<section class="alt" id="seguro">
+  <div class="wrap" data-rv>
+    <h2 class="pt">Relatório para o seguro</h2>
+    <h2 class="es">Informe para el seguro</h2>
+    <p class="pt">Escolha o dia do temporal e gere um resumo dos avisos oficiais que estavam em vigor na sua cidade, com um link público para conferir.</p>
+    <p class="es">Elegí el día del temporal y generá un resumen de los avisos oficiales que estaban vigentes en tu ciudad, con un enlace público para verificarlo.</p>
+    <form class="vj" id="sgForm"><input type="date" id="sgDia" aria-label="Fecha"><button type="submit" class="btn btn-wa"><span class="pt">Gerar</span><span class="es">Generar</span></button></form>
+    <div id="sgOut"></div>
+    <p class="wxc2"><span class="pt">É um resumo de dados públicos, não um certificado oficial nem uma perícia. O registro começa em 24/11/2026.</span><span class="es">Es un resumen de datos públicos, no un certificado oficial ni una pericia. El registro empieza el 24/11/2026.</span></p>
+  </div>
+</section>
+
 <section id="viaje">
   <div class="wrap" data-rv>
     <h2 class="pt">Modo viagem</h2>
@@ -554,6 +578,12 @@
 
 <section class="alt" id="ajustes">
   <div class="wrap" data-rv>
+    <div class="enc gl" id="enc">
+      <b class="pt">Você está testando a versão Premium</b><b class="es">Estás probando la versión Premium</b>
+      <p class="pt">Tudo liberado e sem publicidade. Conte para a gente: você pagaria por isso?</p>
+      <p class="es">Todo habilitado y sin publicidad. Contanos: ¿pagarías por esto?</p>
+      <div class="encb" id="encB"></div>
+    </div>
     <h2 class="pt">Ajustes e permissões</h2>
     <h2 class="es">Ajustes y permisos</h2>
     <p class="pt">Cada permissão é pedida só quando você toca no botão. Dá para usar o Aviso Sul sem nenhuma.</p>
@@ -855,7 +885,7 @@
   function rdUI(){var r=rdGet(),bar=document.getElementById('rdo'),a=document.getElementById('rdAudio');if(!bar)return;
     bar.className='rdo'+(r?' on':'');document.body.className=r?'conradio':'';if(!r)return;
     document.getElementById('rdName').textContent=r.name;document.getElementById('rdPlay').textContent=a.paused?'▶':'❚❚'}
-  function rdBajarLluvia(){if(ac&&rainGain&&sndOn){var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.linearRampToValueAtTime(RADIO_ON?.012:.045,n+.6)}}
+  function rdBajarLluvia(){if(ac&&rainGain&&sndOn){var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.linearRampToValueAtTime(RADIO_ON?.004:.014,n+.6)}}
   safe(function(){var f=document.getElementById('rdForm'),inp=document.getElementById('rdIn'),ops=document.getElementById('rdOps'),a=document.getElementById('rdAudio');if(!f)return;
     function elegir(name,url){LS('radio',JSON.stringify({name:name,url:url}));ops.innerHTML='';a.src=url;a.play().catch(function(){});rdUI()}
     f.addEventListener('submit',function(ev){ev.preventDefault();var q=inp.value.trim();if(!q)return;
@@ -893,8 +923,28 @@
     caja('hrs',[q('#hrs')]);caja('av',[q('#nowSt'),q('#nowList'),q('#nowUp')]);caja('rk',[q('.rkt'),q('#rk'),q('.wxc2')]);
     document.getElementById('dsReset').addEventListener('click',function(){LS('dash','');dashAplicar()});
     dashAplicar()});
+  /* ---- plan: mientras se prueba con contactos, todo abre como Premium (sin publicidad). ?plan=gratis muestra la version con publicidad. ---- */
+  safe(function(){var q=/[?&]plan=(gratis|premium)\b/.exec(location.search);if(q)LS('plan',q[1]);root.setAttribute('data-plan',LS('plan')==='gratis'?'gratis':'premium')});
+  function encuesta(){var b=document.getElementById('encB');if(!b)return;var br=LISTA.filter(function(x){return x[0]===cid})[0][2]==='br';
+    var op=br?['Sim, até R$ 9,90 por mês','Sim, até R$ 19,90 por mês','Só se for grátis','Não usaria']:['Sí, hasta $3.000 por mes','Sí, hasta $6.000 por mes','Solo si es gratis','No la usaría'];
+    b.innerHTML=op.map(function(o){return'<a target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent('Aviso Sul Premium ('+C.nombre+'): '+o+'. ')+'">'+esc(o)+'</a>'}).join('')+'<small style="color:var(--muted);font-size:12.5px">'+L2('Se abre WhatsApp con tu respuesta: mandásela a quien te pasó la app y, si querés, sumá un comentario.','Abre o WhatsApp com sua resposta: envie para quem te passou o app e, se quiser, acrescente um comentário.')+'</small>'}
+  /* ---- informe para el seguro: lee el historial publico que guardan los agentes ---- */
+  safe(function(){var f=document.getElementById('sgForm'),d=document.getElementById('sgDia'),out=document.getElementById('sgOut');if(!f)return;
+    var hoy=new Date(Date.now()-3*3600000).toISOString().slice(0,10);d.value=hoy;d.max=hoy;d.min='2026-11-24';
+    f.addEventListener('submit',function(ev){ev.preventDefault();var dia=d.value;if(!dia)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
+      var ruta='historial/'+cid+'/'+dia+'.json',ver='https://github.com/DeikDigital/avisosul/commits/main/'+ruta;
+      out.innerHTML='<div class="sgc gl"><div class="sb">'+L2('Buscando…','Buscando…')+'</div></div>';
+      fetch(DATOS_URL.replace(/datos\/$/,'')+ruta+'?'+Date.now(),{cache:'no-store'}).then(function(r){if(r.status===404)return{avisos:{}};if(!r.ok)throw 0;return r.json()}).then(function(j){
+        var a=Object.keys(j.avisos||{}).map(function(k){return j.avisos[k]}),fd=dia.split('-').reverse().join('/');
+        var cuerpo=a.length?a.map(function(x){return'<div class="av"><i class="lv '+esc(x.nivel||'')+'"></i><div><b>'+esc(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es))+'</b><span>'+esc(j.fuente||'')+' · '+L2('vigencia ','vigência ')+hhmm(x.desde)+(x.hasta?' – '+hhmm(x.hasta):'')+' · '+L2('registrado de ','registrado das ')+hhmm(x.visto_desde)+L2(' a ',' às ')+hhmm(x.visto_hasta)+' · <a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+L2('aviso original','aviso original')+'</a></span></div></div>'}).join('')
+          :'<p class="sb" style="margin-top:10px">'+L2('No hay avisos oficiales registrados para ese día en esta ciudad.','Não há avisos oficiais registrados para esse dia nesta cidade.')+'</p>';
+        out.innerHTML='<div class="sgc gl"><h3>Aviso Sul · '+esc(C.nombre)+' · '+fd+'</h3><div class="sb">'+L2('Avisos oficiales registrados ese día','Avisos oficiais registrados nesse dia')+': '+a.length+'</div>'+cuerpo+
+          '<div class="cod">'+L2('Registro público con fecha y hora de cada guardado: ','Registro público com data e hora de cada gravação: ')+esc(ver)+'</div>'+
+          '<div class="sgb"><a href="'+esc(ver)+'" target="_blank" rel="noopener">'+L2('Verificar el registro','Conferir o registro')+'</a><button type="button" id="sgPrint">'+L2('Imprimir o guardar PDF','Imprimir ou salvar PDF')+'</button></div></div>';
+        document.getElementById('sgPrint').addEventListener('click',function(){window.print()})
+      }).catch(function(){out.innerHTML='<div class="sgc gl"><div class="sb">'+L2('No se pudo leer el registro. Probá de nuevo en un momento.','Não foi possível ler o registro. Tente de novo em instantes.')+'</div></div>'})})});
   function txtFijos(){
-    safe(dashAplicar);
+    safe(dashAplicar);safe(encuesta);
     var ri=document.getElementById('rdIn');if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade');
     var rn=document.getElementById('rdNote');if(rn)rn.textContent=L2('Las radios salen del directorio abierto Radio Browser. Aviso Sul no tiene relación con las emisoras ni responde por lo que transmiten.','As rádios vêm do diretório aberto Radio Browser. O Aviso Sul não tem relação com as emissoras nem responde pelo que transmitem.');
     var inp=document.getElementById('vjIn');if(inp)inp.placeholder=L2('¿A dónde vas? Ej.: Rosario','Para onde você vai? Ex.: Curitiba');
@@ -1022,14 +1072,14 @@
     sndOn=on;LS('snd',on?'on':'off');if(b)b.setAttribute('aria-pressed',on?'true':'false');
     if(!ac)return;
     var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.setValueAtTime(rainGain.gain.value,n);
-    if(on){if(ac.resume)ac.resume();rainGain.gain.linearRampToValueAtTime(RADIO_ON?.012:.045,n+.9)}
+    if(on){if(ac.resume)ac.resume();rainGain.gain.linearRampToValueAtTime(RADIO_ON?.004:.014,n+.9)}
     else rainGain.gain.linearRampToValueAtTime(0,n+.35)}
   function thunder(){
     if(!sndOn||!ac)return;
     safe(function(){var t0=ac.currentTime+.3+Math.random()*1.3,s=ac.createBufferSource();s.buffer=noise(3.2);
       var lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(280,t0);lp.frequency.exponentialRampToValueAtTime(55,t0+2.8);
-      var g=ac.createGain();g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.6,t0+.09);
-      g.gain.exponentialRampToValueAtTime(.18,t0+.9);g.gain.exponentialRampToValueAtTime(.0001,t0+3);
+      var g=ac.createGain();g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.16,t0+.09);
+      g.gain.exponentialRampToValueAtTime(.05,t0+.9);g.gain.exponentialRampToValueAtTime(.0001,t0+3);
       s.connect(lp);lp.connect(g);g.connect(ac.destination);s.start(t0);s.stop(t0+3.1)})}
 
   safe(function(){
