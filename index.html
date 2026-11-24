@@ -413,6 +413,20 @@
   #lgSt{display:block;margin-top:6px;color:var(--muted)}.lgp,.lge{font-size:13px;color:var(--muted);margin:8px 0 0}
   .lgtip{font-weight:700;font-size:12px}
   #radarMap{position:relative;z-index:0;isolation:isolate}
+.ofc{margin-top:18px}.ofc h3{font-size:19px;margin:0 0 4px}.ofr{font-size:13.5px;color:var(--muted);margin:0 0 10px}
+  .ofa{border-left:5px solid #f5d000;background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:10px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .ofa.naranja{border-left-color:#ff8a1f}.ofa.rojo{border-left-color:#ff3b30}.ofa b{display:block;font-size:16px;color:var(--strong)}.ofa small{display:block;color:var(--muted);font-size:12.5px;margin:2px 0 8px}
+  .ofa blockquote{margin:0 0 8px;padding:0 0 0 10px;border-left:2px solid var(--line);font-size:14px;color:var(--strong);white-space:pre-line}
+  .ofa details{margin:0 0 8px;font-size:14px}.ofa summary{cursor:pointer;font-weight:700}.ofa details p{white-space:pre-line;margin:6px 0 0}.ofa a{font-weight:700;font-size:14px}
+  .ofn{font-size:14px;color:var(--muted)}.ofall summary{cursor:pointer;font-weight:700;margin:6px 0 10px}
+  .lgc.yo{border-style:solid;border-width:2px}
+  .spon{display:block;margin:6px 0 4px;padding:14px 16px;border-radius:16px;border:1.5px solid rgba(245,179,1,.6);background:linear-gradient(135deg,rgba(245,179,1,.14),rgba(245,179,1,.04));text-decoration:none;color:var(--strong)}
+  .spon small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#c98a00}.spon b{display:block;font-size:16px;margin:2px 0}.spon span{font-size:13.5px;color:var(--muted)}
+  .cmp{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--card);margin:12px 0}
+  .cmp>div{display:grid;grid-template-columns:1fr 64px 76px;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid var(--line);font-size:14px}
+  .cmp>div:first-child{border-top:0}.cmp .ch{background:rgba(245,179,1,.14);font-size:13px}.cmp .ch b{text-align:center}
+  .cmp i,.cmp em{font-style:normal;text-align:center;font-weight:800}.cmp em{font-size:11.5px;color:#c98a00;font-weight:700}.cmp .pr span{color:var(--muted)}
+  .cmpn{font-size:13.5px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -514,6 +528,7 @@
       <p class="up" id="nowUp"></p>
       <div class="of" id="nowOf"></div>
     </div>
+      <!-- PENDIENTE: pegar aca el bloque de Google AdSense (solo se ve en el plan gratis) -->
       <div class="ad" data-ad="1"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div>
 
       <h1 class="pt">Ficou sabendo do granizo <em>quando já estava caindo?</em></h1>
@@ -563,6 +578,12 @@
     <p class="lgp"><span class="pt">Grátis: 1 lugar. Premium: até 10.</span><span class="es">Gratis: 1 lugar. Premium: hasta 10.</span></p>
   </div>
 </section>
+<div class="wrap"><a class="spon" id="spon" href="#patrocinio">
+  <!-- PENDIENTE: poner aca el logo y el enlace del patrocinador cuando haya uno -->
+  <small class="pt">Patrocinador</small><small class="es">Patrocinador</small>
+  <b class="pt">Este espaço pode ser da sua empresa</b><b class="es">Este espacio puede ser de tu empresa</b>
+  <span class="pt">Apareça para quem acompanha o tempo no Sul. Fale com a gente.</span><span class="es">Aparecé ante quienes siguen el tiempo en el Sur. Escribinos.</span>
+</a></div>
 <section class="alt" id="radar">
   <div class="wrap" data-rv>
     <h2 class="pt">Avisos oficiais e radar</h2>
@@ -573,6 +594,12 @@
     <div id="radarMap"></div>
     <p class="rdn" id="zonaNote"></p>
     <p class="rdn" id="radarNote"></p>
+    <div class="ofc" id="ofBox">
+      <h3><span class="pt">Texto oficial dos avisos que te atingem</span><span class="es">Texto oficial de los avisos que te tocan</span></h3>
+      <p class="ofr" id="ofRef"></p>
+      <div id="ofList"></div>
+      <details class="ofall" id="ofAllBox" hidden><summary id="ofAllSum"></summary><div id="ofAll"></div></details>
+    </div>
   </div>
 </section>
 
@@ -651,13 +678,33 @@
   </div>
 </section>
 
-<section class="alt" id="premium" hidden>
+<section class="alt" id="premium">
   <div class="wrap" data-rv>
-    <h2 class="pt">Aviso pessoal e para a família</h2>
-    <h2 class="es">Aviso personal y para la familia</h2>
-    <p class="pt">Estamos preparando um plano pago: aviso direto no seu WhatsApp, para o seu bairro, e para até cinco familiares. Entre na lista de espera e garanta o preço de fundador.</p>
-    <p class="es">Estamos preparando un plan pago: aviso directo a tu WhatsApp, para tu barrio, y para hasta cinco familiares. Anotate en la lista de espera y asegurá el precio de fundador.</p>
-    <div class="btns"><a class="btn btn-tg" href="#premium" data-canal="espera"><span class="pt">Entrar na lista de espera</span><span class="es">Anotarme en la lista de espera</span></a></div>
+    <h2 class="pt">Grátis ou Premium</h2>
+    <h2 class="es">Gratis o Premium</h2>
+    <p class="pt">Os avisos oficiais são sempre grátis. O Premium soma mais lugares e ferramentas.</p>
+    <p class="es">Los avisos oficiales son siempre gratis. Premium suma más lugares y herramientas.</p>
+    <div class="cmp" role="table">
+      <div class="ch" role="row"><span></span><b class="pt">Grátis</b><b class="es">Gratis</b><b>Premium</b></div>
+      <div role="row"><span class="pt">Avisos oficiais no mapa e texto oficial</span><span class="es">Avisos oficiales en el mapa y texto oficial</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span class="pt">Alerta onde você está agora</span><span class="es">Alerta donde estás ahora</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span class="pt">Risco climatológico das próximas 12 horas</span><span class="es">Riesgo climatológico de las próximas 12 horas</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span class="pt">Radar de chuva</span><span class="es">Radar de lluvia</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span class="pt">Relatório para o seguro</span><span class="es">Informe para el seguro</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span class="pt">Meus lugares</span><span class="es">Mis lugares</span><i>1</i><i>10</i></div>
+      <div role="row"><span class="pt">Previsão no seu ponto exato</span><span class="es">Pronóstico en tu punto exacto</span><i>—</i><i>✓</i></div>
+      <div role="row"><span class="pt">Avisar com foto, vídeo e mensagem</span><span class="es">Avisar con foto, video y mensaje</span><i>—</i><i>✓</i></div>
+      <div role="row"><span class="pt">Sem publicidade</span><span class="es">Sin publicidad</span><i>—</i><i>✓</i></div>
+      <div role="row" class="pr"><span class="pt">Hora em que a tempestade chega a cada lugar</span><span class="es">Hora en que la tormenta llega a cada lugar</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
+      <div role="row" class="pr"><span class="pt">Aviso na noite anterior</span><span class="es">Aviso la noche anterior</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
+      <div role="row" class="pr"><span class="pt">Raios perto de você, na distância que escolher</span><span class="es">Rayos cerca tuyo, a la distancia que elijas</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
+      <div role="row" class="pr"><span class="pt">Alarmes próprios e horário de silêncio</span><span class="es">Alarmas propias y horario de silencio</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
+      <div role="row" class="pr"><span class="pt">Histórico da temporada por lugar</span><span class="es">Historial de la temporada por lugar</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
+      <div role="row" class="pr"><span class="pt">Assistente do tempo com IA</span><span class="es">Asistente del tiempo con IA</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
+    </div>
+    <p class="pt cmpn">Os primeiros 7 dias são Premium grátis, sem cartão.</p>
+    <p class="es cmpn">Los primeros 7 días son Premium gratis, sin tarjeta.</p>
+    <div class="btns"><a class="btn btn-tg" href="#premium" data-canal="espera"><span class="pt">Quero o preço de fundador</span><span class="es">Quiero el precio de fundador</span></a></div>
   </div>
 </section>
 
@@ -706,6 +753,7 @@
   </div>
 </section>
 
+<!-- PENDIENTE: segundo bloque de Google AdSense -->
 <div class="wrap"><div class="ad" data-ad="2"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div></div>
 
 
@@ -924,15 +972,38 @@
   }
   /* ---- zonas oficiales: se cargan siempre (Mis lugares las usa); el mapa las dibuja cuando esta listo ---- */
   var ZONAS=null,COLZ={amarillo:'#f5d000',naranja:'#ff8a1f',rojo:'#ff3b30'};
-  function zonasCargar(){getJ('datos/zonas.json').then(function(j){ZONAS=j;safe(zonasCapa);safe(lugPintar);safe(lugEval)}).catch(function(){})}
+  function zonasCargar(){getJ('datos/zonas.json').then(function(j){ZONAS=j;safe(zonasCapa);safe(lugPintar);safe(lugEval);safe(ofPintar)}).catch(function(){})}
   function zonasCapa(){
     if(!ZONAS||!RADAR||!RADAR.map)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
     if(RADAR.zonas)RADAR.map.removeLayer(RADAR.zonas);var g=L.featureGroup(),n=0;
     (ZONAS.avisos||[]).forEach(function(a){var c=COLZ[a.nivel]||'#f5d000';n++;
       (a.poligonos||[]).forEach(function(p){L.polygon(p,{color:c,weight:2,opacity:.9,fillColor:c,fillOpacity:.22})
-        .bindPopup('<b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b><br>'+(l==='es'?'Hasta las ':'Até as ')+hhmm(a.hasta)+'<br><a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+(l==='es'?'Ver en INMET':'Ver no INMET')+'</a>').addTo(g)})});
+        .bindPopup('<b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b><br>'+(l==='es'?'Hasta las ':'Até as ')+hhmm(a.hasta)+(a.descripcion?'<br><small>'+esc(a.descripcion.slice(0,160))+(a.descripcion.length>160?'…':'')+'</small>':'')+'<br><a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+(l==='es'?'Ver en INMET':'Ver no INMET')+'</a>').addTo(g)})});
     g.addTo(RADAR.map);RADAR.zonas=g;if(RADAR.lug)RADAR.lug.bringToFront();
     var e=document.getElementById('zonaNote');if(e)e.textContent=n?(n+(l==='es'?(n>1?' avisos oficiales vigentes en el mapa. Fuente: INMET.':' aviso oficial vigente en el mapa. Fuente: INMET.'):(n>1?' avisos oficiais em vigor no mapa. Fonte: INMET.':' aviso oficial em vigor no mapa. Fonte: INMET.'))):(l==='es'?'Sin avisos oficiales vigentes en la región.':'Sem avisos oficiais em vigor na região.')}
+  /* ---- donde estas ahora: si ya diste permiso de ubicacion, todo se centra en tu posicion en tiempo real ---- */
+  var YO=null,YOCEN=false;
+  function refPunto(){return YO||C.geo}
+  function yoIniciar(){if(!navigator.geolocation||YO===false)return;
+    navigator.geolocation.watchPosition(function(p){var n=[p.coords.latitude,p.coords.longitude],primera=!YO;YO=n;
+      safe(lugPintar);safe(ofPintar);safe(yoCapa);if(primera)safe(lugEval)},function(){},{enableHighAccuracy:false,maximumAge:300000,timeout:20000})}
+  safe(function(){if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')yoIniciar();
+      r.onchange=function(){if(r.state==='granted')yoIniciar()}}).catch(function(){})}});
+  function yoCapa(){if(!YO||!RADAR||!RADAR.map||!window.L)return;
+    if(RADAR.yo)RADAR.yo.setLatLng(YO);else RADAR.yo=L.circleMarker(YO,{radius:9,color:'#fff',weight:3,fillColor:'#16a34a',fillOpacity:1}).bindTooltip(L2('Vos','Você'),{permanent:true,direction:'right',className:'lgtip'}).addTo(RADAR.map);
+    if(!YOCEN){YOCEN=true;RADAR.map.setView(YO,8)}}
+  /* ---- texto oficial de los avisos que tocan tu ubicacion (o la ciudad si no hay permiso) ---- */
+  function ofTarjeta(a,l){var d=document.createElement('article');d.className='ofa '+(a.nivel||'');
+    d.innerHTML='<b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b><small>'+L2('Vigente hasta las ','Em vigor até as ')+hhmm(a.hasta)+' · INMET</small>'+
+      (a.descripcion?'<blockquote>'+esc(a.descripcion)+'</blockquote>':'')+(a.instruccion?'<details><summary>'+L2('Qué hacer (instrucciones oficiales)','O que fazer (instruções oficiais)')+'</summary><p>'+esc(a.instruccion)+'</p></details>':'')+
+      '<a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+L2('Ver el aviso oficial en INMET','Ver o aviso oficial no INMET')+'</a>';return d}
+  function ofPintar(){var box=document.getElementById('ofList');if(!box||!ZONAS)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt',av=lugAvisos(refPunto());
+    document.getElementById('ofRef').textContent=YO?L2('Según tu ubicación en tiempo real.','Pela sua localização em tempo real.'):L2('Para ','Para ')+C.nombre+L2('. Activá la ubicación para verlo donde estás.','. Ative a localização para ver onde você está.');
+    box.innerHTML='';if(!av.length)box.innerHTML='<p class="ofn">'+L2('Ningún aviso oficial vigente toca este punto.','Nenhum aviso oficial em vigor atinge este ponto.')+'</p>';
+    av.forEach(function(a){box.appendChild(ofTarjeta(a,l))});
+    var todos=(ZONAS.avisos||[]).filter(function(a){return av.indexOf(a)<0}),ab=document.getElementById('ofAllBox');ab.hidden=!todos.length;
+    document.getElementById('ofAllSum').textContent=L2('Otros avisos vigentes en el sur','Outros avisos em vigor no Sul')+' ('+todos.length+')';
+    var al=document.getElementById('ofAll');al.innerHTML='';todos.slice().reverse().forEach(function(a){al.appendChild(ofTarjeta(a,l))})}
   /* ---- mis lugares: se guardan en el telefono; el aviso se evalua con el contorno oficial ---- */
   var LUG=[],LUGPICK=null;try{LUG=JSON.parse(LS('lugares')||'[]')||[]}catch(e){LUG=[]}
   function lugGuardar(){LS('lugares',JSON.stringify(LUG))}
@@ -942,6 +1013,9 @@
     .sort(function(a,b){return(o[b.nivel]||0)-(o[a.nivel]||0)})}
   function lugPintar(){var box=document.getElementById('lgList');if(!box)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
     box.innerHTML=LUG.length?'':'<p class="lge">'+L2('Todavía no agregaste lugares.','Você ainda não adicionou lugares.')+'</p>';
+    if(YO){var ay=lugAvisos(YO),y0=ay[0],dy=document.createElement('div');dy.className='lgc yo '+(y0?y0.nivel:'ok');
+      dy.innerHTML='<div class="lgt"><b>📍 '+L2('Donde estás ahora','Onde você está agora')+'</b><span>'+(y0?esc(l==='es'?y0.titulo_es:y0.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(y0.hasta):(ZONAS?L2('Sin avisos oficiales','Sem avisos oficiais'):L2('Consultando…','Consultando…')))+'</span></div>';
+      if(!LUG.length)box.innerHTML='';box.appendChild(dy)}
     LUG.forEach(function(u,i){var av=lugAvisos(u.g),a=av[0],d=document.createElement('div');d.className='lgc '+(a?a.nivel:'ok');
       d.innerHTML='<div class="lgt"><b>'+esc(u.n)+'</b><span>'+(a?esc(l==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta)+(av.length>1?' · +'+(av.length-1):''):(ZONAS?L2('Sin avisos oficiales','Sem avisos oficiais'):L2('Consultando…','Consultando…')))+'</span></div>'+
         '<button type="button" data-v="'+i+'">'+L2('Ver','Ver')+'</button><button type="button" class="x" data-q="'+i+'" aria-label="'+L2('Quitar','Remover')+'">×</button>';
@@ -982,7 +1056,7 @@
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(RADAR.map);
       L.circleMarker(C.geo,{radius:7,color:'#f5b301',weight:3,fillColor:'#f5b301',fillOpacity:.9}).addTo(RADAR.map).bindTooltip(C.nombre);
       RADAR.map.on('click',function(e){if(LUGPICK)lugAgregar([e.latlng.lat,e.latlng.lng])});
-      zonasCapa();lugCapa();radarCapa();setInterval(function(){safe(radarCapa)},10*60000)})};
+      zonasCapa();lugCapa();yoCapa();radarCapa();setInterval(function(){safe(radarCapa)},10*60000)})};
     j.onerror=function(){radarNota('Radar no disponible en este momento.')};document.head.appendChild(j);
   }
   safe(function(){var m=document.getElementById('radarMap');if(!m)return;
@@ -1197,7 +1271,7 @@
   });
 
   function txtFijos(){
-    safe(trTxt);safe(lugPintar);
+    safe(trTxt);safe(lugPintar);safe(ofPintar);
     if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
     else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
     st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
@@ -1209,7 +1283,6 @@
     var a=document.querySelectorAll('[data-canal]');
     for(var i=0;i<a.length;i++){var u=C.canales[a[i].getAttribute('data-canal')];
       if(u){a[i].setAttribute('href',u);a[i].setAttribute('target','_blank');a[i].setAttribute('rel','noopener')}}
-    var p=document.getElementById('premium');if(p&&C.canales.espera)p.hidden=false;
   });
 
   /* ---- instalación en el celular (solo funciona con la página publicada en https) ---- */

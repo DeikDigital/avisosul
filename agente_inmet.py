@@ -186,6 +186,18 @@ def poligonos(xml_bytes):
     return out
 
 
+def textos(xml_bytes):
+    """Texto oficial del aviso CAP: descripcion e instrucciones, tal como los publica el INMET."""
+    t = {"descripcion": "", "instruccion": ""}
+    for el in ET.fromstring(xml_bytes).iter():
+        k = el.tag.split("}")[-1]
+        if k == "description" and not t["descripcion"]:
+            t["descripcion"] = (el.text or "").strip()
+        elif k == "instruction" and not t["instruccion"]:
+            t["instruccion"] = (el.text or "").strip()
+    return t
+
+
 def zonas(todos, ahora, regiones):
     """Escribe datos/zonas.json con el contorno de cada aviso vigente que toca alguna ciudad; la pagina lo pinta en el mapa."""
     # todos los avisos vigentes; despues quedan los que tocan una ciudad o caen en el sur (PR, SC, RS)
@@ -197,20 +209,23 @@ def zonas(todos, ahora, regiones):
     out = []
     for a in sorted(vig, key=lambda x: orden.get(x["severidad"], 0)):
         cache = os.path.join("cap", f"{a['id']}.json")
-        polys = json.load(open(cache)) if os.path.exists(cache) else None
-        if polys is None:
+        info = json.load(open(cache)) if os.path.exists(cache) else None
+        if not isinstance(info, dict):  # cache viejo (solo contornos): se vuelve a bajar una vez para tener el texto
             try:
-                polys = poligonos(leer_feed(f"https://apiprevmet3.inmet.gov.br/avisos/rss/{a['id']}"))
-                json.dump(polys, open(cache, "w"))
+                xml = leer_feed(f"https://apiprevmet3.inmet.gov.br/avisos/rss/{a['id']}")
+                info = dict(textos(xml), poligonos=poligonos(xml))
+                json.dump(info, open(cache, "w"), ensure_ascii=False)
             except Exception as e:  # un aviso sin contorno no frena al resto
                 print("zonas: sin contorno para", a["id"], type(e).__name__)
                 continue
+        polys = info["poligonos"]
         if polys and (any(x.lower() in reg for x in a["areas"]) or sur(polys)):
             out.append({"id": a["id"], "nivel": NIVEL_ES.get(a["severidad"], ""),
                         "titulo_pt": f"{a['evento']} — aviso {NIVEL.get(a['severidad'], ('',))[0] or a['severidad']}",
                         "titulo_es": f"{EVENTO_ES.get(a['evento'], a['evento'])} — aviso {NIVEL_ES.get(a['severidad'], a['severidad'])}",
                         "desde": a["inicio"].isoformat(timespec="seconds"), "hasta": a["fin"].isoformat(timespec="seconds"),
-                        "url": a["url"], "poligonos": polys})
+                        "url": a["url"], "descripcion": info.get("descripcion") or a["descripcion"],
+                        "instruccion": info.get("instruccion", ""), "poligonos": polys})
     os.makedirs("datos", exist_ok=True)
     json.dump({"fuente": "INMET", "actualizado": ahora.isoformat(timespec="seconds"), "avisos": out},
               open(os.path.join("datos", "zonas.json"), "w", encoding="utf-8"), ensure_ascii=False)
