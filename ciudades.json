@@ -27,31 +27,22 @@
   "inmet": "Grande Florianópolis"
  },
  {
-  "slug": "saopaulo",
-  "nombre": "São Paulo",
+  "slug": "curitiba",
+  "nombre": "Curitiba",
   "pais": "br",
   "lang": "pt",
-  "lat": -23.5505,
-  "lon": -46.6333,
-  "inmet": "Metropolitana de São Paulo"
+  "lat": -25.4284,
+  "lon": -49.2733,
+  "inmet": "Metropolitana de Curitiba"
  },
  {
-  "slug": "rio",
-  "nombre": "Rio de Janeiro",
+  "slug": "portoalegre",
+  "nombre": "Porto Alegre",
   "pais": "br",
   "lang": "pt",
-  "lat": -22.9068,
-  "lon": -43.1729,
-  "inmet": "Metropolitana do Rio de Janeiro"
- },
- {
-  "slug": "iguazu",
-  "nombre": "Puerto Iguazú",
-  "pais": "ar",
-  "lang": "es",
-  "lat": -25.5972,
-  "lon": -54.5786,
-  "smn": "MISIONES:Iguazú"
+  "lat": -30.0346,
+  "lon": -51.2177,
+  "inmet": "Metropolitana de Porto Alegre"
  },
  {
   "slug": "cordoba",
