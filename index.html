@@ -385,6 +385,10 @@
   .pb.pbi{display:grid;grid-template-columns:44px 1fr;column-gap:12px;align-items:center}.pb.pbi .pi{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(128,128,128,.18);color:var(--strong)}
   .pb.pbi .pi svg{width:22px;height:22px}.pb.pbi.ok .pi{background:rgba(52,211,153,.2);color:#34d399}
   .dsg{font-style:normal;color:var(--muted);letter-spacing:-3px;margin-right:4px}
+
+  .onb{overflow-y:auto;align-items:flex-start}.onbc{margin:auto}.onbc ul{grid-template-columns:minmax(0,1fr)}.onbc li .vj input{min-width:0}
+  .onbc li .vj{margin-top:8px}.onbc li .vj input{color:#fff;background:rgba(0,0,0,.3);border-color:rgba(255,255,255,.25)}.onbc li .vj .btn{width:auto}
+  .onbc .vjo{max-height:150px;overflow-y:auto}.onbc .vjo button{color:#e9eef3}
 </style>
 </head>
 <body>
@@ -719,6 +723,9 @@
       <li><b>🔔 <span class="pt">Notificações</span><span class="es">Notificaciones</span></b><span class="pt">Para avisar quando surgir um aviso oficial novo.</span><span class="es">Para avisarte cuando aparece un aviso oficial nuevo.</span></li>
       <li><b>📍 <span class="pt">Localização</span><span class="es">Ubicación</span></b><span class="pt">Para mostrar o tempo do seu ponto exato. Não é guardada.</span><span class="es">Para mostrarte el tiempo de tu punto exacto. No se guarda.</span></li>
       <li><b>🔊 <span class="pt">Som</span><span class="es">Sonido</span></b><span class="pt">Chuva e trovões só quando houver de verdade. Dá para desligar no botão Som.</span><span class="es">Lluvia y truenos solo cuando los hay de verdad. Se apaga con el botón Sonido.</span></li>
+      <li><b>📻 <span class="pt">Sua rádio de notícias</span><span class="es">Tu radio de noticias</span> <i class="pmi">Premium</i></b><span class="pt">Escolha agora e ela fica pronta para ouvir os relatos.</span><span class="es">Elegila ahora y queda lista para escuchar los reportes.</span>
+        <form class="vj" id="rdForm2"><input type="text" id="rdIn2" autocomplete="off" enterkeyhint="search" aria-label="Radio"><button type="submit" class="btn btn-tg"><span class="pt">Buscar</span><span class="es">Buscar</span></button></form>
+        <div class="vjo" id="rdOps2"></div></li>
     </ul>
     <button type="button" class="btn btn-wa" id="onbOk"><span class="pt">Permitir e continuar</span><span class="es">Permitir y continuar</span></button>
     <button type="button" class="dsx" id="onbNo"><span class="pt">Agora não</span><span class="es">Ahora no</span></button>
@@ -1062,17 +1069,20 @@
     document.getElementById('rdName').textContent=r.name;document.getElementById('rdPlay').textContent=a.paused?'▶':'❚❚'}
   function rdBajarLluvia(){if(ac&&rainGain&&sndOn){var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.linearRampToValueAtTime((RADIO_ON?.004:.014)*ESC.lluvia,n+.6)}}
   safe(function(){var f=document.getElementById('rdForm'),inp=document.getElementById('rdIn'),ops=document.getElementById('rdOps'),a=document.getElementById('rdAudio');if(!f)return;
-    function elegir(name,url){LS('radio',JSON.stringify({name:name,url:url}));ops.innerHTML='';a.src=url;a.play().catch(function(){});rdUI()}
-    f.addEventListener('submit',function(ev){ev.preventDefault();if(!esPremium()){bloqueo();return}var q=inp.value.trim();if(!q)return;
-      if(/^https:\/\//i.test(q)){elegir(L2('Radio elegida','Rádio escolhida'),q);return}
+    function elegir(name,url,ops,ini){LS('radio',JSON.stringify({name:name,url:url}));a.src=url;
+      if(ini){ops.innerHTML='<button type="button" disabled>✓ '+esc(name)+L2(' · queda guardada',' · fica salva')+'</button>'}else{ops.innerHTML='';a.play().catch(function(){})}rdUI()}
+    function buscar(ev,inp,ops,ini){ev.preventDefault();if(!esPremium()){bloqueo();return}var q=inp.value.trim();if(!q)return;
+      if(/^https:\/\//i.test(q)){elegir(L2('Radio elegida','Rádio escolhida'),q,ops,ini);return}
       if(/^http:\/\//i.test(q)){ops.innerHTML='<button type="button" disabled>'+L2('Esa dirección no es segura (http). Hace falta una que empiece con https.','Esse endereço não é seguro (http). É preciso um que comece com https.')+'</button>';return}
       ops.innerHTML='<button type="button" disabled>'+L2('Buscando…','Buscando…')+'</button>';
       var pais=LISTA.filter(function(x){return x[0]===cid})[0][2]==='br'?'BR':'AR';
       fetch('https://de1.api.radio-browser.info/json/stations/search?hidebroken=true&order=clickcount&reverse=true&limit=30&countrycode='+pais+'&name='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){
         var rs=j.filter(function(x){return/^https:/i.test(x.url_resolved||'')}).slice(0,8);ops.innerHTML='';
         if(!rs.length){ops.innerHTML='<button type="button" disabled>'+L2('No encontramos radios con ese nombre. Probá con el nombre de la emisora o pegá la dirección del stream.','Não encontramos rádios com esse nome. Tente o nome da emissora ou cole o endereço do stream.')+'</button>';return}
-        rs.forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent='▶ '+x.name.trim()+(x.state?' · '+x.state:'');b.addEventListener('click',function(){elegir(x.name.trim(),x.url_resolved)});ops.appendChild(b)})
-      }).catch(function(){ops.innerHTML='<button type="button" disabled>'+L2('No se pudo buscar. Probá de nuevo.','Não foi possível buscar. Tente de novo.')+'</button>'})});
+        rs.forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent='▶ '+x.name.trim()+(x.state?' · '+x.state:'');b.addEventListener('click',function(){elegir(x.name.trim(),x.url_resolved,ops,ini)});ops.appendChild(b)})
+      }).catch(function(){ops.innerHTML='<button type="button" disabled>'+L2('No se pudo buscar. Probá de nuevo.','Não foi possível buscar. Tente de novo.')+'</button>'})}
+    f.addEventListener('submit',function(ev){buscar(ev,inp,ops,false)});
+    var f2=document.getElementById('rdForm2');if(f2)f2.addEventListener('submit',function(ev){buscar(ev,document.getElementById('rdIn2'),document.getElementById('rdOps2'),true)});
     document.getElementById('rdPlay').addEventListener('click',function(){if(!esPremium()){bloqueo();return}var r=rdGet();if(!r)return;if(!a.src)a.src=r.url;if(a.paused)a.play().catch(function(){});else a.pause()});
     document.getElementById('rdX').addEventListener('click',function(){a.pause();a.removeAttribute('src');LS('radio','');rdUI()});
     ['play','pause','ended','error'].forEach(function(e){a.addEventListener(e,function(){RADIO_ON=!a.paused;rdBajarLluvia();rdUI()})});
@@ -1171,7 +1181,7 @@
   function wxDirecto(){if(PREC||!WEB)return;var g=C.geo;PREC=g;precCargar();PREC=null}
   var _pw3=pintarWx;pintarWx=function(){_pw3();safe(precUI);safe(escena)};
   /* ---- permisos al principio: una pantalla en la primera visita. El navegador solo deja pedirlos despues de un toque. ---- */
-  safe(function(){var o=document.getElementById('onb');if(!o||LS('onb'))return;o.hidden=false;
+  safe(function(){var o=document.getElementById('onb');if(!o||(LS('onb')&&!/[?&]onb=1\b/.test(location.search)))return;o.hidden=false;
     function cerrar(){LS('onb','1');o.hidden=true}
     document.getElementById('onbNo').addEventListener('click',cerrar);
     document.getElementById('onbOk').addEventListener('click',function(){cerrar();
@@ -1193,7 +1203,7 @@
     if(n>=3&&!LS('enc')&&esPremium())setTimeout(function(){if(document.getElementById('onb').hidden)o.hidden=false},12000)});
   function txtFijos(){
     safe(dashAplicar);safe(encuesta);
-    var ri=document.getElementById('rdIn');if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade');
+    ['rdIn','rdIn2'].forEach(function(k){var ri=document.getElementById(k);if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade')});
     var rn=document.getElementById('rdNote');if(rn)rn.textContent=L2('Las radios salen del directorio abierto Radio Browser. Aviso Sul no tiene relación con las emisoras ni responde por lo que transmiten.','As rádios vêm do diretório aberto Radio Browser. O Aviso Sul não tem relação com as emissoras nem responde pelo que transmitem.');
     var inp=document.getElementById('vjIn');if(inp)inp.placeholder=L2('¿A dónde vas? Ej.: Rosario','Para onde você vai? Ex.: Curitiba');
     if(VJ.watch===null){st('vjLive',L2('Usa el GPS para actualizar distancia, hora de llegada y pronóstico. Funciona con la pantalla encendida.','Usa o GPS para atualizar distância, hora de chegada e previsão. Funciona com a tela ligada.'));}
