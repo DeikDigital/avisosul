@@ -190,6 +190,46 @@
   [data-theme="light"] .hr{background:rgba(255,255,255,.7);border-color:rgba(23,33,44,.14)}
   .hr b{display:block;font-size:17px;color:var(--strong);margin:2px 0}.hr i{font-style:normal;font-size:20px;display:block}
   .hr .pp{color:#6fb7ff;font-weight:700}.hr .gs{color:var(--muted);font-size:11.5px}
+
+  /* ---------- v4: aspecto de app ---------- */
+  body{padding-bottom:86px}
+  .now{margin:16px 0 14px;text-align:left}
+  .now h2{flex-wrap:wrap}
+  .clk{margin-left:auto;font-size:34px;font-weight:800;letter-spacing:0;color:var(--strong);font-variant-numeric:tabular-nums;line-height:1;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+  .fecha{margin:-4px 0 12px;font-size:14px;color:var(--muted)}.fecha::first-letter{text-transform:uppercase}
+  .hero .now{color:var(--text)} .hero .now .st{font-size:20px}
+  .hrs{scrollbar-width:none}.hrs::-webkit-scrollbar{display:none}
+  .rkt{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+  .rk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .rki{text-align:center;padding:10px 2px 8px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);font-size:11.5px;font-weight:600;position:relative;overflow:hidden}
+  [data-theme="light"] .rki{background:rgba(255,255,255,.7);border-color:rgba(23,33,44,.14)}
+  .rki svg{width:30px;height:30px;display:block;margin:0 auto 4px;color:var(--muted)}
+  .rki em{display:block;font-style:normal;font-weight:800;font-size:11px;margin-top:2px;color:var(--muted)}
+  .rki::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.12)}
+  .rki.n1 svg,.rki.n1 em{color:#f5d000}.rki.n1::after{background:#f5d000}
+  .rki.n2 svg,.rki.n2 em{color:#ff8a1f}.rki.n2::after{background:#ff8a1f}.rki.n2{border-color:rgba(255,138,31,.55)}
+  .rki.n3 svg,.rki.n3 em{color:#ff3b30}.rki.n3::after{background:#ff3b30}.rki.n3{border-color:rgba(255,59,48,.7);box-shadow:0 0 18px rgba(255,59,48,.25)}
+  .wxc2{font-size:12px;color:var(--muted);margin:8px 0 0}
+  .ad{margin:14px 0;padding:14px 16px;border-radius:16px;border:1px dashed var(--line);background:rgba(255,255,255,.04);text-align:center;font-size:14px;color:var(--muted);min-height:74px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+  .ad small{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+  [data-plan="premium"] .ad{display:none}
+  .perm{display:grid;gap:10px;margin-top:14px}
+  .pb{font:inherit;color:inherit;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card);cursor:pointer}
+  .pb b{display:block;font-size:16px}.pb small{display:block;font-size:13px;color:var(--muted);margin-top:3px;min-height:1em}
+  .pb.ok{border-color:#3ddc84}
+  .tab{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:50;display:flex;justify-content:space-around;padding:8px 6px;border-radius:24px;
+    background:rgba(11,17,24,.94);border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);box-shadow:0 14px 34px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2);max-width:520px;margin:0 auto}
+  [data-theme="light"] .tab{background:rgba(255,255,255,.96);border-color:rgba(23,33,44,.16)}
+  .tab a{flex:1;text-align:center;text-decoration:none;font-size:11.5px;font-weight:700;color:var(--muted);padding:6px 2px;border-radius:16px}
+  .tab a svg{width:24px;height:24px;display:block;margin:0 auto 3px}
+  .tab a.on{color:var(--amber);background:rgba(245,179,1,.12)}
+  @media (max-width:560px){
+    .hero h1{font-size:26px;line-height:1.15;margin-top:6px}
+    .tools{margin-top:-2px}.tools .tg{padding:6px 10px;font-size:12.5px}
+    .cities{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-20px;padding-right:20px}.cities::-webkit-scrollbar{display:none}.cities a{flex:none}
+    .now{padding:16px 14px 14px}.gl{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+    #radarMap{height:300px}
+  }
 </style>
 </head>
 <body>
@@ -264,6 +304,26 @@
     <div class="wrap">
       <span class="tag" data-k="tag"></span>
       <span class="cities" id="cities"></span>
+      <div class="now gl" aria-live="polite">
+      <h2><i class="dot off" id="nowDot"></i><span data-k="now"></span><b class="clk" id="bigClock"></b></h2>
+      <p class="fecha" id="bigDate"></p>
+      <div class="wx" id="wx">
+        <div class="wxb"><div class="lb"><span id="wxClock"></span> · <span class="pt">agora</span><span class="es">ahora</span></div>
+          <div class="big"><i id="wxIco"></i><span id="wxTemp"></span></div><div class="ds" id="wxDs"></div><div class="mt" id="wxMt"></div></div>
+        <div class="wxb"><div class="lb"><span class="pt">Próxima hora</span><span class="es">Próxima hora</span></div>
+          <div class="big"><i id="wxIco2"></i><span id="wxTemp2"></span></div><div class="ds" id="wxDs2"></div><div class="mt" id="wxMt2"></div></div>
+      </div>
+      <p class="wxc"><span class="pt">Condições e próxima hora: modelo de previsão do MET Norway (CC BY 4.0). Não é medição local.</span><span class="es">Condiciones y próxima hora: modelo de pronóstico de MET Norway (CC BY 4.0). No es una medición local.</span></p>
+      <div class="hrs" id="hrs" aria-label="Próximas horas"></div>
+      <p class="st" id="nowSt"></p>
+      <div class="rkt"><span class="pt">Risco nas próximas 12 horas</span><span class="es">Riesgo en las próximas 12 horas</span></div>
+      <div class="rk" id="rk"></div>
+      <p class="wxc2"><span class="pt">Estimativa própria a partir da previsão e dos avisos oficiais em vigor. Não substitui os avisos oficiais.</span><span class="es">Estimación propia a partir del pronóstico y de los avisos oficiales vigentes. No reemplaza los avisos oficiales.</span></p>
+      <div id="nowList"></div>
+      <p class="up" id="nowUp"></p>
+      <div class="of" id="nowOf"></div>
+    </div>
+      <div class="ad" data-ad="1"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div>
 
       <h1 class="pt">Ficou sabendo do granizo <em>quando já estava caindo?</em></h1>
       <h1 class="es">¿Te enteraste del granizo <em>cuando ya estaba cayendo?</em></h1>
@@ -293,26 +353,6 @@
 </div>
 
 <main>
-<section id="ahora">
-  <div class="wrap">
-    <div class="now gl" aria-live="polite">
-      <h2><i class="dot off" id="nowDot"></i><span data-k="now"></span></h2>
-      <div class="wx" id="wx">
-        <div class="wxb"><div class="lb"><span id="wxClock"></span> · <span class="pt">agora</span><span class="es">ahora</span></div>
-          <div class="big"><i id="wxIco"></i><span id="wxTemp"></span></div><div class="ds" id="wxDs"></div><div class="mt" id="wxMt"></div></div>
-        <div class="wxb"><div class="lb"><span class="pt">Próxima hora</span><span class="es">Próxima hora</span></div>
-          <div class="big"><i id="wxIco2"></i><span id="wxTemp2"></span></div><div class="ds" id="wxDs2"></div><div class="mt" id="wxMt2"></div></div>
-      </div>
-      <p class="wxc"><span class="pt">Condições e próxima hora: modelo de previsão do MET Norway (CC BY 4.0). Não é medição local.</span><span class="es">Condiciones y próxima hora: modelo de pronóstico de MET Norway (CC BY 4.0). No es una medición local.</span></p>
-      <div class="hrs" id="hrs" aria-label="Próximas horas"></div>
-      <p class="st" id="nowSt"></p>
-      <div id="nowList"></div>
-      <p class="up" id="nowUp"></p>
-      <div class="of" id="nowOf"></div>
-    </div>
-  </div>
-</section>
-
 <section class="alt" id="exemplo">
   <div class="wrap" data-rv>
     <h2 class="pt">Assim chega o aviso no seu WhatsApp</h2>
@@ -425,6 +465,30 @@
 </section>
 </main>
 
+<section class="alt" id="ajustes">
+  <div class="wrap" data-rv>
+    <h2 class="pt">Ajustes e permissões</h2>
+    <h2 class="es">Ajustes y permisos</h2>
+    <p class="pt">Cada permissão é pedida só quando você toca no botão. Dá para usar o Aviso Sul sem nenhuma.</p>
+    <p class="es">Cada permiso se pide recién cuando tocás el botón. Podés usar Aviso Sul sin ninguno.</p>
+    <div class="perm">
+      <button type="button" class="pb" id="pNotif"><b><span class="pt">Ativar notificações</span><span class="es">Activar notificaciones</span></b><small id="pNotifS"></small></button>
+      <button type="button" class="pb" id="pGeo"><b><span class="pt">Usar minha localização</span><span class="es">Usar mi ubicación</span></b><small id="pGeoS"></small></button>
+      <button type="button" class="pb" id="pCam"><b><span class="pt">Compartilhar foto do temporal</span><span class="es">Compartir foto del temporal</span></b><small id="pCamS"></small></button>
+      <input type="file" accept="image/*" capture="environment" id="camIn" hidden>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="ad" data-ad="2"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div></div>
+
+<nav class="tab" aria-label="Navegación">
+  <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
+  <a href="#radar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M7.500 16.500a6.400 6.400 0 0 1 0-9M16.500 7.500a6.400 6.400 0 0 1 0 9M4.500 19.500a10.600 10.600 0 0 1 0-15M19.500 4.500a10.600 10.600 0 0 1 0 15"/></svg><span>Radar</span></a>
+  <a href="#canais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.300-4.200A8 8 0 1 1 8.300 19z"/></svg><span class="pt">Canal</span><span class="es">Canal</span></a>
+  <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900l2.100 2.100M17 17l2.100 2.100M4.900 19.100L7 17M17 7l2.100-2.100"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
+</nav>
+
 <footer>
   <div class="wrap">
     <p data-k="foot"></p>
@@ -480,11 +544,11 @@
     var can={},k;for(k in CANAL_GEN)can[k]=(CANALES[id]&&CANALES[id][k]!==undefined)?CANALES[id][k]:CANAL_GEN[k];
     TZ[id]=P.tz;
     CIUDAD[id]={lang:x[3],nombre:n,geo:[x[4],x[5]],canales:can,fontes:[P.orgL],oficial:P.oficial,tels:P.tels,
-      pt:{now:'Agora em '+n,tag:n+' e região',hist:h[0],lead:'O Aviso Sul reúne em um só canal os avisos oficiais de tempo severo para '+n+' e região.',
+      pt:{ad:'Espaço disponível para negócios de '+n,now:'Agora em '+n,tag:n+' e região',hist:h[0],lead:'O Aviso Sul reúne em um só canal os avisos oficiais de tempo severo para '+n+' e região.',
         noof:'O Aviso Sul não é um órgão público e não substitui os avisos do '+P.org+' nem os alertas '+P.dcpt+'. Um aviso pode atrasar ou não chegar: não receber aviso não significa que não há risco.',
         cta:'Receba os avisos de '+n+' no celular',foot:'Aviso Sul · '+n+' · Serviço independente, sem vínculo com órgãos públicos.',foot2:'Fonte dos avisos: '+P.org+'.',
         ej:P.ejpt+'\n\nDeixou roupa no varal ou o carro na rua? Dá tempo de guardar.',ejpie:'Fonte: '+P.org+' (aviso oficial). Aviso Sul é independente e não oficial.'},
-      es:{now:'Ahora en '+n,tag:n+' y la región',hist:h[1],lead:'Aviso Sul reúne en un solo canal los avisos oficiales de tiempo severo para '+n+' y la región.',
+      es:{ad:'Espacio disponible para comercios de '+n,now:'Ahora en '+n,tag:n+' y la región',hist:h[1],lead:'Aviso Sul reúne en un solo canal los avisos oficiales de tiempo severo para '+n+' y la región.',
         noof:'Aviso Sul no es un organismo público y no reemplaza los avisos del '+P.org+' ni las alertas '+P.dces+'. Un aviso puede demorarse o no llegar: no recibir un aviso no significa que no haya riesgo.',
         cta:'Recibí los avisos de '+n+' en tu celular',foot:'Aviso Sul · '+n+' · Servicio independiente, sin vínculo con organismos públicos.',foot2:'Fuente de los avisos: '+P.org+'.',
         ej:P.ejes+'\n\n¿Dejaste ropa tendida o el auto en la calle? Todavía hay tiempo de entrarlos.',ejpie:'Fuente: '+P.org+' (aviso oficial). Aviso Sul es independiente y no oficial.'}};
@@ -507,7 +571,7 @@
      Lee datos/<ciudad>.json, que escriben los agentes con los avisos oficiales vigentes.
      Si el archivo no existe o tiene mas de 45 minutos, no se afirma nada: se manda a la fuente oficial. */
   /* Los agentes corren en GitHub y dejan ahi los datos; la pagina los lee directo, sin volver a publicar el sitio. */
-  var DATOS_URL='https://raw.githubusercontent.com/DeikDigital/avisosul/main/datos/';
+  var DATOS_URL=(location.hostname==='localhost')?'/datos/':'https://raw.githubusercontent.com/DeikDigital/avisosul/main/datos/';
   var DATOS=null,DATOS_ERR=false;
   function hhmm(iso){var d=new Date(iso);return isNaN(d)?'':('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
   function pintarAhora(){
@@ -532,8 +596,11 @@
   }
   /* ---- hora local, condiciones y proxima hora (datos/<ciudad>_tiempo.json) ---- */
   var WX=null;
-  function reloj(){var e=document.getElementById('wxClock');if(!e)return;
-    try{e.textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:TZ[cid]})}catch(x){e.textContent=hhmm(new Date().toISOString())}}
+  function reloj(){var d=new Date(),o={hour:'2-digit',minute:'2-digit',hour12:false,timeZone:TZ[cid]},t;
+    try{t=d.toLocaleTimeString('es-AR',o)}catch(x){t=hhmm(d.toISOString())}
+    var a=document.getElementById('wxClock'),b=document.getElementById('bigClock'),f=document.getElementById('bigDate');
+    if(a)a.textContent=t;if(b)b.textContent=t;
+    if(f){var l=root.getAttribute('data-lang')==='es'?'es-AR':'pt-BR';try{f.textContent=d.toLocaleDateString(l,{weekday:'long',day:'numeric',month:'long',timeZone:TZ[cid]})}catch(x){}}}
   function pintarWx(){
     var b=document.getElementById('wx');if(!b)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
     var ok=WX&&typeof WX.temp==='number'&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);
@@ -578,6 +645,64 @@
   safe(function(){var m=document.getElementById('radarMap');if(!m)return;
     if(!('IntersectionObserver' in window)){radarInit();return}
     var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();radarInit()}},{rootMargin:'300px'});io.observe(m)});
+  /* ---- riesgo por fenomeno: avisos oficiales vigentes + pronostico de 12 horas ---- */
+  var FEN=[['granizo','Granizo','Granizo'],['chuva','Chuvas','Lluvias'],['vendaval','Ventos','Vientos'],['raios','Raios','Rayos'],['calor','Calor','Calor'],['frio','Frio','Frío'],['geada','Geadas','Heladas'],['seca','Seca','Sequía']];
+  var NV={pt:['Sem aviso','Moderado','Alto','Extremo'],es:['Sin aviso','Moderado','Alto','Extremo']};
+  function pintarRiesgo(){var e=document.getElementById('rk');if(!e)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt',r={},i;
+    function up(k,n){if(!(r[k]>=n))r[k]=n}
+    var h=(WX&&WX.horas&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))?WX.horas:[];
+    if(h.length){var pm=0,gm=0,tmx=-99,tmn=99,ry=false;for(i=0;i<h.length;i++){pm=Math.max(pm,h[i].prob||0);gm=Math.max(gm,h[i].racha||0);tmx=Math.max(tmx,h[i].temp);tmn=Math.min(tmn,h[i].temp);if(h[i].ico==='⛈️')ry=true}
+      up('chuva',pm>=80?2:pm>=50?1:0);up('vendaval',gm>=75?3:gm>=55?2:gm>=40?1:0);up('calor',tmx>=38?3:tmx>=35?2:tmx>=32?1:0);
+      up('frio',tmn<=0?3:tmn<=3?2:tmn<=7?1:0);up('geada',tmn<=0?2:tmn<=3?1:0);if(ry)up('raios',2)}
+    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<45*60000))?DATOS.avisos:[];
+    for(i=0;i<av.length;i++){var t=((av[i].titulo_pt||'')+' '+(av[i].titulo_es||'')).toLowerCase(),n=av[i].nivel==='rojo'?3:av[i].nivel==='naranja'?2:1;
+      if(/tempest|tormenta/.test(t)){up('chuva',n);up('vendaval',n);up('raios',n);up('granizo',n)}
+      if(/chuva|lluvia/.test(t))up('chuva',n);if(/vent|vient|vendaval/.test(t))up('vendaval',n);if(/granizo/.test(t))up('granizo',n);
+      if(/geada|helada/.test(t))up('geada',n);if(/calor/.test(t))up('calor',n);if(/frio|frío/.test(t))up('frio',n);if(/seca|sequ|estiagem|umidade|humedad/.test(t))up('seca',n);if(/raio|rayo/.test(t))up('raios',n)}
+    e.innerHTML=FEN.map(function(f){var n=r[f[0]]||0;return'<div class="rki n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('')}
+  var _pa=pintarAhora;pintarAhora=function(){_pa();safe(pintarRiesgo);safe(reloj)};
+  var _pw2=pintarWx;pintarWx=function(){_pw2();safe(pintarRiesgo)};
+  /* ---- pestañas inferiores ---- */
+  safe(function(){var t=document.querySelectorAll('.tab a');if(!t.length||!('IntersectionObserver' in window))return;
+    var m={};for(var i=0;i<t.length;i++)m[t[i].getAttribute('href').slice(1)]=t[i];t[0].className='on';
+    var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){for(var k in m)m[k].className='';m[x.target.id].className='on'}})},{rootMargin:'-45% 0px -45% 0px'});
+    for(var k in m){var el=document.getElementById(k);if(el)io.observe(el)}});
+  /* ---- permisos: se piden solo al tocar cada boton ---- */
+  function L2(es,pt){return root.getAttribute('data-lang')==='es'?es:pt}
+  function st(id,t,ok){var e=document.getElementById(id+'S');if(e)e.textContent=t;var b=document.getElementById(id);if(b&&ok!==undefined)b.className='pb'+(ok?' ok':'')}
+  function notifOn(){return('Notification' in window)&&Notification.permission==='granted'&&LS('notif')==='on'}
+  function notificar(titulo,cuerpo){if(!notifOn())return;var o={body:cuerpo,icon:'/icon-192.png',badge:'/icon-192.png',tag:'avisosul-'+cid};
+    if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(function(r){r.showNotification(titulo,o)}).catch(function(){try{new Notification(titulo,o)}catch(x){}});else try{new Notification(titulo,o)}catch(x){}}
+  function vigilar(){if(!DATOS||!DATOS.avisos)return;var k='vistos-'+cid,ya=(LS(k)||'').split('|'),nu=[];
+    DATOS.avisos.forEach(function(a){var id=(a.url||a.titulo_es||'')+'';if(ya.indexOf(id)<0){nu.push(a);ya.push(id)}});
+    if(nu.length&&LS(k)!==null)notificar('Aviso Sul · '+C.nombre,L2(nu[0].titulo_es||nu[0].titulo_pt,nu[0].titulo_pt||nu[0].titulo_es)+' ('+(DATOS.fuente||'')+')');
+    LS(k,ya.slice(-40).join('|'))}
+  var _pa2=pintarAhora;pintarAhora=function(){_pa2();safe(vigilar)};
+  safe(function(){
+    var n=document.getElementById('pNotif'),g=document.getElementById('pGeo'),c=document.getElementById('pCam'),ci=document.getElementById('camIn');
+    if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
+    else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
+    st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
+    st('pCam',L2('Sacá una foto y mandala por WhatsApp con la ciudad y la hora.','Tire uma foto e envie pelo WhatsApp com a cidade e a hora.'));
+    n.addEventListener('click',function(){
+      if(!('Notification' in window)){st('pNotif',L2('Este navegador no admite notificaciones. En iPhone, primero instalá la página en la pantalla de inicio.','Este navegador não permite notificações. No iPhone, instale a página na tela inicial primeiro.'));return}
+      Notification.requestPermission().then(function(p){if(p==='granted'){LS('notif','on');st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);notificar('Aviso Sul',L2('Notificaciones activadas para ','Notificações ativadas para ')+C.nombre)}
+        else st('pNotif',L2('Permiso no concedido. Se puede cambiar en los ajustes del navegador.','Permissão não concedida. Dá para mudar nos ajustes do navegador.'),false)})});
+    g.addEventListener('click',function(){
+      if(!navigator.geolocation){st('pGeo',L2('Este navegador no admite ubicación.','Este navegador não permite localização.'));return}
+      st('pGeo',L2('Buscando…','Buscando…'));
+      navigator.geolocation.getCurrentPosition(function(p){var best=null,bd=1e9;LISTA.forEach(function(x){var R=6371,a=(p.coords.latitude-x[4])*Math.PI/180,b=(p.coords.longitude-x[5])*Math.PI/180,
+          q=Math.sin(a/2)*Math.sin(a/2)+Math.cos(x[4]*Math.PI/180)*Math.cos(p.coords.latitude*Math.PI/180)*Math.sin(b/2)*Math.sin(b/2),d=2*R*Math.asin(Math.sqrt(q));if(d<bd){bd=d;best=x}});
+        if(bd>150){st('pGeo',L2('Todavía no cubrimos tu zona. La ciudad más cercana es ','Ainda não cobrimos sua região. A cidade mais próxima é ')+best[1]+' ('+Math.round(bd)+' km).',false);return}
+        if(best[0]===cid){st('pGeo',L2('Ya estás viendo tu ciudad: ','Você já está vendo sua cidade: ')+best[1]+'.',true);return}
+        LS('c',best[0]);location.href=WEB?'/'+best[0]+'/':'?c='+best[0]},
+        function(){st('pGeo',L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.'),false)},{timeout:10000,maximumAge:600000})});
+    c.addEventListener('click',function(){ci.click()});
+    ci.addEventListener('change',function(){var f=ci.files&&ci.files[0];if(!f)return;var txt=C.nombre+' · '+document.getElementById('bigClock').textContent+' · avisosul.com/'+cid+'/';
+      if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],text:txt}).catch(function(){});
+      else st('pCam',L2('Este navegador no permite compartir fotos desde la página.','Este navegador não permite compartilhar fotos pela página.'),false)});
+  });
+  safe(reloj);
   safe(cargarAhora);safe(cargarWx);setInterval(function(){safe(cargarAhora);safe(cargarWx)},5*60000);setInterval(function(){safe(reloj)},20000);
   safe(function(){
     var a=document.querySelectorAll('[data-canal]');
@@ -685,7 +810,7 @@
         var lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=6500;
         rainGain=ac.createGain();rainGain.gain.value=0;
         s.connect(hp);hp.connect(lp);lp.connect(rainGain);rainGain.connect(ac.destination);s.start()}}
-    sndOn=on;if(b)b.setAttribute('aria-pressed',on?'true':'false');
+    sndOn=on;LS('snd',on?'on':'off');if(b)b.setAttribute('aria-pressed',on?'true':'false');
     if(!ac)return;
     var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.setValueAtTime(rainGain.gain.value,n);
     if(on){if(ac.resume)ac.resume();rainGain.gain.linearRampToValueAtTime(.10,n+.9)}
@@ -702,6 +827,10 @@
     document.getElementById('bFx').addEventListener('click',function(){setFx(!fxOn)});
     document.getElementById('bSnd').addEventListener('click',function(){setSnd(!sndOn)});
     setFx(LS('fx')!=='off');
+    if(LS('snd')!=='off'){var b0=document.getElementById('bSnd');if(b0)b0.setAttribute('aria-pressed','true');
+      var arm=function(ev){document.removeEventListener('pointerdown',arm,true);document.removeEventListener('keydown',arm,true);
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest('#bSnd'))return;if(LS('snd')!=='off')setSnd(true)};
+      document.addEventListener('pointerdown',arm,true);document.addEventListener('keydown',arm,true)}
     var rt=0;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(fxOn)size()},180)});
     document.addEventListener('visibilitychange',function(){
       if(document.hidden){stop();if(ac&&ac.suspend)ac.suspend()}else{start();if(ac&&sndOn&&ac.resume)ac.resume()}});
