@@ -344,6 +344,26 @@
   #ajustes .enc{display:none!important}
   #encC .enc{display:block!important;background:none!important;border:0!important;box-shadow:none!important;padding:0;margin:0 0 6px;text-align:left}
   #encC .enc b{color:#fff}#encC .enc p{color:#b9c6d3}#encC .encb a{color:#e9eef3}
+
+  /* ---------- riesgo actual destacado, volver al inicio, avisar con foto o video ---------- */
+  .ryB{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;margin:0 0 14px;border:1.5px solid rgba(52,211,153,.55);background:rgba(52,211,153,.10)}
+  .ryB .ic{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:rgba(52,211,153,.18);color:#34d399}.ryB .ic svg{width:36px;height:36px}
+  .ryB small{display:block;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.ryB b{display:block;font-size:21px;line-height:1.15;color:var(--strong)}.ryB em{font-style:normal;font-size:13px;color:var(--muted)}
+  .ryB.n1{border-color:rgba(245,208,0,.7);background:rgba(245,208,0,.10)}.ryB.n1 .ic{background:rgba(245,208,0,.2);color:#f5d000}
+  .ryB.n2{border-color:rgba(255,138,31,.8);background:rgba(255,138,31,.13)}.ryB.n2 .ic{background:rgba(255,138,31,.24);color:#ff8a1f}
+  .ryB.n3{border-color:rgba(255,59,48,.9);background:rgba(255,59,48,.15);animation:rojo 1.6s infinite}.ryB.n3 .ic{background:rgba(255,59,48,.28);color:#ff3b30}
+  @media (prefers-reduced-motion:reduce){.ryB.n3{animation:none}}
+  .volver{display:inline-flex;align-items:center;gap:6px;margin:0 0 14px;padding:8px 14px;border-radius:999px;border:1px solid rgba(128,128,128,.4);color:var(--strong);text-decoration:none;font-weight:700;font-size:14px}
+  .volver.flot{position:fixed;left:12px;top:12px;z-index:60;margin:0;background:rgba(18,27,37,.94);color:#fff;border-color:rgba(255,255,255,.3);box-shadow:0 6px 18px rgba(0,0,0,.4)}.volver[hidden]{display:none}
+  .avc{text-align:left}.avc h2{text-align:center;font-size:21px}
+  .avb{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .avb button{font:inherit;font-weight:700;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .onbc .avb svg{width:30px;height:30px;color:#f5b301}
+  .avp{position:relative;margin-bottom:12px}.avp[hidden]{display:none}.avp img,.avp video{width:100%;max-height:200px;object-fit:cover;border-radius:14px;display:block}
+  .avp button{position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;font-size:20px;line-height:1;cursor:pointer}
+  #avMsg{width:100%;font:inherit;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:10px 12px;resize:vertical}
+  .avn{display:block;color:#9fb0c1;font-size:12.5px;margin:6px 0 12px}#avSt{color:#ffb4ab;margin:8px 0 0}#avSt:empty{display:none}
+  .avc .dsx{display:block;margin:6px auto 0}
 </style>
 </head>
 <body>
@@ -643,8 +663,6 @@
     <div class="perm">
       <button type="button" class="pb" id="pNotif"><b><span class="pt">Ativar notificações</span><span class="es">Activar notificaciones</span></b><small id="pNotifS"></small></button>
       <button type="button" class="pb" id="pGeo"><b><span class="pt">Usar minha localização</span><span class="es">Usar mi ubicación</span></b><small id="pGeoS"></small></button>
-      <button type="button" class="pb" id="pCam"><b><span class="pt">Compartilhar foto do temporal</span><span class="es">Compartir foto del temporal</span></b><small id="pCamS"></small></button>
-      <input type="file" accept="image/*" capture="environment" id="camIn" hidden>
     </div>
     <h3 class="pt">Personalizar o início</h3>
     <h3 class="es">Personalizar el inicio</h3>
@@ -692,10 +710,29 @@
 </div>
 <div class="onb" id="encO" hidden role="dialog" aria-modal="true"><div class="onbc gl" id="encC"><button type="button" class="dsx" id="encX"><span class="pt">Agora não</span><span class="es">Ahora no</span></button></div></div>
 
+<a class="volver flot" id="volverF" href="#hero" hidden>← <span class="pt">Voltar ao início</span><span class="es">Volver al inicio</span></a>
+<div class="onb" id="avO" hidden role="dialog" aria-modal="true">
+  <div class="onbc gl avc">
+    <h2><span class="pt">Avisar com foto ou vídeo</span><span class="es">Avisar con foto o video</span></h2>
+    <div class="avb">
+      <button type="button" id="avFoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="pt">Foto</span><span class="es">Foto</span></button>
+      <button type="button" id="avVideo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="5" width="15" height="14" rx="2"/><path d="M23 7l-7 5 7 5z"/></svg><span class="pt">Vídeo</span><span class="es">Video</span></button>
+    </div>
+    <input type="file" accept="image/*" capture="environment" id="avInF" hidden>
+    <input type="file" accept="video/*" capture="environment" id="avInV" hidden>
+    <div class="avp" id="avPrev" hidden></div>
+    <textarea id="avMsg" rows="3" maxlength="400"></textarea>
+    <small class="avn"><span class="pt">Junto vão a cidade, o estado oficial de agora e o link.</span><span class="es">Junto van la ciudad, el estado oficial de ahora y el enlace.</span></small>
+    <button type="button" class="btn btn-wa" id="avSend"><span class="pt">Enviar</span><span class="es">Enviar</span></button>
+    <small class="avn" id="avSt"></small>
+    <button type="button" class="dsx" id="avX"><span class="pt">Cancelar</span><span class="es">Cancelar</span></button>
+  </div>
+</div>
+
 <nav class="tab" aria-label="Navegación">
   <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
   <a href="#radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="2.500"/><path d="M7 9l9-5"/><circle cx="8.500" cy="14.500" r="2.300"/><path d="M14 13h4M14 16h4"/></svg><span>Radio</span><i class="pmd" aria-hidden="true">★</i></a>
-  <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7h16v-7M12 15V3M7.500 7.500 12 3l4.500 4.500"/></svg><span class="pt">Avisar</span><span class="es">Avisar</span><i class="pmd" aria-hidden="true">★</i></button>
+  <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="pt">Avisar</span><span class="es">Avisar</span><i class="pmd" aria-hidden="true">★</i></button>
   <a href="#viaje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M6 17l1.500-6h9L18 17M8 11l1-4h6l1 4"/><circle cx="8" cy="18.500" r="1.600" fill="currentColor"/><circle cx="16" cy="18.500" r="1.600" fill="currentColor"/></svg><span class="pt">Viagem</span><span class="es">Viaje</span></a>
   <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
 </nav>
@@ -878,6 +915,10 @@
     e.innerHTML=FEN.map(function(f){var n=r[f[0]]||0;return'<div class="rki n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('');
     /* riesgo de ahora: solo la hora actual y los avisos ya vigentes; se muestran unicamente los fenomenos con nivel */
     var y=document.getElementById('rya');if(!y)return;var ra=riesgoDe(h.slice(0,1)),act=FEN.filter(function(f){return ra[f[0]]>0}).sort(function(a,b){return ra[b[0]]-ra[a[0]]});
+    var bg=document.getElementById('ryBig');if(!bg){var nw=document.querySelector('.now h2');if(nw){bg=document.createElement('div');bg.id='ryBig';nw.parentNode.insertBefore(bg,nw.nextSibling)}}
+    if(bg){if(!h.length&&!act.length){bg.hidden=true}else{bg.hidden=false;var f0=act[0],n0=f0?ra[f0[0]]:0;bg.className='ryB n'+n0;
+      bg.innerHTML=(f0?'<span class="ic"><svg aria-hidden="true"><use href="#i-'+f0[0]+'"/></svg></span>':'<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></span>')+
+        '<div><small>'+(l==='es'?'Riesgo ahora':'Risco agora')+'</small><b>'+(f0?esc(l==='es'?f0[2]:f0[1])+' · '+NV[l][n0]:(l==='es'?'Sin riesgo':'Sem risco'))+'</b>'+(act.length>1?'<em>+ '+act.slice(1).map(function(f){return esc(l==='es'?f[2]:f[1])}).join(', ')+'</em>':'')+'</div>'}}
     y.innerHTML=act.length?act.map(function(f){var n=ra[f[0]];return'<div class="ryi n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg><div><b>'+esc(l==='es'?f[2]:f[1])+'</b><em>'+NV[l][n]+'</em></div></div>'}).join('')
       :'<div class="ryi n0"><div><b>'+(l==='es'?'Sin riesgo ahora':'Sem risco agora')+'</b><em>'+(l==='es'?'según avisos y pronóstico':'segundo avisos e previsão')+'</em></div></div>'}
   var _pa=pintarAhora;pintarAhora=function(){_pa();safe(pintarRiesgo);safe(reloj)};
@@ -899,11 +940,10 @@
     LS(k,ya.slice(-40).join('|'))}
   var _pa2=pintarAhora;pintarAhora=function(){_pa2();safe(vigilar)};
   safe(function(){
-    var n=document.getElementById('pNotif'),g=document.getElementById('pGeo'),c=document.getElementById('pCam'),ci=document.getElementById('camIn');
+    var n=document.getElementById('pNotif'),g=document.getElementById('pGeo');
     if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
     else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
     st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
-    st('pCam',L2('Sacá una foto y mandala por WhatsApp con la ciudad y la hora.','Tire uma foto e envie pelo WhatsApp com a cidade e a hora.'));
     n.addEventListener('click',function(){
       if(!('Notification' in window)){st('pNotif',L2('Este navegador no admite notificaciones. En iPhone, primero instalá la página en la pantalla de inicio.','Este navegador não permite notificações. No iPhone, instale a página na tela inicial primeiro.'));return}
       Notification.requestPermission().then(function(p){if(p==='granted'){LS('notif','on');st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);notificar('Aviso Sul',L2('Notificaciones activadas para ','Notificações ativadas para ')+C.nombre)}
@@ -917,10 +957,6 @@
         if(best[0]===cid){st('pGeo',L2('Ya estás viendo tu ciudad: ','Você já está vendo sua cidade: ')+best[1]+'.',true);return}
         LS('c',best[0]);location.href=WEB?'/'+best[0]+'/':'?c='+best[0]},
         function(){st('pGeo',L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.'),false)},{timeout:10000,maximumAge:600000})});
-    c.addEventListener('click',function(){ci.click()});
-    ci.addEventListener('change',function(){var f=ci.files&&ci.files[0];if(!f)return;var txt=C.nombre+' · '+document.getElementById('bigClock').textContent+' · avisosul.com/'+cid+'/';
-      if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],text:txt}).catch(function(){});
-      else st('pCam',L2('Este navegador no permite compartir fotos desde la página.','Este navegador não permite compartilhar fotos pela página.'),false)});
   });
   /* ---- modo viaje: destino -> pronostico al llegar y en el camino (Open-Meteo, desde el navegador) ---- */
   var WMOT=[[[95,96,99],'Trovoadas','Tormenta eléctrica','⛈️'],[[65,82,67],'Chuva forte','Lluvia fuerte','🌧️'],[[61,63,80,81,66],'Chuva','Lluvia','🌧️'],[[51,53,55,56,57],'Garoa','Llovizna','🌦️'],[[71,73,75,77,85,86],'Neve','Nieve','🌨️'],[[45,48],'Nevoeiro','Niebla','🌫️'],[[3],'Nublado','Nublado','☁️'],[[2],'Parcialmente nublado','Parcialmente nublado','⛅'],[[1],'Poucas nuvens','Algo nublado','🌤️'],[[0],'Céu limpo','Despejado','☀️']];
@@ -1044,8 +1080,22 @@
     else t=L2('Mirá cómo está el tiempo en ','Veja como está o tempo em ')+C.nombre+'.';
     if(WX&&typeof WX.temp==='number'&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))t+=' '+L2('Ahora ','Agora ')+WX.temp+'°, '+(WX.ahora[l]||'').toLowerCase()+'.';
     return t+'\n\n'+L2('Avisos gratis en tu celular: ','Avisos grátis no seu celular: ')+u}
-  function compartirAviso(ev){if(ev)ev.preventDefault();if(!esPremium()){bloqueo();return}var t=textoAviso();
-    if(navigator.share)navigator.share({text:t}).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener')}
+  var AVF=null;
+  function avPrev(){var p=document.getElementById('avPrev');p.innerHTML='';p.hidden=!AVF;if(!AVF)return;var u=URL.createObjectURL(AVF),e=document.createElement(/^video/.test(AVF.type)?'video':'img');e.src=u;if(e.tagName==='VIDEO'){e.muted=true;e.controls=true;e.playsInline=true}p.appendChild(e);
+    var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Quitar');x.addEventListener('click',function(){AVF=null;avPrev()});p.appendChild(x)}
+  function compartirAviso(ev){if(ev)ev.preventDefault();if(!esPremium()){bloqueo();return}
+    document.getElementById('avMsg').placeholder=L2('Contá qué está pasando (opcional)','Conte o que está acontecendo (opcional)');document.getElementById('avSt').textContent='';document.getElementById('avO').hidden=false}
+  safe(function(){var o=document.getElementById('avO'),iF=document.getElementById('avInF'),iV=document.getElementById('avInV');if(!o)return;
+    document.getElementById('avFoto').addEventListener('click',function(){iF.click()});document.getElementById('avVideo').addEventListener('click',function(){iV.click()});
+    [iF,iV].forEach(function(i){i.addEventListener('change',function(){if(i.files&&i.files[0]){AVF=i.files[0];avPrev()}i.value=''})});
+    document.getElementById('avX').addEventListener('click',function(){o.hidden=true});
+    document.getElementById('avSend').addEventListener('click',function(){var m=document.getElementById('avMsg').value.trim(),t=(m?m+'\n\n':'')+textoAviso(),fin=function(){o.hidden=true;AVF=null;avPrev();document.getElementById('avMsg').value=''};
+      if(AVF){if(navigator.canShare&&navigator.canShare({files:[AVF]})){navigator.share({files:[AVF],text:t}).then(fin).catch(function(){})}
+        else document.getElementById('avSt').textContent=L2('Este navegador no deja enviar la foto o el video desde la página. Quitalo para mandar solo el texto.','Este navegador não deixa enviar a foto ou o vídeo pela página. Remova para mandar só o texto.');return}
+      if(navigator.share)navigator.share({text:t}).then(fin).catch(function(){});else{window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener');fin()}})});
+  /* boton flotante para volver al inicio mientras se mira Ajustes */
+  safe(function(){var v=document.getElementById('volverF'),a=document.getElementById('ajustes');if(!v||!a||!('IntersectionObserver' in window))return;
+    new IntersectionObserver(function(es){v.hidden=!es[0].isIntersecting},{rootMargin:'-30% 0px -30% 0px'}).observe(a)});
   safe(function(){var a=document.getElementById('tabShare'),b=document.getElementById('bShare');if(a)a.addEventListener('click',compartirAviso);if(b)b.addEventListener('click',compartirAviso)});
   /* ---- mi ubicacion precisa (premium): condiciones y proximas horas del punto exacto, por GPS. Los avisos oficiales siguen siendo los de la ciudad. ---- */
   function precCargar(){if(!PREC)return;var eraPrec=PREC!==C.geo;
@@ -1109,7 +1159,6 @@
     if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
     else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
     st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
-    st('pCam',L2('Sacá una foto y mandala por WhatsApp con la ciudad y la hora.','Tire uma foto e envie pelo WhatsApp com a cidade e a hora.'));
     if(VJ.dest)vjCalc();
   }
   var _pa3=pintarAhora;pintarAhora=function(){_pa3();safe(txtFijos)};
