@@ -1030,7 +1030,7 @@
   /* ---- ciudad e idioma segun desde donde se usa (ubicacion aproximada por IP, sin pedir permiso) ---- */
   safe(function(){if(!WEB||LS('geoip'))return;LS('geoip','1');
     var ok=function(lat,lon,pais){if(!LS('langM')&&!/[?&]lang=/.test(location.search)&&(pais==='BR'||pais==='AR'||pais==='UY'||pais==='PY')){var l2=pais==='BR'?'pt':'es';if(root.getAttribute('data-lang')!==l2)setLang(l2)}
-      if(LS('cM')||!isFinite(lat))return;var best=null,bd=1e9;for(var id in CIUDAD){var g=CIUDAD[id].geo,d=Math.pow(g[0]-lat,2)+Math.pow((g[1]-lon)*Math.cos(lat*Math.PI/180),2);if(d<bd){bd=d;best=id}}
+      if(LS('cM')||!isFinite(lat))return;var best=null,bd=1e9;for(var id in CIUDAD){if(OCULTAS[id])continue;var g=CIUDAD[id].geo,d=Math.pow(g[0]-lat,2)+Math.pow((g[1]-lon)*Math.cos(lat*Math.PI/180),2);if(d<bd){bd=d;best=id}}
       if(best&&Math.sqrt(bd)*111<600&&best!==cid){LS('c',best);location.replace('/'+best+'/'+location.search+location.hash)}};
     fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){ok(+j.latitude,+j.longitude,String(j.country_code||'').toUpperCase())})
       .catch(function(){fetch('https://ipapi.co/json/').then(function(r){return r.json()}).then(function(j){ok(+j.latitude,+j.longitude,String(j.country_code||'').toUpperCase())}).catch(function(){})})});
