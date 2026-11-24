@@ -389,6 +389,10 @@
   .onb{overflow-y:auto;align-items:flex-start}.onbc{margin:auto}.onbc ul{grid-template-columns:minmax(0,1fr)}.onbc li .vj input{min-width:0}
   .onbc li .vj{margin-top:8px}.onbc li .vj input{color:#fff;background:rgba(0,0,0,.3);border-color:rgba(255,255,255,.25)}.onbc li .vj .btn{width:auto}
   .onbc .vjo{max-height:150px;overflow-y:auto}.onbc .vjo button{color:#e9eef3}
+
+  .gift{display:none;text-align:left;margin:0 0 16px;padding:12px 14px;border-radius:16px;border:1.5px solid rgba(245,179,1,.7);background:rgba(245,179,1,.12)}[data-trial="1"] .gift{display:block}
+  .gift b{display:block;color:#ffd24a;font-size:17px}.gift span{font-size:14px;color:#d8e0e8}
+  .trc p{color:#b9c6d3;margin:0 0 12px}.trc ul{gap:8px;margin-bottom:14px}.trc li{color:#fff;font-size:15.5px;font-weight:600}.trc .trk{font-size:13px;color:#9fb0c1}
 </style>
 </head>
 <body>
@@ -719,6 +723,7 @@
   <div class="onbc gl">
     <svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>
     <h2 id="onbT"><span class="pt">Ative o Aviso Sul</span><span class="es">Activá Aviso Sul</span></h2>
+    <div class="gift"><b>🎁 <span class="pt">7 dias grátis de Premium</span><span class="es">7 días gratis de Premium</span></b><span class="pt">Acesso total, sem publicidade e sem cartão. Depois você segue na versão grátis.</span><span class="es">Acceso total, sin publicidad y sin tarjeta. Después seguís en la versión gratis.</span></div>
     <ul>
       <li><b>🔔 <span class="pt">Notificações</span><span class="es">Notificaciones</span></b><span class="pt">Para avisar quando surgir um aviso oficial novo.</span><span class="es">Para avisarte cuando aparece un aviso oficial nuevo.</span></li>
       <li><b>📍 <span class="pt">Localização</span><span class="es">Ubicación</span></b><span class="pt">Para mostrar o tempo do seu ponto exato. Não é guardada.</span><span class="es">Para mostrarte el tiempo de tu punto exacto. No se guarda.</span></li>
@@ -735,9 +740,23 @@
 <div class="onb" id="pmo" hidden role="dialog" aria-modal="true">
   <div class="onbc gl">
     <h2><span class="pt">Função Premium</span><span class="es">Función Premium</span></h2>
-    <p class="pt" style="color:#b9c6d3">Avisar alguém e a rádio local fazem parte do plano Premium.</p>
-    <p class="es" style="color:#b9c6d3">Avisarle a alguien y la radio local son parte del plan Premium.</p>
+    <p class="pt" style="color:#b9c6d3">Avisar com foto e vídeo, a rádio local e a localização precisa fazem parte do plano Premium.</p>
+    <p class="es" style="color:#b9c6d3">Avisar con foto y video, la radio local y la ubicación precisa son parte del plan Premium.</p>
     <button type="button" class="btn btn-wa" id="pmoOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
+  </div>
+</div>
+<div class="onb" id="trO" hidden role="dialog" aria-modal="true">
+  <div class="onbc gl trc">
+    <h2 id="trT"></h2>
+    <p id="trX"></p>
+    <ul>
+      <li>📷 <span class="pt">Avisar com foto, vídeo e mensagem</span><span class="es">Avisar con foto, video y mensaje</span></li>
+      <li>📻 <span class="pt">Rádio local de notícias</span><span class="es">Radio local de noticias</span></li>
+      <li>📍 <span class="pt">Minha localização precisa</span><span class="es">Mi ubicación precisa</span></li>
+      <li>🚫 <span class="pt">Uso sem publicidade</span><span class="es">Uso sin publicidad</span></li>
+    </ul>
+    <p class="trk"><span class="pt">Continuam grátis: avisos oficiais, risco climatológico, previsão, modo viagem e relatório para o seguro.</span><span class="es">Siguen gratis: avisos oficiales, riesgo climatológico, pronóstico, modo viaje e informe para el seguro.</span></p>
+    <button type="button" class="btn btn-wa" id="trOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
   </div>
 </div>
 <div class="onb" id="encO" hidden role="dialog" aria-modal="true"><div class="onbc gl" id="encC"><button type="button" class="dsx" id="encX"><span class="pt">Agora não</span><span class="es">Ahora no</span></button></div></div>
@@ -1109,7 +1128,21 @@
     document.getElementById('dsReset').addEventListener('click',function(){LS('dash','');dashAplicar()});
     dashAplicar()});
   /* ---- plan: mientras se prueba con contactos, todo abre como Premium (sin publicidad). ?plan=gratis muestra la version con publicidad. ---- */
-  safe(function(){var q=/[?&]plan=(gratis|premium)\b/.exec(location.search);if(q)LS('plan',q[1]);root.setAttribute('data-plan',LS('plan')==='gratis'?'gratis':'premium')});
+  /* prueba gratis: 7 dias de Premium desde la primera apertura en este dispositivo; despues pasa a gratis. ?plan=premium|gratis lo fija, ?plan=prueba la reinicia, ?dia=N simula el dia */
+  var TR={on:false,dias:0,fin:false};
+  safe(function(){var q=/[?&]plan=(gratis|premium|prueba)\b/.exec(location.search);if(q){if(q[1]==='prueba'){LS('plan','');LS('t0','');LS('tav','');LS('tfin','')}else LS('plan',q[1])}
+    var f=LS('plan'),t0=+LS('t0');if(!t0){t0=Date.now();LS('t0',String(t0))}
+    var el=(Date.now()-t0)/864e5,d=/[?&]dia=(\d+)/.exec(location.search);if(d)el=+d[1];
+    TR.on=!f&&el<7;TR.dias=Math.max(0,Math.ceil(7-el));TR.fin=!f&&el>=7;
+    root.setAttribute('data-plan',f==='gratis'?'gratis':f==='premium'?'premium':(el<7?'premium':'gratis'));root.setAttribute('data-trial',TR.on?'1':'0')});
+  function trTxt(){var p=document.querySelector('.pl');if(p)p.textContent=TR.on?L2('Prueba · ','Teste · ')+TR.dias+(TR.dias===1?L2(' día',' dia'):L2(' días',' dias')):'Premium';
+    var t=document.getElementById('trT'),x=document.getElementById('trX');if(!t)return;
+    t.textContent=TR.fin?L2('Tu prueba Premium terminó','Seu teste Premium terminou'):L2('Mañana termina tu prueba Premium','Amanhã termina seu teste Premium');
+    x.textContent=TR.fin?L2('Ahora estás en la versión gratis. Ya no tenés:','Agora você está na versão grátis. Você não tem mais:'):L2('Desde mañana seguís en la versión gratis. Vas a dejar de tener:','A partir de amanhã você segue na versão grátis. Você deixa de ter:')}
+  safe(function(){var o=document.getElementById('trO');if(!o)return;var k=TR.fin?'tfin':(TR.on&&TR.dias<=1?'tav':'');
+    document.getElementById('trOk').addEventListener('click',function(){o.hidden=true});if(!k||LS(k))return;
+    setTimeout(function(){if(!document.getElementById('onb').hidden)return;LS(k,'1');trTxt();o.hidden=false;
+      safe(function(){notificar('Aviso Sul',document.getElementById('trT').textContent)})},2500)});
   function encuesta(){var b=document.getElementById('encB');if(!b)return;var br=LISTA.filter(function(x){return x[0]===cid})[0][2]==='br';
     var op=br?['Sim, até R$ 9,90 por mês','Sim, até R$ 19,90 por mês','Só se for grátis','Não usaria']:['Sí, hasta $3.000 por mes','Sí, hasta $6.000 por mes','Solo si es gratis','No la usaría'];
     b.innerHTML=op.map(function(o){return'<a target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent('Aviso Sul Premium ('+C.nombre+'): '+o+'. ')+'">'+esc(o)+'</a>'}).join('')+'<small style="color:var(--muted);font-size:12.5px">'+L2('Se abre WhatsApp con tu respuesta: mandásela a quien te pasó la app y, si querés, sumá un comentario.','Abre o WhatsApp com sua resposta: envie para quem te passou o app e, se quiser, acrescente um comentário.')+'</small>'}
@@ -1164,12 +1197,12 @@
   function precUI(){var b=document.getElementById('bPrec');if(b)b.className='prc'+(PREC?' on':'');
     var n=document.querySelector('.now [data-k=now]');if(n&&PREC)n.textContent=L2('Ahora en tu ubicación','Agora na sua localização');
     var c=document.querySelector('.now .wxc');if(c&&PREC)c.textContent=L2('Tu punto exacto por GPS. Pronóstico: Open-Meteo. Los avisos oficiales son los de ','Seu ponto exato por GPS. Previsão: Open-Meteo. Os avisos oficiais são os de ')+C.nombre+'.'}
-  function precPedir(silencio){if(!navigator.geolocation)return;
+  function precPedir(silencio){if(!navigator.geolocation||!esPremium())return;
     navigator.geolocation.getCurrentPosition(function(p){PREC=[+p.coords.latitude.toFixed(3),+p.coords.longitude.toFixed(3)];LS('prec','on');precUI();precCargar();
       if(RADAR&&RADAR.map){RADAR.map.setView(PREC,8);L.circleMarker(PREC,{radius:6,color:'#3da5ff',weight:3,fillColor:'#3da5ff',fillOpacity:.9}).addTo(RADAR.map)}},
       function(){if(!silencio){var b=document.getElementById('bPrec');if(b)b.title=L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.')}LS('prec','')},{enableHighAccuracy:true,timeout:12000,maximumAge:120000})}
   safe(function(){var b=document.getElementById('bPrec');if(!b)return;
-    b.addEventListener('click',function(){if(PREC){PREC=null;LS('prec','');precUI();safe(pintar);safe(cargarWx);return}precPedir(false)});
+    b.addEventListener('click',function(){if(!esPremium()){bloqueo();return}if(PREC){PREC=null;LS('prec','');precUI();safe(pintar);safe(cargarWx);return}precPedir(false)});
     if(LS('prec')==='on'&&navigator.permissions&&navigator.permissions.query)navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')precPedir(true)}).catch(function(){});
     setInterval(function(){if(PREC)precPedir(true)},10*60000)});
   function escena(){var ok=WX&&WX.ahora&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000),ic=ok?WX.ahora.ico:'',n={lluvia:0,granizo:false,rayos:false};
@@ -1202,7 +1235,7 @@
     var n=(+LS('usos')||0)+(nuevo?1:0);LS('usos',String(n));
     if(n>=3&&!LS('enc')&&esPremium())setTimeout(function(){if(document.getElementById('onb').hidden)o.hidden=false},12000)});
   function txtFijos(){
-    safe(dashAplicar);safe(encuesta);
+    safe(trTxt);safe(dashAplicar);safe(encuesta);
     ['rdIn','rdIn2'].forEach(function(k){var ri=document.getElementById(k);if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade')});
     var rn=document.getElementById('rdNote');if(rn)rn.textContent=L2('Las radios salen del directorio abierto Radio Browser. Aviso Sul no tiene relación con las emisoras ni responde por lo que transmiten.','As rádios vêm do diretório aberto Radio Browser. O Aviso Sul não tem relação com as emissoras nem responde pelo que transmitem.');
     var inp=document.getElementById('vjIn');if(inp)inp.placeholder=L2('¿A dónde vas? Ej.: Rosario','Para onde você vai? Ex.: Curitiba');
