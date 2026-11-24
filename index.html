@@ -824,7 +824,10 @@
      Lee datos/<ciudad>.json, que escriben los agentes con los avisos oficiales vigentes.
      Si el archivo no existe o tiene mas de 90 minutos, no se afirma nada: se manda a la fuente oficial. */
   /* Los agentes corren en GitHub y dejan ahi los datos; la pagina los lee directo, sin volver a publicar el sitio. */
-  var DATOS_URL=(location.hostname==='localhost')?'/datos/':'https://raw.githubusercontent.com/DeikDigital/avisosul/main/datos/';
+  /* datos en vivo: primero los que genera la tarea programada de Hostinger (/vivo/), si faltan los de GitHub */
+  function getJ(rel){var a=(location.hostname==='localhost')?['/'+rel]:['/vivo/'+rel,'https://raw.githubusercontent.com/DeikDigital/avisosul/main/'+rel];
+    function go(i){return fetch(a[i]+'?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw r.status;return r.json()}).catch(function(e){if(i+1<a.length)return go(i+1);throw e})}
+    return go(0)}
   var DATOS=null,DATOS_ERR=false;
   function hhmm(iso){var d=new Date(iso);return isNaN(d)?'':('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
   function pintarAhora(){
@@ -845,7 +848,7 @@
   }
   function cargarAhora(){
     if(!WEB||!window.fetch){DATOS_ERR=true;safe(pintarAhora);return}
-    fetch(DATOS_URL+cid+'.json?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){DATOS=j;DATOS_ERR=false;safe(pintarAhora)}).catch(function(){DATOS=null;DATOS_ERR=true;safe(pintarAhora)});
+    getJ('datos/'+cid+'.json').then(function(j){DATOS=j;DATOS_ERR=false;safe(pintarAhora)}).catch(function(){DATOS=null;DATOS_ERR=true;safe(pintarAhora)});
   }
   /* ---- hora local, condiciones y proxima hora (datos/<ciudad>_tiempo.json) ---- */
   var WX=null;
@@ -867,7 +870,7 @@
   }
   var _pw=pintarWx;pintarWx=function(){_pw();safe(pintarHoras)};
   function cargarWx(){if(!WEB||!window.fetch)return;
-    fetch(DATOS_URL+cid+'_tiempo.json?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(PREC)return;WX=j;safe(pintarWx);if(Date.now()-new Date(j.actualizado).getTime()>40*60000)wxDirecto()}).catch(function(){if(PREC)return;WX=null;safe(pintarWx);wxDirecto()})}
+    getJ('datos/'+cid+'_tiempo.json').then(function(j){if(PREC)return;WX=j;safe(pintarWx);if(Date.now()-new Date(j.actualizado).getTime()>40*60000)wxDirecto()}).catch(function(){if(PREC)return;WX=null;safe(pintarWx);wxDirecto()})}
   /* ---- proximas horas (viene en el mismo archivo de condiciones, campo 'horas') ---- */
   function pintarHoras(){var e=document.getElementById('hrs');if(!e)return;
     var ok=WX&&WX.horas&&WX.horas.length&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);e.className='hrs'+(ok?' on':'');if(!ok)return;
@@ -1010,7 +1013,7 @@
     f.addEventListener('submit',function(ev){ev.preventDefault();var dia=d.value;if(!dia)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
       var ruta='historial/'+cid+'/'+dia+'.json',ver='https://github.com/DeikDigital/avisosul/commits/main/'+ruta;
       out.innerHTML='<div class="sgc gl"><div class="sb">'+L2('Buscando…','Buscando…')+'</div></div>';
-      fetch(DATOS_URL.replace(/datos\/$/,'')+ruta+'?'+Date.now(),{cache:'no-store'}).then(function(r){if(r.status===404)return{avisos:{}};if(!r.ok)throw 0;return r.json()}).then(function(j){
+      getJ(ruta).catch(function(e){if(e===404)return{avisos:{}};throw e}).then(function(j){
         var a=Object.keys(j.avisos||{}).map(function(k){return j.avisos[k]}),fd=dia.split('-').reverse().join('/');
         var cuerpo=a.length?a.map(function(x){return'<div class="av"><i class="lv '+esc(x.nivel||'')+'"></i><div><b>'+esc(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es))+'</b><span>'+esc(j.fuente||'')+' · '+L2('vigencia ','vigência ')+hhmm(x.desde)+(x.hasta?' – '+hhmm(x.hasta):'')+' · '+L2('registrado de ','registrado das ')+hhmm(x.visto_desde)+L2(' a ',' às ')+hhmm(x.visto_hasta)+' · <a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+L2('aviso original','aviso original')+'</a></span></div></div>'}).join('')
           :'<p class="sb" style="margin-top:10px">'+L2('No hay avisos oficiales registrados para ese día en esta ciudad.','Não há avisos oficiais registrados para esse dia nesta cidade.')+'</p>';

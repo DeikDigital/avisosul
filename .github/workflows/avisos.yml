@@ -3,10 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       modo: {description: "nuevos, manana o vispera", default: "nuevos"}
-  schedule:
-    - cron: "*/10 * * * *"   # avisos nuevos (GitHub puede demorar la ejecucion)
-    - cron: "30 9 * * *"     # 06:30 de Brasilia: resumen de la manana
-    - cron: "0 23 * * *"     # 20:00 de Brasilia: avisos para manana
+  # la programacion corre en Hostinger (tarea cada 10 min); aca queda solo la corrida manual
 permissions:
   contents: write
 concurrency:
