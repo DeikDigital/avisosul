@@ -267,6 +267,28 @@
   .rdo button{font:inherit;flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--amber);color:var(--amber-ink);font-size:17px;cursor:pointer}
   .rdo button.x{background:transparent;color:var(--muted);width:30px}
   body.conradio{padding-bottom:150px}
+
+  /* ---------- riesgo de ahora (tira deslizable) y tablero personalizable ---------- */
+  .now{display:flex;flex-direction:column}
+  .now>h2{order:-3}.now>.fecha{order:-2}.now>#nowOf{order:99}
+  .blk[hidden]{display:none}
+  .ryt{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:2px 0 8px}
+  .rya{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px;scroll-snap-type:x proximity}.rya::-webkit-scrollbar{display:none}
+  .ryi{flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);scroll-snap-align:start}
+  [data-theme="light"] .ryi{background:rgba(255,255,255,.7);border-color:rgba(23,33,44,.14)}
+  .ryi svg{width:34px;height:34px;flex:none}.ryi b{display:block;font-size:15px;color:var(--strong);line-height:1.15}.ryi em{font-style:normal;font-size:12.5px;font-weight:800}
+  .ryi.n0 em{color:var(--muted);font-weight:500}
+  .ryi.n1{border-color:rgba(245,208,0,.6)}.ryi.n1 svg,.ryi.n1 em{color:#f5d000}
+  .ryi.n2{border-color:rgba(255,138,31,.7);background:rgba(255,138,31,.10)}.ryi.n2 svg,.ryi.n2 em{color:#ff8a1f}
+  .ryi.n3{border-color:rgba(255,59,48,.8);background:rgba(255,59,48,.12);animation:rojo 1.6s infinite}.ryi.n3 svg,.ryi.n3 em{color:#ff3b30}
+  @keyframes rojo{50%{box-shadow:0 0 20px rgba(255,59,48,.45)}}
+  .dsh{display:grid;gap:8px;margin-top:12px}
+  .dsr{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
+  .dsr span{flex:1;font-weight:600}.dsr.off span{opacity:.45;text-decoration:line-through}
+  .dsr button{font:inherit;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:transparent;color:inherit;cursor:pointer}
+  .dsr button:disabled{opacity:.25}
+  .dsx{font:inherit;color:var(--muted);background:none;border:0;text-decoration:underline;margin-top:10px;cursor:pointer;padding:6px 0}
+  @media (prefers-reduced-motion:reduce){.ryi.n3{animation:none}}
 </style>
 </head>
 <body>
@@ -542,6 +564,12 @@
       <button type="button" class="pb" id="pCam"><b><span class="pt">Compartilhar foto do temporal</span><span class="es">Compartir foto del temporal</span></b><small id="pCamS"></small></button>
       <input type="file" accept="image/*" capture="environment" id="camIn" hidden>
     </div>
+    <h3 class="pt">Personalizar o início</h3>
+    <h3 class="es">Personalizar el inicio</h3>
+    <p class="pt">Escolha quais quadros aparecem e em que ordem.</p>
+    <p class="es">Elegí qué cuadros se ven y en qué orden.</p>
+    <div class="dsh" id="dsh"></div>
+    <button type="button" class="dsx" id="dsReset"><span class="pt">Voltar à ordem original</span><span class="es">Volver al orden original</span></button>
     <h3 class="pt">Rádio local</h3>
     <h3 class="es">Radio local</h3>
     <p class="pt">Escolha uma rádio de notícias da sua região para ouvir os relatos enquanto acompanha os avisos.</p>
@@ -725,18 +753,24 @@
   /* ---- riesgo por fenomeno: avisos oficiales vigentes + pronostico de 12 horas ---- */
   var FEN=[['granizo','Granizo','Granizo'],['chuva','Chuvas','Lluvias'],['vendaval','Ventos','Vientos'],['raios','Raios','Rayos'],['calor','Calor','Calor'],['frio','Frio','Frío'],['geada','Geadas','Heladas'],['seca','Seca','Sequía']];
   var NV={pt:['Sem aviso','Moderado','Alto','Extremo'],es:['Sin aviso','Moderado','Alto','Extremo']};
-  function pintarRiesgo(){var e=document.getElementById('rk');if(!e)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt',r={},i;
-    function up(k,n){if(!(r[k]>=n))r[k]=n}
-    var h=(WX&&WX.horas&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))?WX.horas:[];
+  function riesgoDe(h){var r={},i;function up(k,n){if(!(r[k]>=n))r[k]=n}
     if(h.length){var pm=0,gm=0,tmx=-99,tmn=99,ry=false;for(i=0;i<h.length;i++){pm=Math.max(pm,h[i].prob||0);gm=Math.max(gm,h[i].racha||0);tmx=Math.max(tmx,h[i].temp);tmn=Math.min(tmn,h[i].temp);if(h[i].ico==='⛈️')ry=true}
       up('chuva',pm>=80?2:pm>=50?1:0);up('vendaval',gm>=75?3:gm>=55?2:gm>=40?1:0);up('calor',tmx>=38?3:tmx>=35?2:tmx>=32?1:0);
       up('frio',tmn<=0?3:tmn<=3?2:tmn<=7?1:0);up('geada',tmn<=0?2:tmn<=3?1:0);if(ry)up('raios',2)}
     var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<45*60000))?DATOS.avisos:[];
-    for(i=0;i<av.length;i++){var t=((av[i].titulo_pt||'')+' '+(av[i].titulo_es||'')).toLowerCase(),n=av[i].nivel==='rojo'?3:av[i].nivel==='naranja'?2:1;
+    for(i=0;i<av.length;i++){if(av[i].desde&&new Date(av[i].desde)>new Date(Date.now()+(h.length>1?12:0)*3600000))continue;
+      var t=((av[i].titulo_pt||'')+' '+(av[i].titulo_es||'')).toLowerCase(),n=av[i].nivel==='rojo'?3:av[i].nivel==='naranja'?2:1;
       if(/tempest|tormenta/.test(t)){up('chuva',n);up('vendaval',n);up('raios',n);up('granizo',n)}
       if(/chuva|lluvia/.test(t))up('chuva',n);if(/vent|vient|vendaval/.test(t))up('vendaval',n);if(/granizo/.test(t))up('granizo',n);
       if(/geada|helada/.test(t))up('geada',n);if(/calor/.test(t))up('calor',n);if(/frio|frío/.test(t))up('frio',n);if(/seca|sequ|estiagem|umidade|humedad/.test(t))up('seca',n);if(/raio|rayo/.test(t))up('raios',n)}
-    e.innerHTML=FEN.map(function(f){var n=r[f[0]]||0;return'<div class="rki n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('')}
+    return r}
+  function pintarRiesgo(){var e=document.getElementById('rk');if(!e)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
+    var h=(WX&&WX.horas&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))?WX.horas:[],r=riesgoDe(h);
+    e.innerHTML=FEN.map(function(f){var n=r[f[0]]||0;return'<div class="rki n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('');
+    /* riesgo de ahora: solo la hora actual y los avisos ya vigentes; se muestran unicamente los fenomenos con nivel */
+    var y=document.getElementById('rya');if(!y)return;var ra=riesgoDe(h.slice(0,1)),act=FEN.filter(function(f){return ra[f[0]]>0}).sort(function(a,b){return ra[b[0]]-ra[a[0]]});
+    y.innerHTML=act.length?act.map(function(f){var n=ra[f[0]];return'<div class="ryi n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg><div><b>'+esc(l==='es'?f[2]:f[1])+'</b><em>'+NV[l][n]+'</em></div></div>'}).join('')
+      :'<div class="ryi n0"><div><b>'+(l==='es'?'Sin riesgo ahora':'Sem risco agora')+'</b><em>'+(l==='es'?'según avisos y pronóstico':'segundo avisos e previsão')+'</em></div></div>'}
   var _pa=pintarAhora;pintarAhora=function(){_pa();safe(pintarRiesgo);safe(reloj)};
   var _pw2=pintarWx;pintarWx=function(){_pw2();safe(pintarRiesgo)};
   /* ---- pestañas inferiores ---- */
@@ -839,7 +873,28 @@
     ['play','pause','ended','error'].forEach(function(e){a.addEventListener(e,function(){RADIO_ON=!a.paused;rdBajarLluvia();rdUI()})});
     rdUI();
   });
+  /* ---- tablero personalizable: orden y visibilidad de cada cuadro, guardados en el dispositivo ---- */
+  var BLK=[['wx','Agora e próxima hora','Ahora y próxima hora'],['ya','Risco agora','Riesgo ahora'],['hrs','Próximas 12 horas','Próximas 12 horas'],['av','Avisos oficiais','Avisos oficiales'],['rk','Risco em 12 horas','Riesgo en 12 horas']];
+  function dashGet(){var d;try{d=JSON.parse(LS('dash')||'null')}catch(e){d=null}
+    var ids=BLK.map(function(b){return b[0]});if(!d||!d.length)return ids.map(function(i){return{id:i,on:true}});
+    d=d.filter(function(x){return ids.indexOf(x.id)>=0});ids.forEach(function(i){if(!d.some(function(x){return x.id===i}))d.push({id:i,on:true})});return d}
+  function dashAplicar(){var d=dashGet();d.forEach(function(x,n){var e=document.getElementById('blk-'+x.id);if(e){e.style.order=n+1;e.hidden=!x.on}});
+    var box=document.getElementById('dsh');if(!box)return;box.innerHTML='';
+    d.forEach(function(x,n){var b=BLK.filter(function(q){return q[0]===x.id})[0],r=document.createElement('div');r.className='dsr'+(x.on?'':' off');
+      r.innerHTML='<span>'+esc(L2(b[2],b[1]))+'</span><button type="button" data-a="up" aria-label="Subir"'+(n===0?' disabled':'')+'>▲</button><button type="button" data-a="dn" aria-label="Bajar"'+(n===d.length-1?' disabled':'')+'>▼</button><button type="button" data-a="tg" aria-label="Mostrar u ocultar">'+(x.on?'👁':'—')+'</button>';
+      r.addEventListener('click',function(ev){var a=ev.target.getAttribute&&ev.target.getAttribute('data-a');if(!a)return;var dd=dashGet();
+        if(a==='tg')dd[n].on=!dd[n].on;else{var m=a==='up'?n-1:n+1;if(m<0||m>=dd.length)return;var t=dd[n];dd[n]=dd[m];dd[m]=t}
+        LS('dash',JSON.stringify(dd));dashAplicar()});box.appendChild(r)})}
+  safe(function(){var now=document.querySelector('.now');if(!now)return;
+    function caja(id,els){var c=document.createElement('div');c.className='blk';c.id='blk-'+id;now.appendChild(c);els.forEach(function(e){if(e)c.appendChild(e)});return c}
+    var q=function(x){return now.querySelector(x)};
+    caja('wx',[q('#wx'),q('.wxc')]);
+    var ya=caja('ya',[]);ya.innerHTML='<div class="ryt"><span class="pt">Risco agora</span><span class="es">Riesgo ahora</span></div><div class="rya" id="rya"></div>';
+    caja('hrs',[q('#hrs')]);caja('av',[q('#nowSt'),q('#nowList'),q('#nowUp')]);caja('rk',[q('.rkt'),q('#rk'),q('.wxc2')]);
+    document.getElementById('dsReset').addEventListener('click',function(){LS('dash','');dashAplicar()});
+    dashAplicar()});
   function txtFijos(){
+    safe(dashAplicar);
     var ri=document.getElementById('rdIn');if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade');
     var rn=document.getElementById('rdNote');if(rn)rn.textContent=L2('Las radios salen del directorio abierto Radio Browser. Aviso Sul no tiene relación con las emisoras ni responde por lo que transmiten.','As rádios vêm do diretório aberto Radio Browser. O Aviso Sul não tem relação com as emissoras nem responde pelo que transmitem.');
     var inp=document.getElementById('vjIn');if(inp)inp.placeholder=L2('¿A dónde vas? Ej.: Rosario','Para onde você vai? Ex.: Curitiba');
