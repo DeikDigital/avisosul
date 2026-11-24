@@ -152,12 +152,28 @@ def estado_publico(avisos, ahora, slug):
             mejor[k] = a
     vig = sorted(mejor.values(), key=lambda a: -orden.get(a["severidad"], 0))
     os.makedirs("datos", exist_ok=True)
-    json.dump({"ciudad": slug, "fuente": "INMET", "actualizado": ahora.isoformat(timespec="seconds"), "avisos": [{
+    pub = [{
         "titulo_pt": f"{a['evento']} — aviso {NIVEL.get(a['severidad'], ('',))[0] or a['severidad']}",
         "titulo_es": f"{EVENTO_ES.get(a['evento'], a['evento'])} — aviso {NIVEL_ES.get(a['severidad'], a['severidad'])}",
         "nivel": NIVEL_ES.get(a["severidad"], ""), "desde": a["inicio"].isoformat(timespec="seconds"),
-        "hasta": a["fin"].isoformat(timespec="seconds"), "url": a["url"]} for a in vig]},
-        open(os.path.join("datos", slug + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
+        "hasta": a["fin"].isoformat(timespec="seconds"), "url": a["url"]} for a in vig]
+    json.dump({"ciudad": slug, "fuente": "INMET", "actualizado": ahora.isoformat(timespec="seconds"), "avisos": pub},
+              open(os.path.join("datos", slug + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
+    historial(slug, "INMET", pub, ahora)
+
+
+def historial(slug, fuente, vigentes, ahora):
+    """Deja constancia diaria de los avisos oficiales vistos en cada ciudad: historial/<ciudad>/<AAAA-MM-DD>.json.
+    Sirve de base para el informe del seguro: el historial publico del repositorio fecha cada registro."""
+    carpeta = os.path.join("historial", slug)
+    os.makedirs(carpeta, exist_ok=True)
+    ruta = os.path.join(carpeta, f"{ahora:%Y-%m-%d}.json")
+    reg = json.load(open(ruta, encoding="utf-8")) if os.path.exists(ruta) else {"ciudad": slug, "fuente": fuente, "avisos": {}}
+    t = ahora.isoformat(timespec="seconds")
+    for a in vigentes:
+        e = reg["avisos"].setdefault(a["url"], dict(a, visto_desde=t))
+        e["visto_hasta"] = t
+    json.dump(reg, open(ruta, "w", encoding="utf-8"), ensure_ascii=False)
 
 
 def enviar(texto, chat):

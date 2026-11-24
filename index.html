@@ -230,6 +230,25 @@
     .now{padding:16px 14px 14px}.gl{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
     #radarMap{height:300px}
   }
+
+  /* ---------- modo viaje ---------- */
+  .vj{display:flex;gap:8px;margin-top:14px}
+  .vj input{flex:1;min-width:0;font:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+  .vj .btn{flex:none;padding:12px 18px}
+  .vjo{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .vjo button{font:inherit;color:inherit;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer}
+  .vjc{margin-top:14px;padding:16px}
+  .vjc .rt{font-size:20px;font-weight:800;color:var(--strong)}.vjc .sb{font-size:14px;color:var(--muted);margin-top:2px}
+  .vjp{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid rgba(255,255,255,.14)}
+  .vjp:first-of-type{margin-top:12px}
+  .vjp i{font-style:normal;font-size:28px;flex:none;width:36px;text-align:center}.vjp b{display:block;color:var(--strong)}.vjp span{font-size:14px;color:var(--muted)}
+  .vjw{margin-top:12px;padding:10px 14px;border-radius:12px;background:rgba(255,138,31,.16);border:1px solid rgba(255,138,31,.55);font-weight:700}
+  .vja{display:grid;gap:10px;margin-top:12px}.vja[hidden]{display:none}.vja a.pb{text-decoration:none;display:block}
+  #viaje h3{margin:26px 0 10px;font-size:18px}
+  .aux{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .aux a{display:block;text-decoration:none;text-align:center;font-weight:700;font-size:14px;padding:13px 6px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+  .aux a small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+  .tab a{font-size:10.5px}
 </style>
 </head>
 <body>
@@ -465,6 +484,26 @@
 </section>
 </main>
 
+<section id="viaje">
+  <div class="wrap" data-rv>
+    <h2 class="pt">Modo viagem</h2>
+    <h2 class="es">Modo viaje</h2>
+    <p class="pt">Diga para onde vai e veja como estará o tempo no caminho e na chegada.</p>
+    <p class="es">Decinos a dónde vas y mirá cómo va a estar el tiempo en el camino y al llegar.</p>
+    <form class="vj" id="vjForm"><input type="text" id="vjIn" autocomplete="off" enterkeyhint="search" aria-label="Destino"><button type="submit" class="btn btn-wa" id="vjGo"><span class="pt">Calcular</span><span class="es">Calcular</span></button></form>
+    <div class="vjo" id="vjOps"></div>
+    <div id="vjOut"></div>
+    <div class="vja" id="vjAct" hidden>
+      <button type="button" class="pb" id="vjLive"><b><span class="pt">Acompanhar minha viagem ao vivo</span><span class="es">Seguir mi viaje en vivo</span></b><small id="vjLiveS"></small></button>
+      <a class="pb" id="vjShare" href="#" target="_blank" rel="noopener"><b><span class="pt">Compartilhar minha viagem</span><span class="es">Compartir mi viaje</span></b><small><span class="pt">Envia destino, hora de chegada e previsão pelo WhatsApp.</span><span class="es">Manda destino, hora de llegada y pronóstico por WhatsApp.</span></small></a>
+    </div>
+    <h3 class="pt">Socorro na estrada</h3>
+    <h3 class="es">Auxilio en ruta</h3>
+    <div class="aux" id="aux"></div>
+    <p class="wxc2"><span class="pt">Tempos de viagem estimados em linha reta, a 80 km/h. Previsão: Open-Meteo. Não substitui os avisos oficiais nem as indicações da polícia rodoviária.</span><span class="es">Tiempos de viaje estimados en línea recta, a 80 km/h. Pronóstico: Open-Meteo. No reemplaza los avisos oficiales ni las indicaciones de la policía vial.</span></p>
+  </div>
+</section>
+
 <section class="alt" id="ajustes">
   <div class="wrap" data-rv>
     <h2 class="pt">Ajustes e permissões</h2>
@@ -485,6 +524,7 @@
 <nav class="tab" aria-label="Navegación">
   <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
   <a href="#radar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M7.500 16.500a6.400 6.400 0 0 1 0-9M16.500 7.500a6.400 6.400 0 0 1 0 9M4.500 19.500a10.600 10.600 0 0 1 0-15M19.500 4.500a10.600 10.600 0 0 1 0 15"/></svg><span>Radar</span></a>
+  <a href="#viaje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M6 17l1.500-6h9L18 17M8 11l1-4h6l1 4"/><circle cx="8" cy="18.500" r="1.600" fill="currentColor"/><circle cx="16" cy="18.500" r="1.600" fill="currentColor"/></svg><span class="pt">Viagem</span><span class="es">Viaje</span></a>
   <a href="#canais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.300-4.200A8 8 0 1 1 8.300 19z"/></svg><span class="pt">Canal</span><span class="es">Canal</span></a>
   <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900l2.100 2.100M17 17l2.100 2.100M4.900 19.100L7 17M17 7l2.100-2.100"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
 </nav>
@@ -702,6 +742,58 @@
       if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],text:txt}).catch(function(){});
       else st('pCam',L2('Este navegador no permite compartir fotos desde la página.','Este navegador não permite compartilhar fotos pela página.'),false)});
   });
+  /* ---- modo viaje: destino -> pronostico al llegar y en el camino (Open-Meteo, desde el navegador) ---- */
+  var WMOT=[[[95,96,99],'Trovoadas','Tormenta eléctrica','⛈️'],[[65,82,67],'Chuva forte','Lluvia fuerte','🌧️'],[[61,63,80,81,66],'Chuva','Lluvia','🌧️'],[[51,53,55,56,57],'Garoa','Llovizna','🌦️'],[[71,73,75,77,85,86],'Neve','Nieve','🌨️'],[[45,48],'Nevoeiro','Niebla','🌫️'],[[3],'Nublado','Nublado','☁️'],[[2],'Parcialmente nublado','Parcialmente nublado','⛅'],[[1],'Poucas nuvens','Algo nublado','🌤️'],[[0],'Céu limpo','Despejado','☀️']];
+  function wmo(c){for(var i=0;i<WMOT.length;i++)if(WMOT[i][0].indexOf(c)>=0)return WMOT[i];return[[],'','','']}
+  function km(a,b){var R=6371,x=(b[0]-a[0])*Math.PI/180,y=(b[1]-a[1])*Math.PI/180,q=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(q))}
+  var VJ={orig:null,dest:null,watch:null,last:0};
+  function vjPron(p,horas){return fetch('https://api.open-meteo.com/v1/forecast?latitude='+p[0]+'&longitude='+p[1]+'&hourly=temperature_2m,precipitation_probability,wind_gusts_10m,weather_code&forecast_hours=48&timezone=auto').then(function(r){return r.json()}).then(function(j){
+      var i=Math.min(Math.max(0,Math.round(horas)),j.hourly.time.length-1);return{t:Math.round(j.hourly.temperature_2m[i]),p:j.hourly.precipitation_probability[i],g:Math.round(j.hourly.wind_gusts_10m[i]),c:j.hourly.weather_code[i]}})}
+  function vjCalc(){var o=VJ.orig||C.geo,d=VJ.dest;if(!d)return;var out=document.getElementById('vjOut'),l=root.getAttribute('data-lang')==='es'?'es':'pt';
+    var dist=km(o,d.geo)*1.25,hs=dist/80,pts=[[.33,L2('En el camino','No caminho')],[.66,L2('En el camino','No caminho')],[1,L2('Al llegar a ','Ao chegar em ')+d.nombre]];
+    out.innerHTML='<div class="vjc gl"><div class="rt">'+L2('Calculando…','Calculando…')+'</div></div>';
+    Promise.all(pts.map(function(x){var p=[o[0]+(d.geo[0]-o[0])*x[0],o[1]+(d.geo[1]-o[1])*x[0]];return vjPron(p,hs*x[0])})).then(function(R){
+      var lleg=new Date(Date.now()+hs*3600000),hh=('0'+lleg.getHours()).slice(-2)+':'+('0'+lleg.getMinutes()).slice(-2),peor=null;
+      var filas=R.map(function(r,i){var w=wmo(r.c),t=new Date(Date.now()+hs*pts[i][0]*3600000),th=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);
+        if(r.p>=70||r.g>=55||w[3]==='⛈️'){if(!peor||r.p+r.g>peor.s)peor={s:r.p+r.g,th:th,w:w,r:r,fin:i===2}}
+        return'<div class="vjp"><i>'+w[3]+'</i><div><b>'+esc(pts[i][1])+' · '+th+'</b><span>'+r.t+'° · '+esc(l==='es'?w[2]:w[1])+' · '+L2('lluvia ','chuva ')+r.p+'% · '+L2('ráfagas ','rajadas ')+r.g+' km/h</span></div></div>'}).join('');
+      var av=peor?'<div class="vjw">⚠️ '+esc((peor.fin?L2('Al llegar','Na chegada'):L2('En el camino, cerca de las ','No caminho, por volta das ')+peor.th)+': '+(l==='es'?peor.w[2]:peor.w[1])+', '+L2('ráfagas de ','rajadas de ')+peor.r.g+' km/h.')+'</div>':'';
+      out.innerHTML='<div class="vjc gl"><div class="rt">'+esc(d.nombre)+' · '+Math.round(dist)+' km</div><div class="sb">'+L2('Saliendo ahora llegás cerca de las ','Saindo agora, chegada por volta das ')+hh+(VJ.orig?L2(' · desde tu ubicación',' · da sua localização'):L2(' · desde ',' · saindo de ')+esc(C.nombre))+'</div>'+av+filas+'</div>';
+      document.getElementById('vjAct').hidden=false;var f=R[2],w=wmo(f.c);
+      document.getElementById('vjShare').href='https://wa.me/?text='+encodeURIComponent(L2('Voy a ','Vou para ')+d.nombre+L2('. Llego cerca de las ','. Chego por volta das ')+hh+L2('. Al llegar: ','. Na chegada: ')+f.t+'°, '+(l==='es'?w[2]:w[1])+L2(', lluvia ',', chuva ')+f.p+'%.\n\nAviso Sul: https://avisosul.com/');
+    }).catch(function(){out.innerHTML='<div class="vjc gl"><div class="sb">'+L2('No se pudo consultar el pronóstico. Probá de nuevo en un momento.','Não foi possível consultar a previsão. Tente de novo em instantes.')+'</div></div>'})}
+  safe(function(){var f=document.getElementById('vjForm'),inp=document.getElementById('vjIn'),ops=document.getElementById('vjOps');if(!f)return;
+    f.addEventListener('submit',function(ev){ev.preventDefault();var q=inp.value.trim();if(q.length<2)return;ops.innerHTML='';
+      fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language='+L2('es','pt')+'&name='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){
+        var rs=(j.results||[]).filter(function(x){return['AR','BR','PY','UY','CL','BO'].indexOf(x.country_code)>=0});
+        if(!rs.length){ops.innerHTML='<button type="button" disabled>'+L2('No encontramos ese lugar.','Não encontramos esse lugar.')+'</button>';return}
+        function elegir(x){VJ.dest={nombre:x.name,geo:[x.latitude,x.longitude]};ops.innerHTML='';vjCalc()}
+        if(rs.length===1){elegir(rs[0]);return}
+        rs.forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent=x.name+(x.admin1?', '+x.admin1:'')+' ('+x.country_code+')';b.addEventListener('click',function(){elegir(x)});ops.appendChild(b)})
+      }).catch(function(){ops.innerHTML='<button type="button" disabled>'+L2('No se pudo buscar. Probá de nuevo.','Não foi possível buscar. Tente de novo.')+'</button>'})});
+    document.getElementById('vjLive').addEventListener('click',function(){
+      if(!navigator.geolocation){st('vjLive',L2('Este navegador no admite ubicación.','Este navegador não permite localização.'),false);return}
+      if(VJ.watch!==null){navigator.geolocation.clearWatch(VJ.watch);VJ.watch=null;st('vjLive',L2('Seguimiento detenido.','Acompanhamento parado.'),false);return}
+      VJ.watch=navigator.geolocation.watchPosition(function(p){var n=[p.coords.latitude,p.coords.longitude];
+        if(!VJ.orig||km(VJ.orig,n)>5||Date.now()-VJ.last>5*60000){VJ.orig=n;VJ.last=Date.now();vjCalc()}
+        st('vjLive',L2('Siguiendo tu viaje. Tocá de nuevo para detener.','Acompanhando sua viagem. Toque de novo para parar.'),true)},
+        function(){st('vjLive',L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.'),false);VJ.watch=null},{enableHighAccuracy:true,maximumAge:60000})});
+  });
+  function txtFijos(){
+    var inp=document.getElementById('vjIn');if(inp)inp.placeholder=L2('¿A dónde vas? Ej.: Rosario','Para onde você vai? Ex.: Curitiba');
+    if(VJ.watch===null){st('vjLive',L2('Usa el GPS para actualizar distancia, hora de llegada y pronóstico. Funciona con la pantalla encendida.','Usa o GPS para atualizar distância, hora de chegada e previsão. Funciona com a tela ligada.'));}
+    var br=LISTA.filter(function(x){return x[0]===cid})[0][2]==='br',A=document.getElementById('aux');
+    var tel=br?[['191','Polícia Rodoviária','Policía vial'],['192','SAMU','Ambulancia'],['193','Bombeiros','Bomberos']]:[['911','Emergências','Emergencias'],['149','Segurança viária','Seguridad vial'],['107','Ambulância','Ambulancia']];
+    A.innerHTML='<a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(br?'posto de combustível':'estación de servicio')+'" target="_blank" rel="noopener">⛽ '+L2('Estaciones de servicio','Postos de combustível')+'<small>'+L2('cerca tuyo, en Maps','perto de você, no Maps')+'</small></a>'+
+      '<a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(br?'guincho 24 horas':'grúa auxilio mecánico 24 horas')+'" target="_blank" rel="noopener">🛻 '+L2('Grúas y auxilio','Guincho e socorro')+'<small>'+L2('cerca tuyo, en Maps','perto de você, no Maps')+'</small></a>'+
+      tel.map(function(t){return'<a href="tel:'+t[0]+'">📞 '+t[0]+'<small>'+esc(L2(t[2],t[1]))+'</small></a>'}).join('');
+    if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
+    else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
+    st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
+    st('pCam',L2('Sacá una foto y mandala por WhatsApp con la ciudad y la hora.','Tire uma foto e envie pelo WhatsApp com a cidade e a hora.'));
+    if(VJ.dest)vjCalc();
+  }
+  var _pa3=pintarAhora;pintarAhora=function(){_pa3();safe(txtFijos)};
   safe(reloj);
   safe(cargarAhora);safe(cargarWx);setInterval(function(){safe(cargarAhora);safe(cargarWx)},5*60000);setInterval(function(){safe(reloj)},20000);
   safe(function(){

@@ -98,6 +98,20 @@ def mensaje(a):
     ])
 
 
+def historial(slug, fuente, vigentes, ahora):
+    """Deja constancia diaria de los avisos oficiales vistos en cada ciudad: historial/<ciudad>/<AAAA-MM-DD>.json.
+    Sirve de base para el informe del seguro: el historial publico del repositorio fecha cada registro."""
+    carpeta = os.path.join("historial", slug)
+    os.makedirs(carpeta, exist_ok=True)
+    ruta = os.path.join(carpeta, f"{ahora:%Y-%m-%d}.json")
+    reg = json.load(open(ruta, encoding="utf-8")) if os.path.exists(ruta) else {"ciudad": slug, "fuente": fuente, "avisos": {}}
+    t = ahora.isoformat(timespec="seconds")
+    for a in vigentes:
+        e = reg["avisos"].setdefault(a["url"], dict(a, visto_desde=t))
+        e["visto_hasta"] = t
+    json.dump(reg, open(ruta, "w", encoding="utf-8"), ensure_ascii=False)
+
+
 def enviar(texto, chat):
     tok = os.environ.get("TELEGRAM_TOKEN")
     if not (tok and chat):
@@ -129,10 +143,13 @@ def main():
         slug, ZONAS, NOMBRE = c["slug"], c["smn"], c["nombre"]
         avisos = de_la_zona(todos)
         vig = [x for x in avisos if dt.timedelta(0) <= ahora - x["emitido"] <= limite]
-        json.dump({"ciudad": slug, "fuente": "SMN", "actualizado": ahora.isoformat(timespec="seconds"), "avisos": [{
+        pub = [{
             "titulo_es": x["titulo"].capitalize(), "titulo_pt": x["titulo"].capitalize(), "nivel": "",
             "desde": x["emitido"].isoformat(timespec="seconds"), "hasta": (x["emitido"] + limite).isoformat(timespec="seconds"),
-            "url": x["url"]} for x in vig]}, open(os.path.join("datos", slug + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
+            "url": x["url"]} for x in vig]
+        json.dump({"ciudad": slug, "fuente": "SMN", "actualizado": ahora.isoformat(timespec="seconds"), "avisos": pub},
+                  open(os.path.join("datos", slug + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
+        historial(slug, "SMN", pub, ahora)
         ya = set(vistos.get(slug, []))
         nuevos = [x for x in vig if x["id"] not in ya]
         vistos[slug] = sorted(ya | {x["id"] for x in avisos})
