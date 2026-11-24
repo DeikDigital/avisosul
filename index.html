@@ -364,6 +364,14 @@
   #avMsg{width:100%;font:inherit;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:10px 12px;resize:vertical}
   .avn{display:block;color:#9fb0c1;font-size:12.5px;margin:6px 0 12px}#avSt{color:#ffb4ab;margin:8px 0 0}#avSt:empty{display:none}
   .avc .dsx{display:block;margin:6px auto 0}
+
+  /* ---------- viaje iniciado: panel flotante ---------- */
+  .pb.vjgo{background:linear-gradient(160deg,#25a05a,#157a41);border-color:rgba(255,255,255,.25)}.pb.vjgo b{color:#fff;font-size:17px}.pb.vjgo small{color:#d9f5e4}
+  .vjf{position:fixed;left:10px;right:10px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:58;max-width:520px;margin:0 auto;padding:10px 12px;border-radius:18px;background:rgba(14,22,31,.96);border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 28px rgba(0,0,0,.55);color:#e9eef3}
+  .vjf[hidden]{display:none}.vjf1{display:flex;justify-content:space-between;gap:10px;align-items:baseline;text-decoration:none;color:inherit}
+  .vjf1 b{color:#fff;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vjf1 span{font-size:13px;color:#b9c6d3;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .vjfa{font-size:13.5px;margin:6px 0 8px;color:#7fe0a8}.vjfa.w{color:#ffb35c;font-weight:700}
+  .vjf3{display:flex;gap:8px}.vjf3 a,.vjf3 button{flex:1;font:inherit;font-size:13.5px;font-weight:700;text-align:center;text-decoration:none;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:8px 6px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -637,7 +645,7 @@
     <div class="vjo" id="vjOps"></div>
     <div id="vjOut"></div>
     <div class="vja" id="vjAct" hidden>
-      <button type="button" class="pb" id="vjLive"><b><span class="pt">Acompanhar minha viagem ao vivo</span><span class="es">Seguir mi viaje en vivo</span></b><small id="vjLiveS"></small></button>
+      <button type="button" class="pb vjgo" id="vjLive"><b><span class="pt">▶ Iniciar viagem</span><span class="es">▶ Iniciar viaje</span></b><small id="vjLiveS"></small></button>
       <a class="pb" id="vjMaps" href="#" target="_blank" rel="noopener"><b><span class="pt">Navegar com o Google Maps</span><span class="es">Navegar con Google Maps</span></b><small><span class="pt">Abre a rota no Maps. Com o celular ligado ao carro, aparece na tela do carro.</span><span class="es">Abre la ruta en Maps. Con el celular conectado al auto, se ve en la pantalla del auto.</span></small></a>
       <a class="pb" id="vjShare" href="#" target="_blank" rel="noopener"><b><span class="pt">Compartilhar minha viagem</span><span class="es">Compartir mi viaje</span></b><small><span class="pt">Envia destino, hora de chegada e previsão pelo WhatsApp.</span><span class="es">Manda destino, hora de llegada y pronóstico por WhatsApp.</span></small></a>
     </div>
@@ -727,6 +735,12 @@
     <small class="avn" id="avSt"></small>
     <button type="button" class="dsx" id="avX"><span class="pt">Cancelar</span><span class="es">Cancelar</span></button>
   </div>
+</div>
+
+<div class="vjf" id="vjF" hidden>
+  <a class="vjf1" href="#viaje"><b id="vjFd"></b><span id="vjFk"></span></a>
+  <div class="vjfa" id="vjFa"></div>
+  <div class="vjf3"><a id="vjFm" href="#" target="_blank" rel="noopener">🗺️ Google Maps</a><button type="button" id="vjFx"><span class="pt">■ Encerrar</span><span class="es">■ Terminar</span></button></div>
 </div>
 
 <nav class="tab" aria-label="Navegación">
@@ -930,7 +944,7 @@
     for(var k in m){var el=document.getElementById(k);if(el)io.observe(el)}});
   /* ---- permisos: se piden solo al tocar cada boton ---- */
   function L2(es,pt){return root.getAttribute('data-lang')==='es'?es:pt}
-  function st(id,t,ok){var e=document.getElementById(id+'S');if(e)e.textContent=t;var b=document.getElementById(id);if(b&&ok!==undefined)b.className='pb'+(ok?' ok':'')}
+  function st(id,t,ok){var e=document.getElementById(id+'S');if(e)e.textContent=t;var b=document.getElementById(id);if(b&&ok!==undefined)b.classList.toggle('ok',!!ok)}
   function notifOn(){return('Notification' in window)&&Notification.permission==='granted'&&LS('notif')==='on'}
   function notificar(titulo,cuerpo){if(!notifOn())return;var o={body:cuerpo,icon:'/icon-192.png',badge:'/icon-192.png',tag:'avisosul-'+cid};
     if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(function(r){r.showNotification(titulo,o)}).catch(function(){try{new Notification(titulo,o)}catch(x){}});else try{new Notification(titulo,o)}catch(x){}}
@@ -975,10 +989,30 @@
         return'<div class="vjp"><i>'+w[3]+'</i><div><b>'+esc(pts[i][1])+' · '+th+'</b><span>'+r.t+'° · '+esc(l==='es'?w[2]:w[1])+' · '+L2('lluvia ','chuva ')+r.p+'% · '+L2('ráfagas ','rajadas ')+r.g+' km/h</span></div></div>'}).join('');
       var av=peor?'<div class="vjw">⚠️ '+esc((peor.fin?L2('Al llegar','Na chegada'):L2('En el camino, cerca de las ','No caminho, por volta das ')+peor.th)+': '+(l==='es'?peor.w[2]:peor.w[1])+', '+L2('ráfagas de ','rajadas de ')+peor.r.g+' km/h.')+'</div>':'';
       out.innerHTML='<div class="vjc gl"><div class="rt">'+esc(d.nombre)+' · '+Math.round(dist)+' km</div><div class="sb">'+L2('Saliendo ahora llegás cerca de las ','Saindo agora, chegada por volta das ')+hh+(VJ.orig?L2(' · desde tu ubicación',' · da sua localização'):L2(' · desde ',' · saindo de ')+esc(C.nombre))+'</div>'+av+filas+'</div>';
-      document.getElementById('vjAct').hidden=false;var f=R[2],w=wmo(f.c);
+      document.getElementById('vjAct').hidden=false;VJ.info={dist:dist,hh:hh,al:av.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&')};vjPanel();var f=R[2],w=wmo(f.c);
       document.getElementById('vjMaps').href='https://www.google.com/maps/dir/?api=1&travelmode=driving&destination='+d.geo[0]+','+d.geo[1];
       document.getElementById('vjShare').href='https://wa.me/?text='+encodeURIComponent(L2('Voy a ','Vou para ')+d.nombre+L2('. Llego cerca de las ','. Chego por volta das ')+hh+L2('. Al llegar: ','. Na chegada: ')+f.t+'°, '+(l==='es'?w[2]:w[1])+L2(', lluvia ',', chuva ')+f.p+'%.\n\nAviso Sul: https://avisosul.com/');
     }).catch(function(){out.innerHTML='<div class="vjc gl"><div class="sb">'+L2('No se pudo consultar el pronóstico. Probá de nuevo en un momento.','Não foi possível consultar a previsão. Tente de novo em instantes.')+'</div></div>'})}
+  /* ---- viaje iniciado: panel flotante con GPS, llegada y alerta de clima en la ruta ---- */
+  function vjPanel(){var f=document.getElementById('vjF');if(!f)return;var on=VJ.watch!==null&&VJ.dest;f.hidden=!on;if(!on)return;var i=VJ.info||{},d=VJ.dest;
+    var rest=VJ.orig?km(VJ.orig,d.geo)*1.25:i.dist;
+    document.getElementById('vjFd').textContent='→ '+d.nombre;
+    document.getElementById('vjFk').textContent=(rest!=null?Math.round(rest)+' km':'')+(i.hh?L2(' · llegás ',' · chegada ')+i.hh:'')+(VJ.vel>3?' · '+Math.round(VJ.vel)+' km/h':'');
+    var a=document.getElementById('vjFa');a.textContent=i.al||('✓ '+L2('Sin alertas de clima en la ruta','Sem alertas de clima na rota'));a.className='vjfa'+(i.al?' w':'');
+    document.getElementById('vjFm').href='https://www.google.com/maps/dir/?api=1&travelmode=driving&destination='+d.geo[0]+','+d.geo[1];
+    if(i.al&&i.al!==VJ.lastAl){VJ.lastAl=i.al;safe(function(){notificar('Aviso Sul · '+L2('viaje','viagem'),i.al)})}}
+  function vjStop(){if(VJ.watch!==null){navigator.geolocation.clearWatch(VJ.watch);VJ.watch=null}if(VJ.lock){try{VJ.lock.release()}catch(e){}VJ.lock=null}
+    st('vjLive',L2('Viaje terminado.','Viagem encerrada.'),false);document.getElementById('vjLive').querySelector('b').innerHTML='<span class="pt">▶ Iniciar viagem</span><span class="es">▶ Iniciar viaje</span>';vjPanel()}
+  function vjStart(){if(!VJ.dest)return;
+    if(!navigator.geolocation){st('vjLive',L2('Este navegador no admite ubicación.','Este navegador não permite localização.'),false);return}
+    st('vjLive',L2('Buscando tu ubicación…','Buscando sua localização…'),true);VJ.lastAl=null;
+    if(navigator.wakeLock)navigator.wakeLock.request('screen').then(function(l){VJ.lock=l}).catch(function(){});
+    document.getElementById('vjLive').querySelector('b').innerHTML='<span class="pt">■ Encerrar viagem</span><span class="es">■ Terminar viaje</span>';
+    VJ.watch=navigator.geolocation.watchPosition(function(p){var n=[p.coords.latitude,p.coords.longitude];VJ.vel=p.coords.speed!=null?p.coords.speed*3.6:0;
+        if(!VJ.orig||km(VJ.orig,n)>5||Date.now()-VJ.last>5*60000){VJ.orig=n;VJ.last=Date.now();vjCalc()}
+        st('vjLive',L2('Viaje en curso. La pantalla queda encendida mientras la app esté abierta.','Viagem em curso. A tela fica ligada enquanto o app estiver aberto.'),true);vjPanel()},
+      function(){st('vjLive',L2('No se pudo obtener la ubicación. Revisá el permiso de ubicación.','Não foi possível obter a localização. Confira a permissão.'),false);vjStop()},{enableHighAccuracy:true,maximumAge:30000});
+    vjPanel()}
   var VJP=['AR','BR','PY','UY','CL','BO'];
   function vjOM(q){return fetch('https://geocoding-api.open-meteo.com/v1/search?count=6&language='+L2('es','pt')+'&name='+encodeURIComponent(q.split(',')[0].trim())).then(function(r){return r.json()}).then(function(j){
     return(j.results||[]).filter(function(x){return VJP.indexOf(x.country_code)>=0}).map(function(x){return{name:x.name,label:x.name+(x.admin1?', '+x.admin1:'')+' ('+x.country_code+')',lat:x.latitude,lon:x.longitude}})})}
@@ -1001,13 +1035,8 @@
         function elegir(x){VJ.dest={nombre:x.name,geo:[x.lat,x.lon]};ops.innerHTML='';vjCalc()}
         rs.forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent=x.label;b.addEventListener('click',function(){elegir(x)});ops.appendChild(b)});gm()
       }).catch(function(){ops.innerHTML='<button type="button" disabled>'+L2('No se pudo buscar. Probá de nuevo.','Não foi possível buscar. Tente de novo.')+'</button>'})});
-    document.getElementById('vjLive').addEventListener('click',function(){
-      if(!navigator.geolocation){st('vjLive',L2('Este navegador no admite ubicación.','Este navegador não permite localização.'),false);return}
-      if(VJ.watch!==null){navigator.geolocation.clearWatch(VJ.watch);VJ.watch=null;st('vjLive',L2('Seguimiento detenido.','Acompanhamento parado.'),false);return}
-      VJ.watch=navigator.geolocation.watchPosition(function(p){var n=[p.coords.latitude,p.coords.longitude];
-        if(!VJ.orig||km(VJ.orig,n)>5||Date.now()-VJ.last>5*60000){VJ.orig=n;VJ.last=Date.now();vjCalc()}
-        st('vjLive',L2('Siguiendo tu viaje. Tocá de nuevo para detener.','Acompanhando sua viagem. Toque de novo para parar.'),true)},
-        function(){st('vjLive',L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.'),false);VJ.watch=null},{enableHighAccuracy:true,maximumAge:60000})});
+    document.getElementById('vjLive').addEventListener('click',function(){if(VJ.watch!==null)vjStop();else vjStart()});
+    document.getElementById('vjFx').addEventListener('click',vjStop);
   });
   /* ---- radio local: se busca en el directorio abierto Radio Browser o se pega la direccion del stream ---- */
   function rdGet(){try{return JSON.parse(LS('radio')||'null')}catch(e){return null}}
