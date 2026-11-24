@@ -1,0 +1,54 @@
+name: Aviso Sul - avisos INMET y SMN
+on:
+  workflow_dispatch:
+    inputs:
+      modo: {description: "nuevos, manana o vispera", default: "nuevos"}
+  schedule:
+    - cron: "*/10 * * * *"   # avisos nuevos (GitHub puede demorar la ejecucion)
+    - cron: "30 9 * * *"     # 06:30 de Brasilia: resumen de la manana
+    - cron: "0 23 * * *"     # 20:00 de Brasilia: avisos para manana
+permissions:
+  contents: write
+concurrency:
+  group: avisosul
+  cancel-in-progress: false
+jobs:
+  agente:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Elegir modo
+        id: m
+        run: |
+          case "${{ github.event.schedule }}" in
+            "30 9 * * *") echo "modo=manana" >> "$GITHUB_OUTPUT" ;;
+            "0 23 * * *") echo "modo=vispera" >> "$GITHUB_OUTPUT" ;;
+            *) echo "modo=${{ github.event.inputs.modo || 'nuevos' }}" >> "$GITHUB_OUTPUT" ;;
+          esac
+      - name: Correr agente de Brasil (INMET)
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_OWNER: ${{ secrets.TELEGRAM_OWNER }}
+          TELEGRAM_CANAL_FOZ: ${{ secrets.TELEGRAM_CANAL_FOZ }}
+          PUBLICAR: ${{ vars.PUBLICAR }}
+        run: python3 agente_inmet.py "${{ steps.m.outputs.modo }}"
+      - name: Correr agente de Argentina (SMN)
+        if: steps.m.outputs.modo == 'nuevos'
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_OWNER: ${{ secrets.TELEGRAM_OWNER }}
+          TELEGRAM_CANAL_IGUAZU: ${{ secrets.TELEGRAM_CANAL_IGUAZU }}
+          TELEGRAM_CANAL_CORDOBA: ${{ secrets.TELEGRAM_CANAL_CORDOBA }}
+          PUBLICAR: ${{ vars.PUBLICAR }}
+        run: python3 agente_smn.py nuevos
+      - name: Condiciones de ahora y proxima hora (MET Norway)
+        if: steps.m.outputs.modo == 'nuevos'
+        env:
+          AVISOSUL_CONTACTO: ${{ vars.AVISOSUL_CONTACTO }}
+        run: python3 agente_tiempo.py
+      - name: Guardar avisos ya vistos
+        run: |
+          git config user.name "avisosul-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -m "estado" && git push)
