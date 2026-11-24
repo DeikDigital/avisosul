@@ -188,9 +188,10 @@ def poligonos(xml_bytes):
 
 def zonas(todos, ahora, regiones):
     """Escribe datos/zonas.json con el contorno de cada aviso vigente que toca alguna ciudad; la pagina lo pinta en el mapa."""
+    # todos los avisos vigentes; despues quedan los que tocan una ciudad o caen en el sur (PR, SC, RS)
     reg = {r.lower() for r in regiones}
-    vig = [a for a in todos if a["inicio"] and a["fin"] and a["inicio"] <= ahora < a["fin"]
-           and any(x.lower() in reg for x in a["areas"])]
+    vig = [a for a in todos if a["inicio"] and a["fin"] and a["inicio"] <= ahora < a["fin"]]
+    sur = lambda ps: any(-34.5 <= y <= -22.0 and -58.5 <= x <= -47.5 for p in ps for y, x in p)
     os.makedirs("cap", exist_ok=True)
     orden = {"Perigo Potencial": 1, "Perigo": 2, "Grande Perigo": 3}
     out = []
@@ -204,7 +205,7 @@ def zonas(todos, ahora, regiones):
             except Exception as e:  # un aviso sin contorno no frena al resto
                 print("zonas: sin contorno para", a["id"], type(e).__name__)
                 continue
-        if polys:
+        if polys and (any(x.lower() in reg for x in a["areas"]) or sur(polys)):
             out.append({"id": a["id"], "nivel": NIVEL_ES.get(a["severidad"], ""),
                         "titulo_pt": f"{a['evento']} — aviso {NIVEL.get(a['severidad'], ('',))[0] or a['severidad']}",
                         "titulo_es": f"{EVENTO_ES.get(a['evento'], a['evento'])} — aviso {NIVEL_ES.get(a['severidad'], a['severidad'])}",
