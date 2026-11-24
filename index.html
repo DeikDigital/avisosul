@@ -372,6 +372,19 @@
   .vjf1 b{color:#fff;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vjf1 span{font-size:13px;color:#b9c6d3;white-space:nowrap;font-variant-numeric:tabular-nums}
   .vjfa{font-size:13.5px;margin:6px 0 8px;color:#7fe0a8}.vjfa.w{color:#ffb35c;font-weight:700}
   .vjf3{display:flex;gap:8px}.vjf3 a,.vjf3 button{flex:1;font:inherit;font-size:13.5px;font-weight:700;text-align:center;text-decoration:none;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:8px 6px;cursor:pointer}
+
+  /* ---------- riesgo climatologico: icono propio; Ajustes con aspecto de panel ---------- */
+  .rgi{width:18px;height:18px;vertical-align:-4px;margin-right:6px;color:#f5b301}
+  #ajustes{background:linear-gradient(180deg,rgba(245,179,1,.10),transparent 220px),var(--bg-2);border-top:3px solid #f5b301}
+  .cfgh{display:flex;align-items:center;gap:14px;margin-bottom:18px}.cfgh h2{margin:0;font-size:30px}.cfgh p{margin:2px 0 0;color:var(--muted);font-size:14.5px}
+  .cfgi{flex:none;width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;box-shadow:0 8px 20px rgba(245,179,1,.3)}.cfgi svg{width:32px;height:32px}
+  .cfgg{border:1px solid var(--line);background:var(--card);border-radius:22px;padding:16px;margin-bottom:14px}
+  #ajustes .wrap{padding-top:34px}.dsr span{font-size:14.5px}
+  #ajustes .cfgg h3{display:flex;align-items:center;gap:10px;margin:0 0 6px;padding:0;font-size:19px}.cfgg h3>svg{flex:none;width:36px;height:36px;padding:8px;border-radius:11px;background:rgba(245,179,1,.16);color:#f5b301}
+  .cfgg>p{font-size:14.5px;color:var(--muted);margin:0 0 4px}.cfgg .pb,.cfgg .dsr{background:rgba(128,128,128,.10)}
+  .pb.pbi{display:grid;grid-template-columns:44px 1fr;column-gap:12px;align-items:center}.pb.pbi .pi{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(128,128,128,.18);color:var(--strong)}
+  .pb.pbi .pi svg{width:22px;height:22px}.pb.pbi.ok .pi{background:rgba(52,211,153,.2);color:#34d399}
+  .dsg{font-style:normal;color:var(--muted);letter-spacing:-3px;margin-right:4px}
 </style>
 </head>
 <body>
@@ -390,7 +403,7 @@
     .top .wrap{gap:8px}.seg{flex:none}.seg button{padding:6px 9px;font-size:12.5px}
   }
   @media (max-width:400px){.seg button{font-size:0;padding:7px 11px}.seg button::after{content:attr(data-set);font-size:12.500px;text-transform:uppercase;font-weight:700}}
-</style><symbol id="i-granizo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><circle class="f" cx="22" cy="46" r="3.500"/><circle class="f" cx="34" cy="50" r="3.500"/><circle class="f" cx="44" cy="45" r="3.500"/><circle class="f" cx="27" cy="57" r="3.500"/><circle class="f" cx="41" cy="57" r="3.500"/></g></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><path d="M22 43l-3 8M32 43l-3 8M42 43l-3 8M26 54l-2 6M36 54l-2 6"/></g></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h30a7 7 0 1 0-7-7M8 35h42a7 7 0 1 1-7 7M8 46h20a6 6 0 1 1-6 6"/></g></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path class="f" d="M37 5 16 34h13l-6 25 25-33H35l7-21z"/></g></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
+</style><symbol id="i-riesgo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5l22 8v16c0 14-9.500 25-22 30C19.500 54 10 43 10 29V13z"/><path d="M23 33h17a6 6 0 0 0 1-11.900A9 9 0 0 0 24 22.500 5.500 5.500 0 0 0 23 33z"/><path class="f" d="M33 35l-6 9h5l-2 8 8-11h-5l2-6z"/></g></symbol><symbol id="i-granizo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><circle class="f" cx="22" cy="46" r="3.500"/><circle class="f" cx="34" cy="50" r="3.500"/><circle class="f" cx="44" cy="45" r="3.500"/><circle class="f" cx="27" cy="57" r="3.500"/><circle class="f" cx="41" cy="57" r="3.500"/></g></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><path d="M22 43l-3 8M32 43l-3 8M42 43l-3 8M26 54l-2 6M36 54l-2 6"/></g></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h30a7 7 0 1 0-7-7M8 35h42a7 7 0 1 1-7 7M8 46h20a6 6 0 1 1-6 6"/></g></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path class="f" d="M37 5 16 34h13l-6 25 25-33H35l7-21z"/></g></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
 <div class="hero" id="hero">
   <!-- nubes: textura generada con ruido, sin imágenes externas -->
   <div class="clouds c1" aria-hidden="true">
@@ -474,7 +487,7 @@
       <p class="wxc"><span class="pt">Condições e próxima hora: modelo de previsão do MET Norway (CC BY 4.0). Não é medição local.</span><span class="es">Condiciones y próxima hora: modelo de pronóstico de MET Norway (CC BY 4.0). No es una medición local.</span></p>
       <div class="hrs" id="hrs" aria-label="Próximas horas"></div>
       <p class="st" id="nowSt"></p>
-      <div class="rkt"><span class="pt">Risco nas próximas 12 horas</span><span class="es">Riesgo en las próximas 12 horas</span></div>
+      <div class="rkt"><svg class="rgi" aria-hidden="true"><use href="#i-riesgo"/></svg><span class="pt">Risco climatológico · 12 h</span><span class="es">Riesgo climatológico · 12 h</span></div>
       <div class="rk" id="rk"></div>
       <p class="wxc2"><span class="pt">Estimativa própria a partir da previsão e dos avisos oficiais em vigor. Não substitui os avisos oficiais.</span><span class="es">Estimación propia a partir del pronóstico y de los avisos oficiales vigentes. No reemplaza los avisos oficiales.</span></p>
       <div id="nowList"></div>
@@ -664,28 +677,32 @@
       <p class="es">Todo habilitado y sin publicidad. Contanos: ¿pagarías por esto?</p>
       <div class="encb" id="encB"></div>
     </div>
-    <h2 class="pt">Ajustes e permissões</h2>
-    <h2 class="es">Ajustes y permisos</h2>
-    <p class="pt">Cada permissão é pedida só quando você toca no botão. Dá para usar o Aviso Sul sem nenhuma.</p>
-    <p class="es">Cada permiso se pide recién cuando tocás el botón. Podés usar Aviso Sul sin ninguno.</p>
-    <div class="perm">
-      <button type="button" class="pb" id="pNotif"><b><span class="pt">Ativar notificações</span><span class="es">Activar notificaciones</span></b><small id="pNotifS"></small></button>
-      <button type="button" class="pb" id="pGeo"><b><span class="pt">Usar minha localização</span><span class="es">Usar mi ubicación</span></b><small id="pGeoS"></small></button>
+    <div class="cfgh"><span class="cfgi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg></span><div><h2><span class="pt">Ajustes</span><span class="es">Ajustes</span></h2><p><span class="pt">Permissões, tela inicial e rádio. Fica salvo neste aparelho.</span><span class="es">Permisos, pantalla de inicio y radio. Queda guardado en este dispositivo.</span></p></div></div>
+    <div class="cfgg">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="pt">Permissões</span><span class="es">Permisos</span></h3>
+      <p class="pt">Cada permissão é pedida só quando você toca no botão. Dá para usar o Aviso Sul sem nenhuma.</p>
+      <p class="es">Cada permiso se pide recién cuando tocás el botón. Podés usar Aviso Sul sin ninguno.</p>
+      <div class="perm">
+        <button type="button" class="pb pbi" id="pNotif"><i class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.700 21a2 2 0 0 1-3.400 0"/></svg></i><b><span class="pt">Ativar notificações</span><span class="es">Activar notificaciones</span></b><small id="pNotifS"></small></button>
+        <button type="button" class="pb pbi" id="pGeo"><i class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></i><b><span class="pt">Usar minha localização</span><span class="es">Usar mi ubicación</span></b><small id="pGeoS"></small></button>
+      </div>
     </div>
-    <h3 class="pt">Personalizar o início</h3>
-    <h3 class="es">Personalizar el inicio</h3>
-    <p class="pt">Escolha quais quadros aparecem e em que ordem.</p>
-    <p class="es">Elegí qué cuadros se ven y en qué orden.</p>
-    <div class="dsh" id="dsh"></div>
-    <button type="button" class="dsx" id="dsReset"><span class="pt">Voltar à ordem original</span><span class="es">Volver al orden original</span></button>
+    <div class="cfgg">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.500"/><rect x="14" y="3" width="7" height="7" rx="1.500"/><rect x="3" y="14" width="7" height="7" rx="1.500"/><rect x="14" y="14" width="7" height="7" rx="1.500"/></svg><span class="pt">Personalizar o início</span><span class="es">Personalizar el inicio</span></h3>
+      <p class="pt">Escolha quais quadros aparecem e em que ordem.</p>
+      <p class="es">Elegí qué cuadros se ven y en qué orden.</p>
+      <div class="dsh" id="dsh"></div>
+      <button type="button" class="dsx" id="dsReset"><span class="pt">Voltar à ordem original</span><span class="es">Volver al orden original</span></button>
+    </div>
     <div id="radio" style="height:1px"></div>
-    <h3 class="pt">Rádio local <i class="pmi">Premium</i></h3>
-    <h3 class="es">Radio local <i class="pmi">Premium</i></h3>
-    <p class="pt">Escolha uma rádio de notícias da sua região para ouvir os relatos enquanto acompanha os avisos.</p>
-    <p class="es">Elegí una radio de noticias de tu zona para escuchar los reportes mientras seguís los avisos.</p>
-    <form class="vj" id="rdForm"><input type="text" id="rdIn" autocomplete="off" enterkeyhint="search" aria-label="Radio"><button type="submit" class="btn btn-tg"><span class="pt">Buscar</span><span class="es">Buscar</span></button></form>
-    <div class="vjo" id="rdOps"></div>
-    <p class="wxc2" id="rdNote"></p>
+    <div class="cfgg">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="2.500"/><path d="M7 9l9-5"/><circle cx="8.500" cy="14.500" r="2.500"/><path d="M14 13h4M14 16h4"/></svg><span class="pt">Rádio local</span><span class="es">Radio local</span> <i class="pmi">Premium</i></h3>
+      <p class="pt">Escolha uma rádio de notícias da sua região para ouvir os relatos enquanto acompanha os avisos.</p>
+      <p class="es">Elegí una radio de noticias de tu zona para escuchar los reportes mientras seguís los avisos.</p>
+      <form class="vj" id="rdForm"><input type="text" id="rdIn" autocomplete="off" enterkeyhint="search" aria-label="Radio"><button type="submit" class="btn btn-tg"><span class="pt">Buscar</span><span class="es">Buscar</span></button></form>
+      <div class="vjo" id="rdOps"></div>
+      <p class="wxc2" id="rdNote"></p>
+    </div>
   </div>
 </section>
 
@@ -931,8 +948,8 @@
     var y=document.getElementById('rya');if(!y)return;var ra=riesgoDe(h.slice(0,1)),act=FEN.filter(function(f){return ra[f[0]]>0}).sort(function(a,b){return ra[b[0]]-ra[a[0]]});
     var bg=document.getElementById('ryBig');if(!bg){var nw=document.querySelector('.now h2');if(nw){bg=document.createElement('div');bg.id='ryBig';nw.parentNode.insertBefore(bg,nw.nextSibling)}}
     if(bg){if(!h.length&&!act.length){bg.hidden=true}else{bg.hidden=false;var f0=act[0],n0=f0?ra[f0[0]]:0;bg.className='ryB n'+n0;
-      bg.innerHTML=(f0?'<span class="ic"><svg aria-hidden="true"><use href="#i-'+f0[0]+'"/></svg></span>':'<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></span>')+
-        '<div><small>'+(l==='es'?'Riesgo ahora':'Risco agora')+'</small><b>'+(f0?esc(l==='es'?f0[2]:f0[1])+' · '+NV[l][n0]:(l==='es'?'Sin riesgo':'Sem risco'))+'</b>'+(act.length>1?'<em>+ '+act.slice(1).map(function(f){return esc(l==='es'?f[2]:f[1])}).join(', ')+'</em>':'')+'</div>'}}
+      bg.innerHTML=(f0?'<span class="ic"><svg aria-hidden="true"><use href="#i-'+f0[0]+'"/></svg></span>':'<span class="ic"><svg aria-hidden="true"><use href="#i-riesgo"/></svg></span>')+
+        '<div><small>'+(l==='es'?'Riesgo climatológico ahora':'Risco climatológico agora')+'</small><b>'+(f0?esc(l==='es'?f0[2]:f0[1])+' · '+NV[l][n0]:(l==='es'?'Sin riesgo':'Sem risco'))+'</b>'+(act.length>1?'<em>+ '+act.slice(1).map(function(f){return esc(l==='es'?f[2]:f[1])}).join(', ')+'</em>':'')+'</div>'}}
     y.innerHTML=act.length?act.map(function(f){var n=ra[f[0]];return'<div class="ryi n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg><div><b>'+esc(l==='es'?f[2]:f[1])+'</b><em>'+NV[l][n]+'</em></div></div>'}).join('')
       :'<div class="ryi n0"><div><b>'+(l==='es'?'Sin riesgo ahora':'Sem risco agora')+'</b><em>'+(l==='es'?'según avisos y pronóstico':'segundo avisos e previsão')+'</em></div></div>'}
   var _pa=pintarAhora;pintarAhora=function(){_pa();safe(pintarRiesgo);safe(reloj)};
@@ -1062,7 +1079,7 @@
     rdUI();
   });
   /* ---- tablero personalizable: orden y visibilidad de cada cuadro, guardados en el dispositivo ---- */
-  var BLK=[['wx','Agora e próxima hora','Ahora y próxima hora'],['ya','Risco agora','Riesgo ahora'],['hrs','Próximas 12 horas','Próximas 12 horas'],['av','Avisos oficiais','Avisos oficiales'],['rk','Risco em 12 horas','Riesgo en 12 horas']];
+  var BLK=[['wx','Agora e próxima hora','Ahora y próxima hora'],['ya','Risco climatológico agora','Riesgo climatológico ahora'],['hrs','Próximas 12 horas','Próximas 12 horas'],['av','Avisos oficiais','Avisos oficiales'],['rk','Risco climatológico 12 h','Riesgo climatológico 12 h']];
   function dashGet(){var d;try{d=JSON.parse(LS('dash')||'null')}catch(e){d=null}
     var ids=BLK.map(function(b){return b[0]});if(!d||!d.length)return ids.map(function(i){return{id:i,on:true}});
     d=d.filter(function(x){return ids.indexOf(x.id)>=0});ids.forEach(function(i){if(!d.some(function(x){return x.id===i}))d.push({id:i,on:true})});return d}
@@ -1077,7 +1094,7 @@
     function caja(id,els){var c=document.createElement('div');c.className='blk';c.id='blk-'+id;now.appendChild(c);els.forEach(function(e){if(e)c.appendChild(e)});return c}
     var q=function(x){return now.querySelector(x)};
     caja('wx',[q('#wx'),q('.wxc')]);
-    var ya=caja('ya',[]);ya.innerHTML='<div class="ryt"><span class="pt">Risco agora</span><span class="es">Riesgo ahora</span></div><div class="rya" id="rya"></div>';
+    var ya=caja('ya',[]);ya.innerHTML='<div class="ryt"><svg class="rgi" aria-hidden="true"><use href="#i-riesgo"/></svg><span class="pt">Risco climatológico agora</span><span class="es">Riesgo climatológico ahora</span></div><div class="rya" id="rya"></div>';
     caja('hrs',[q('#hrs')]);caja('av',[q('#nowSt'),q('#nowList'),q('#nowUp')]);caja('rk',[q('.rkt'),q('#rk'),q('.wxc2')]);
     document.getElementById('dsReset').addEventListener('click',function(){LS('dash','');dashAplicar()});
     dashAplicar()});
