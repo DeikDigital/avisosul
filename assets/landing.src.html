@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aviso Sul · Alerta de temporal, granizo e vendaval no Sul do Brasil</title>
+<meta name="description" content="Os avisos oficiais do INMET para a sua casa, o trabalho e a roça no Paraná, em Santa Catarina e no Rio Grande do Sul: mapa ao vivo, risco da próxima hora e o que fazer. Grátis, sem cadastro.">
+<meta name="theme-color" content="#0b1118">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:title" content="Aviso Sul · O temporal não manda aviso. A gente manda.">
+<meta property="og:description" content="Avisos oficiais do INMET no seu celular, com mapa e o que fazer. Paraná, Santa Catarina e Rio Grande do Sul.">
+<meta property="og:image" content="https://avisosul.com/icon-512.png">
+<link rel="stylesheet" href="/assets/site.css?v=1">
+</head>
+<body data-tit-es="Aviso Sul · Alerta de temporal, granizo y viento en el Sur de Brasil">
+<svg class="svg-hide" aria-hidden="true">{{SYM}}</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="marca" href="/">{{LOGO}}Aviso Sul</a>
+    <nav class="menu" aria-label="Menu">
+      <a href="#agora" data-es="Ahora">Agora</a>
+      <a href="#como" data-es="Cómo funciona">Como funciona</a>
+      <a href="#planos" data-es="Planes">Planos</a>
+      <a href="#duvidas" data-es="Preguntas">Dúvidas</a>
+    </nav>
+    <div class="idi" role="group" aria-label="Idioma"><button type="button" data-l="pt">PT</button><button type="button" data-l="es">ES</button></div>
+    <a class="btn btn-sol btn-sm" href="/app/" data-es="Abrir la app">Abrir o app</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="lluvia" aria-hidden="true"></div>
+  <div class="wrap">
+    <div>
+      <span class="kick" data-es="Aviso Sul · alerta de temporal en el Sur">Aviso Sul · alerta de temporal no Sul</span>
+      <h1 data-es="El temporal no avisa. Nosotros sí.">O temporal não manda aviso. A gente manda.</h1>
+      <p class="lead" data-es="Granizo, lluvia fuerte, viento y tormenta eléctrica en Paraná, Santa Catarina y Rio Grande do Sul. Los avisos oficiales del INMET llegan a tu celular con mapa y qué hacer, para tu casa, tu trabajo y tu campo.">Granizo, chuva forte, vendaval e tempestade elétrica no Paraná, em Santa Catarina e no Rio Grande do Sul. Os avisos oficiais do INMET chegam no seu celular com mapa e o que fazer, para a sua casa, o trabalho e a roça.</p>
+      <div class="btns">
+        <a class="btn btn-sol" href="/app/" data-es="Abrir gratis">Abrir grátis</a>
+        <a class="btn btn-lin" href="#planos" data-es="Ver planes">Ver planos</a>
+      </div>
+      <p class="small" data-es="Lo básico es gratis para siempre. Sin registro. Abre en el navegador y se instala como app.">O básico é grátis para sempre. Sem cadastro. Abre no navegador e instala como app.</p>
+    </div>
+    <aside class="vivo" aria-live="polite">
+      <div class="t"><span class="punto"></span><span data-es="Ahora en el Sur">Agora no Sul</span></div>
+      <div class="n" id="vN">–</div>
+      <div id="vTxt" class="muted" data-es="Consultando los avisos del INMET…">Consultando os avisos do INMET…</div>
+      <div class="niv" id="vNiv"></div>
+      <div class="cids" id="vCid"></div>
+      <p class="small" id="vAt" style="margin:12px 0 0"></p>
+    </aside>
+  </div>
+</section>
+
+<section class="sec" id="agora">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Ahora mismo">Agora mesmo</span>
+      <h2 data-es="Esto es lo que Aviso Sul está vigilando.">Isto é o que o Aviso Sul está vigiando.</h2>
+      <p class="lead" data-es="Cada zona pintada es un aviso oficial vigente del INMET, con el contorno que publicó el organismo. Encima, el radar muestra dónde está lloviendo.">Cada área colorida é um aviso oficial em vigor do INMET, com o contorno publicado pelo órgão. Por cima, o radar mostra onde está chovendo.</p>
+    </div>
+    <div id="mapa" role="region" aria-label="Mapa de avisos" data-es-aria="Mapa de avisos"></div>
+    <div class="ley">
+      <span><i style="background:#f5d000"></i><span data-es="Amarillo · peligro potencial">Amarelo · perigo potencial</span></span>
+      <span><i style="background:#ff8a1f"></i><span data-es="Naranja · peligro">Laranja · perigo</span></span>
+      <span><i style="background:#ff3b30"></i><span data-es="Rojo · gran peligro">Vermelho · grande perigo</span></span>
+      <span id="mNota"></span>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="como">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Cómo funciona">Como funciona</span>
+      <h2 data-es="Tres pasos, y el cielo deja de sorprenderte.">Três passos, e o céu para de te pegar de surpresa.</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card paso"><span class="num">1</span><h3 data-es="Marcá tus lugares">Marque seus lugares</h3><p data-es="Tu casa, el trabajo, el campo, la escuela de los chicos. Con el GPS o tocando el mapa.">Sua casa, o trabalho, o sítio, a escola das crianças. Pelo GPS ou tocando no mapa.</p></div>
+      <div class="card paso"><span class="num">2</span><h3 data-es="Vigilamos el INMET cada 10 minutos">A gente vigia o INMET a cada 10 minutos</h3><p data-es="Y cruzamos el contorno oficial de cada aviso con tus lugares, de día y de noche.">E cruza o contorno oficial de cada aviso com os seus lugares, de dia e de noite.</p></div>
+      <div class="card paso"><span class="num">3</span><h3 data-es="El aviso llega con qué hacer">O aviso chega com o que fazer</h3><p data-es="Color, hasta qué hora y las instrucciones oficiales, en palabras simples.">Cor, até que horas e as instruções oficiais, em palavras simples.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="cores">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Entendé el aviso">Entenda o aviso</span>
+      <h2 data-es="Qué quiere decir cada color.">O que cada cor quer dizer.</h2>
+      <p class="lead" data-es="El INMET clasifica sus avisos en tres niveles. Esto es lo que conviene hacer en cada uno.">O INMET classifica os avisos em três níveis. Isto é o que vale fazer em cada um.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card cor"><span class="tag" data-es="Amarillo">Amarelo</span><h3 data-es="Peligro potencial">Perigo potencial</h3><p data-es="Puede haber daños puntuales. Seguí tu día, pero con un ojo en el cielo y el celular a mano.">Podem acontecer estragos pontuais. Siga o seu dia, mas de olho no céu e com o celular por perto.</p></div>
+      <div class="card cor laranja"><span class="tag" data-es="Naranja">Laranja</span><h3 data-es="Peligro">Perigo</h3><p data-es="Riesgo real de cortes de luz, ramas caídas y calles anegadas. Guardá el auto, entrá lo que vuela y evitá salir a la ruta.">Risco real de falta de luz, galhos caídos e ruas alagadas. Guarde o carro, recolha o que pode voar e evite pegar a estrada.</p></div>
+      <div class="card cor vermelho"><span class="tag" data-es="Rojo">Vermelho</span><h3 data-es="Gran peligro">Grande perigo</h3><p data-es="Riesgo para casas y para personas. Quedate en un lugar seguro, lejos de árboles y ventanas, y seguí a la Defensa Civil.">Risco para casas e para pessoas. Fique num lugar seguro, longe de árvores e janelas, e siga a Defesa Civil.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="fenomenos">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Lo que vigilamos">O que a gente vigia</span>
+      <h2 data-es="Lo que más daño hace en el Sur.">O que mais estraga no Sul.</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card"><div class="ico"><svg><use href="#i-granizo"/></svg></div><h3>Granizo</h3><p data-es="Abolla autos, rompe tejas y arrasa cultivos en minutos.">Amassa carro, quebra telha e acaba com a lavoura em minutos.</p><p class="dica" data-es="<b>Antes:</b> auto bajo techo o tapado con mantas o cartón."><b>Antes:</b> carro coberto ou protegido com mantas e papelão.</p></div>
+      <div class="card"><div class="ico"><svg><use href="#i-chuva"/></svg></div><h3 data-es="Lluvias e inundaciones">Chuva e alagamento</h3><p data-es="Mucha agua en poco tiempo: calles anegadas, arroyos que crecen y barrancas que ceden.">Muita água em pouco tempo: rua alagada, arroio que sobe e barranco que cede.</p><p class="dica" data-es="<b>Durante:</b> nunca cruces una calle o un puente con agua."><b>Durante:</b> nunca atravesse rua ou ponte com água.</p></div>
+      <div class="card"><div class="ico"><svg><use href="#i-vendaval"/></svg></div><h3 data-es="Vientos fuertes">Vendaval</h3><p data-es="Ráfagas que vuelan techos, tiran árboles y cortan la luz.">Rajadas que arrancam telhado, derrubam árvore e cortam a luz.</p><p class="dica" data-es="<b>Durante:</b> lejos de árboles, carteles y cables."><b>Durante:</b> longe de árvores, placas e fios.</p></div>
+      <div class="card"><div class="ico"><svg><use href="#i-raios"/></svg></div><h3 data-es="Tormenta eléctrica">Tempestade elétrica</h3><p data-es="Rayos, ráfagas y chaparrones juntos, muchas veces de golpe.">Raios, rajadas e pancadas juntos, muitas vezes de repente.</p><p class="dica" data-es="<b>Durante:</b> desenchufá aparatos y salí del agua y del campo abierto."><b>Durante:</b> tire aparelhos da tomada e saia da água e do campo aberto.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="vizinhos">
+  <div class="wrap dest">
+    <div>
+      <span class="kick" data-es="Vecino que avisa">Vizinho que avisa</span>
+      <h2 data-es="¿Viste caer piedra? Avisá a los de al lado.">Viu cair pedra? Avise quem está do lado.</h2>
+      <p class="lead" data-es="Sacá una foto o un video, escribí lo que está pasando y mandalo por WhatsApp. Aviso Sul suma la ciudad, el aviso oficial vigente y el enlace.">Tire uma foto ou faça um vídeo, escreva o que está acontecendo e mande pelo WhatsApp. O Aviso Sul junta a cidade, o aviso oficial em vigor e o link.</p>
+      <ul class="lista">
+        <li data-es="Un toque y sale a tu grupo de la familia, del barrio o de la cooperativa.">Um toque e vai para o grupo da família, do bairro ou da cooperativa.</li>
+        <li data-es="Lo que mandás es tuyo: no publicamos tu foto ni tu ubicación.">O que você manda é seu: a gente não publica sua foto nem sua localização.</li>
+      </ul>
+    </div>
+    <div class="mock">
+      <div class="doc"><b>📷 Chapecó · 17:42</b><br><span data-es="«Está cayendo piedra del tamaño de una arveja en el centro.»">“Tá caindo pedra do tamanho de ervilha no centro.”</span><br><br><span style="color:#ff8a1f;font-weight:800" data-es="🟠 Tormenta, aviso naranja del INMET hasta las 23:59">🟠 Tempestade, aviso laranja do INMET até as 23:59</span><br><span class="small">avisosul.com/chapeco</span></div>
+      <p class="small" style="margin:12px 0 0" data-es="Ejemplo de cómo se ve el mensaje.">Exemplo de como fica a mensagem.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="quem">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Para quién es">Para quem é</span>
+      <h2 data-es="Para todo el que tiene algo que cuidar bajo el cielo.">Para quem tem alguma coisa para cuidar debaixo do céu.</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card"><h3 data-es="🏠 Casa y familia">🏠 Casa e família</h3><p data-es="Saber a tiempo para entrar la ropa, cerrar ventanas y avisar a los tuyos.">Saber a tempo de recolher a roupa, fechar as janelas e avisar os seus.</p></div>
+      <div class="card"><h3 data-es="🚗 Auto en la calle">🚗 Carro na rua</h3><p data-es="Unos minutos de aviso son la diferencia entre un garaje y un chapista.">Uns minutos de aviso são a diferença entre a garagem e o funileiro.</p></div>
+      <div class="card"><h3 data-es="🌾 Productor rural">🌾 Produtor rural</h3><p data-es="Marcá el campo, el galpón y la lechería. Cada lugar con su propio aviso.">Marque a lavoura, o galpão e a sala de ordenha. Cada lugar com o seu aviso.</p></div>
+      <div class="card"><h3 data-es="📄 Quien usa el seguro">📄 Quem aciona o seguro</h3><p data-es="Al día siguiente, un resumen de los avisos oficiales que hubo en tu ciudad.">No dia seguinte, um resumo dos avisos oficiais que valeram na sua cidade.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="seguro">
+  <div class="wrap dest">
+    <div class="mock">
+      <div class="doc"><b data-es="Informe de avisos oficiales">Relatório de avisos oficiais</b><br><span class="small">Porto Alegre · 24/11/2026</span></div>
+      <div class="row"><span data-es="Tormenta, naranja">Tempestade, laranja</span><b>00:00 – 23:59</b></div>
+      <div class="row"><span data-es="Fuente">Fonte</span><b>INMET</b></div>
+      <div class="row"><span data-es="Verificación">Verificação</span><b data-es="enlace al INMET">link do INMET</b></div>
+    </div>
+    <div>
+      <span class="kick" data-es="Seguro">Seguro</span>
+      <h2 data-es="El día después, el papel que te piden.">No dia seguinte, o papel que pedem.</h2>
+      <p class="lead" data-es="Elegí el día del temporal y generá un resumen de los avisos oficiales que estaban vigentes en tu ciudad, con el enlace a cada aviso del INMET para verificarlo. Listo para imprimir o mandar al productor de seguros.">Escolha o dia do temporal e gere um resumo dos avisos oficiais que estavam em vigor na sua cidade, com o link de cada aviso do INMET para conferir. Pronto para imprimir ou mandar para o corretor.</p>
+      <p class="small" data-es="Es un resumen de datos públicos, no un certificado oficial ni una pericia.">É um resumo de dados públicos, não é certidão oficial nem perícia.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="planos">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Gratis y Premium">Grátis e Premium</span>
+      <h2 data-es="Lo básico es gratis para siempre. Premium cuida el resto.">O básico é grátis para sempre. O Premium cuida do resto.</h2>
+      <p class="lead" data-es="Los primeros 7 días tenés Premium completo, sin tarjeta. Después elegís.">Nos primeiros 7 dias você tem o Premium completo, sem cartão. Depois você escolhe.</p>
+    </div>
+    <div class="planes">
+      <div class="plan"><h3 data-es="Gratis">Grátis</h3><div class="preco">R$ 0</div><p class="q" data-es="Para tu casa, para siempre.">Para a sua casa, para sempre.</p>
+        <ul><li data-es="Avisos oficiales en el mapa">Avisos oficiais no mapa</li><li data-es="1 lugar">1 lugar</li><li data-es="Riesgo de las próximas 12 horas">Risco das próximas 12 horas</li><li data-es="Radar e informe para el seguro">Radar e relatório para o seguro</li></ul>
+        <a class="btn btn-lin" href="/app/" data-es="Abrir gratis">Abrir grátis</a></div>
+      <div class="plan"><h3 data-es="Mensual">Mensal</h3><div class="preco">R$ 14,90<small data-es=" /mes"> /mês</small></div><p class="q" data-es="Se renueva cada mes. Cancelás cuando quieras.">Renova todo mês. Cancele quando quiser.</p>
+        <ul><li data-es="Todo lo de Premium">Tudo do Premium</li></ul>
+        <a class="btn btn-lin" href="/planos/#mensal" data-es="Suscribirme">Assinar</a></div>
+      <div class="plan top-p"><span class="sello" data-es="Ideal para el verano">Ideal para o verão</span><h3 data-es="Pase de temporada">Passe da temporada</h3><div class="preco">R$ 44,90</div><p class="q" data-es="Pago único. Premium hasta el 31 de marzo de 2027. No se renueva.">Pagamento único. Premium até 31 de março de 2027. Não renova.</p>
+        <ul><li data-es="Todo lo de Premium">Tudo do Premium</li><li data-es="Sin renovación automática">Sem renovação automática</li></ul>
+        <a class="btn btn-sol" href="/planos/#temporada" data-es="Quiero el pase">Quero o passe</a></div>
+      <div class="plan"><span class="sello" data-es="El más barato">O mais em conta</span><h3 data-es="Anual">Anual</h3><div class="preco">R$ 89,90<small data-es=" /año"> /ano</small></div><p class="q" data-es="Sale R$ 7,49 por mes.">Sai por R$ 7,49 por mês.</p>
+        <ul><li data-es="Todo lo de Premium">Tudo do Premium</li></ul>
+        <a class="btn btn-lin" href="/planos/#anual" data-es="Suscribirme">Assinar</a></div>
+    </div>
+    <div class="cmp" role="table">
+      <div role="row"><span></span><span style="text-align:center" data-es="Gratis">Grátis</span><span style="text-align:center">Premium</span></div>
+      <div role="row"><span data-es="Avisos oficiales en el mapa y texto oficial">Avisos oficiais no mapa e texto oficial</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span data-es="Alerta donde estás ahora">Alerta onde você está agora</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span data-es="Mis lugares">Meus lugares</span><i>1</i><i>10</i></div>
+      <div role="row"><span data-es="Pronóstico en tu punto exacto">Previsão no seu ponto exato</span><i>—</i><i>✓</i></div>
+      <div role="row"><span data-es="Avisar con foto, video y mensaje">Avisar com foto, vídeo e mensagem</span><i>—</i><i>✓</i></div>
+      <div role="row"><span data-es="Sin publicidad">Sem publicidade</span><i>—</i><i>✓</i></div>
+      <div role="row"><span data-es="Hora en que la tormenta llega a cada lugar">Hora em que a tempestade chega a cada lugar</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Aviso la noche anterior">Aviso na noite anterior</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Rayos cerca tuyo">Raios perto de você</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Alarmas propias y horario de silencio">Alarmes próprios e horário de silêncio</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Historial de la temporada por lugar">Histórico da temporada por lugar</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Asistente del tiempo con IA">Assistente do tempo com IA</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+    </div>
+    <p class="pagos" data-es="El cobro con <b>Pix, tarjeta y boleto</b> se habilita en estos días. Mientras tanto, usá los 7 días gratis.">O pagamento com <b>Pix, cartão e boleto</b> será liberado nos próximos dias. Enquanto isso, aproveite os 7 dias grátis.</p>
+  </div>
+</section>
+
+<section class="sec" id="duvidas">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Preguntas">Dúvidas</span>
+      <h2 data-es="Lo que la gente nos pregunta.">O que o pessoal pergunta.</h2>
+    </div>
+    <div class="faq">
+      <details><summary data-es="¿Aviso Sul es oficial?">O Aviso Sul é oficial?</summary><p data-es="No. Es un servicio independiente que toma los avisos públicos del INMET y te los acerca. No reemplaza a la Defensa Civil. En una emergencia llamá al 199 (Defensa Civil) o al 193 (Bomberos).">Não. É um serviço independente que pega os avisos públicos do INMET e leva até você. Não substitui a Defesa Civil. Em emergência, ligue 199 (Defesa Civil) ou 193 (Bombeiros).</p></details>
+      <details><summary data-es="¿Funciona en mi ciudad?">Funciona na minha cidade?</summary><p data-es="Sí, en cualquier punto de Paraná, Santa Catarina y Rio Grande do Sul: marcás tu lugar en el mapa o usás la ubicación del celular. Foz do Iguaçu, Chapecó, Florianópolis, Curitiba y Porto Alegre ya tienen su página.">Sim, em qualquer ponto do Paraná, de Santa Catarina e do Rio Grande do Sul: você marca o lugar no mapa ou usa a localização do celular. Foz do Iguaçu, Chapecó, Florianópolis, Curitiba e Porto Alegre já têm página própria.</p></details>
+      <details><summary data-es="¿Con cuánta anticipación me entero?">Com quanta antecedência eu fico sabendo?</summary><p data-es="Revisamos el INMET cada 10 minutos: un aviso nuevo aparece en Aviso Sul como mucho 10 minutos después de publicado. La anticipación del aviso la define el INMET y suele ser de horas.">A gente confere o INMET a cada 10 minutos: um aviso novo aparece no Aviso Sul no máximo 10 minutos depois de publicado. A antecedência do aviso é definida pelo INMET e costuma ser de horas.</p></details>
+      <details><summary data-es="¿Tengo que instalar algo?">Preciso instalar alguma coisa?</summary><p data-es="No. Abre en el navegador del celular. Si querés, lo agregás a la pantalla de inicio y queda como una app.">Não. Abre no navegador do celular. Se quiser, você adiciona na tela inicial e ele fica como um app. <a href="/instalar/">Veja como</a>.</p></details>
+      <details><summary data-es="¿Qué hago si viene granizo?">O que eu faço se vier granizo?</summary><p data-es="Entrá a un lugar techado y alejate de las ventanas. Si estás manejando, frená en un lugar seguro, lejos de árboles, y quedate dentro del auto. Después, sacá fotos de los daños para el seguro.">Entre num lugar coberto e fique longe das janelas. Se estiver dirigindo, pare num lugar seguro, longe de árvores, e fique dentro do carro. Depois, fotografe os estragos para o seguro.</p></details>
+      <details><summary data-es="¿Es gratis?">É grátis?</summary><p data-es="Los avisos oficiales, el mapa, el riesgo de 12 horas, el radar y un lugar son gratis para siempre. Premium agrega más lugares y herramientas, y lo probás 7 días sin tarjeta.">Os avisos oficiais, o mapa, o risco de 12 horas, o radar e um lugar são grátis para sempre. O Premium soma mais lugares e ferramentas, e você testa 7 dias sem cartão.</p></details>
+      <details><summary data-es="¿Cómo cancelo?">Como eu cancelo?</summary><p data-es="El pase de temporada no se renueva. El mensual y el anual se cancelan cuando quieras, y tenés 7 días para arrepentirte de la compra y pedir el reembolso.">O passe da temporada não renova. O mensal e o anual você cancela quando quiser, e tem 7 dias para se arrepender da compra e pedir o reembolso.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="fin">
+  <div class="wrap">
+    <h2 data-es="Cuando el cielo se cierre, ya vas a saber.">Quando o céu fechar, você já vai saber.</h2>
+    <p class="lead" style="margin:0 auto" data-es="Abrí Aviso Sul, marcá tu lugar y listo.">Abra o Aviso Sul, marque o seu lugar e pronto.</p>
+    <div class="btns"><a class="btn btn-sol" href="/app/" data-es="Abrir gratis">Abrir grátis</a><a class="btn btn-lin" href="/instalar/" data-es="Cómo instalarla">Como instalar</a></div>
+  </div>
+</section>
+</main>
+
+{{PIE}}
+<div class="barra"><a class="btn btn-sol" href="/app/" data-es="Abrir Aviso Sul gratis">Abrir o Aviso Sul grátis</a></div>
+<script src="/assets/site.js?v=1"></script>
+</body>
+</html>

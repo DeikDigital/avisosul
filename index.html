@@ -1,1315 +1,266 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-lang="pt" data-theme="night" data-fx="on">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aviso Sul — avisos de tempo severo</title>
-<meta name="description" content="Canal gratuito e independente que reúne os avisos oficiais de tempo severo da sua cidade, no Brasil e na Argentina. Em português e espanhol.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aviso Sul · Alerta de temporal, granizo e vendaval no Sul do Brasil</title>
+<meta name="description" content="Os avisos oficiais do INMET para a sua casa, o trabalho e a roça no Paraná, em Santa Catarina e no Rio Grande do Sul: mapa ao vivo, risco da próxima hora e o que fazer. Grátis, sem cadastro.">
 <meta name="theme-color" content="#0b1118">
-<link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Aviso Sul">
-<!--
-  PENDIENTE ANTES DE PUBLICAR (buscar "PENDIENTE" en este archivo):
-  1. Reemplazar los enlaces de canal (WhatsApp y Telegram) por los reales.
-  2. Agregar un correo de contacto en el pie.
-  El sonido se genera en el navegador (sin archivos de audio) y arranca apagado.
--->
-<style>
-  :root{
-    --amber:#f5b301; --amber-ink:#2e2000; --wa:#1f8f4e;
-    /* modo noche (por defecto) */
-    --bg:#0b1118; --bg-2:#111a24; --card:#16212d; --line:#263544;
-    --text:#e9eef3; --muted:#9fb0c1; --strong:#ffffff;
-    --sky-1:#04070b; --sky-2:#0e1823; --sky-3:#1c2a39; --cloud-b:.55; --cloud-o:.95;
-    --sil:#020406; --scrim:rgba(4,7,11,.62);
-    --box:#0e1620; --box-line:#3a4c5f;
-  }
-  [data-theme="light"]{
-    --bg:#f3f1ec; --bg-2:#e8e4da; --card:#ffffff; --line:#cdc6b6;
-    --text:#17212c; --muted:#56616d; --strong:#0e161e;
-    --sky-1:#3d4955; --sky-2:#6c7986; --sky-3:#a3adb6; --cloud-b:1.25; --cloud-o:.9;
-    --sil:#141b22; --scrim:rgba(20,28,36,.50);
-    --box:#ffffff; --box-line:#17212c;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--text);
-    font:17px/1.55 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;
-    transition:background .4s,color .4s}
-  [data-lang="pt"] .es,[data-lang="es"] .pt{display:none}
-  .wrap{max-width:720px;margin:0 auto;padding:0 20px}
-  a{color:inherit}
-
-  /* ---------- cielo ---------- */
-  .hero{position:relative;overflow:hidden;color:#fff;isolation:isolate;
-    background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 48%,var(--sky-3) 100%);
-    transition:background .6s}
-  .clouds{position:absolute;inset:-8% -30% auto -30%;height:78%;z-index:-4;pointer-events:none;
-    filter:brightness(var(--cloud-b));opacity:var(--cloud-o);will-change:transform}
-  .clouds svg{width:100%;height:100%;display:block}
-  .c1{animation:drift 70s ease-in-out infinite alternate}
-  .c2{animation:drift 46s ease-in-out infinite alternate-reverse;top:6%;opacity:calc(var(--cloud-o) * .8)}
-  @keyframes drift{from{transform:translate3d(-9%,0,0)}to{transform:translate3d(9%,0,0)}}
-  #sky{position:absolute;inset:0;width:100%;height:100%;z-index:-3;pointer-events:none}
-  .flash{position:absolute;inset:0;z-index:-2;pointer-events:none;opacity:0;
-    background:radial-gradient(120% 80% at 50% 0%,rgba(235,240,255,.95),rgba(200,215,255,.35) 45%,transparent 75%);
-    transition:opacity .5s ease-out}
-  .scrim{position:absolute;inset:0;z-index:-1;pointer-events:none;
-    background:linear-gradient(180deg,var(--scrim) 0%,transparent 34%,transparent 62%,var(--scrim) 100%)}
-  .sil{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:96px;z-index:-1;pointer-events:none;fill:var(--sil)}
-  .sil .win{fill:#f5b301;opacity:.85}
-  [data-fx="off"] .c1,[data-fx="off"] .c2{animation-play-state:paused}
-  [data-fx="off"] #sky,[data-fx="off"] .flash{display:none}
-
-  /* ---------- barra ---------- */
-  .top{position:relative;z-index:2}
-  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:14px;padding-bottom:6px}
-  .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.02em;font-size:18px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
-  .brand svg{width:26px;height:26px;flex:none}
-  .seg{display:flex;border:1px solid rgba(255,255,255,.35);border-radius:999px;overflow:hidden;background:rgba(0,0,0,.28);backdrop-filter:blur(6px)}
-  .seg button{background:none;border:0;color:#e3eaf1;font:inherit;font-size:13.5px;font-weight:700;padding:7px 12px;cursor:pointer}
-  [data-lang="pt"] .seg button[data-set="pt"],[data-lang="es"] .seg button[data-set="es"]{background:var(--amber);color:var(--amber-ink)}
-  .tools{position:relative;z-index:2}
-  .tools .wrap{display:flex;flex-wrap:wrap;gap:8px;padding-top:6px;padding-bottom:4px}
-  .tg{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.28);backdrop-filter:blur(6px);
-    color:#e3eaf1;border-radius:999px;font:inherit;font-size:13.5px;font-weight:700;padding:7px 12px;cursor:pointer;min-height:36px}
-  .tg svg{width:16px;height:16px;flex:none}
-  .tg .dot{width:8px;height:8px;border-radius:50%;background:#6b7a89}
-  .tg[aria-pressed="true"] .dot{background:#4ee08a;box-shadow:0 0 0 3px rgba(78,224,138,.22)}
-  [data-theme="night"] .ic-sun,[data-theme="light"] .ic-moon{display:none}
-  .tg:focus-visible,.seg button:focus-visible,.btn:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
-
-  /* ---------- portada ---------- */
-  .hero-in{padding:26px 0 128px;position:relative;z-index:1}
-  .tag{display:inline-block;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.3);color:#eef2f6;backdrop-filter:blur(6px);
-    font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:4px}
-  h1{font-size:clamp(31px,8.4vw,50px);line-height:1.06;margin:16px 0 14px;font-weight:800;letter-spacing:-.012em;text-wrap:balance;
-    text-shadow:0 2px 18px rgba(0,0,0,.65)}
-  h1 em{font-style:normal;color:var(--amber)}
-  .lead{font-size:18px;color:#eef2f6;margin:0 0 24px;max-width:33em;text-shadow:0 1px 10px rgba(0,0,0,.7)}
-  .btn{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:700;
-    padding:15px 18px;border-radius:10px;font-size:17px;min-height:54px;transition:transform .15s,box-shadow .15s}
-  .btn:active{transform:scale(.985)}
-  .btn-wa{background:var(--wa);color:#fff;box-shadow:0 8px 26px rgba(0,0,0,.4)}
-  .btn-tg{background:rgba(0,0,0,.32);color:#fff;border:1.5px solid rgba(255,255,255,.45);margin-top:10px;backdrop-filter:blur(6px)}
-  .btn svg{width:22px;height:22px;flex:none}
-  .inst{margin-top:16px}
-  .inst[hidden]{display:none}
-  .free{margin:12px 0 0;font-size:14px;color:#dbe3ea;text-shadow:0 1px 8px rgba(0,0,0,.7)}
-
-  /* ---------- contenido ---------- */
-  section{padding:40px 0}
-  h2{font-size:24px;line-height:1.2;margin:0 0 14px;font-weight:800;color:var(--strong)}
-  p{margin:0 0 14px}
-  .alt{background:var(--bg-2);border-block:1px solid var(--line);transition:background .4s}
-  .list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-  .list li{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--amber);border-radius:8px;padding:14px 16px;transition:background .4s}
-  .list strong{display:block;font-size:17px;margin-bottom:2px;color:var(--strong)}
-  .list span{color:var(--muted);font-size:16px}
-  .soon{margin-top:18px;font-size:16px;color:var(--muted)}
-  .soon b{color:var(--text)}
-  .fontes{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0;padding:0;list-style:none}
-  .fontes li{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:15px;font-weight:600}
-  .aviso{background:var(--box);border:2px solid var(--box-line);border-radius:10px;padding:18px}
-  .aviso h2{font-size:20px}
-  .aviso p{font-size:16px}
-  .tel{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-  .tel a{flex:1 1 140px;text-align:center;text-decoration:none;background:#0b1118;color:#fff;border:1px solid #3a4c5f;border-radius:8px;padding:12px;font-weight:700;font-size:19px}
-  .tel a small{display:block;font-weight:500;color:#b7c4d1;font-size:13px}
-  .cta2{background:linear-gradient(180deg,#0b1118,#16212d);color:#fff}
-  .cta2 h2{color:#fff}
-  .cta2 .btn-tg{background:transparent}
-  footer{background:#070b10;color:#93a0ae;font-size:14px;padding:22px 0}
-  footer p{margin:0 0 6px}
-
-  /* aparición suave; si el script falla, todo queda visible */
-  .js [data-rv]{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
-  .js [data-rv].in,[data-fx="off"] [data-rv]{opacity:1;transform:none}
-
-  @media (min-width:700px){
-    .hero-in{padding:44px 0 150px}
-    .btns{display:flex;gap:12px}
-    .btns .btn{flex:1}
-    .btn-tg{margin-top:0}
-    .list{grid-template-columns:1fr 1fr 1fr}
-    .sil{height:120px}
-  }
-.cities{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}.cities a{font-size:14px;font-weight:600;text-decoration:none;color:inherit;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}.cities a[aria-current]{background:#f5b301;color:#2e2000;border-color:#f5b301}
-
-  /* ---------- v2: vidrio, estado en vivo, ejemplo de aviso ---------- */
-  .gl{background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.22);border-radius:22px;
-    -webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -2px 0 rgba(0,0,0,.25),0 18px 40px rgba(0,0,0,.35)}
-  [data-theme="light"] .gl{background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.55));border-color:rgba(23,33,44,.16);box-shadow:inset 0 1px 0 #fff,0 14px 30px rgba(23,33,44,.16)}
-  #ahora{background:linear-gradient(180deg,var(--sky-3),var(--bg));padding:0 0 34px;margin-top:-1px}
-  .now{padding:20px 20px 18px}
-  .now h2{font-size:15px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px;color:var(--muted);display:flex;align-items:center;gap:10px}
-  .dot{width:10px;height:10px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 0 rgba(61,220,132,.7);animation:pulse 2s infinite}
-  .dot.off{background:#8fa0b3;animation:none}
-  @keyframes pulse{70%{box-shadow:0 0 0 10px rgba(61,220,132,0)}100%{box-shadow:0 0 0 0 rgba(61,220,132,0)}}
-  .now .st{font-size:22px;font-weight:800;color:var(--strong);line-height:1.25;margin:0}
-  .now .up{font-size:14px;color:var(--muted);margin:8px 0 0}
-  .av{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid rgba(255,255,255,.14)}
-  .av:first-of-type{border-top:0}
-  .av b{display:block;color:var(--strong)}.av span{font-size:15px;color:var(--muted)}
-  .lv{flex:none;width:14px;height:14px;border-radius:50%;margin-top:6px;background:#8fa0b3;box-shadow:inset 0 2px 2px rgba(255,255,255,.5),0 0 12px currentColor}
-  .lv.amarillo{background:#f5d000;color:#f5d000}.lv.naranja{background:#ff8a1f;color:#ff8a1f}.lv.rojo{background:#ff3b30;color:#ff3b30}
-  .of{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-  .of a{font-size:14px;font-weight:600;text-decoration:none;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06)}
-  .msg{max-width:420px;margin:18px auto 0;padding:16px 18px;border-radius:6px 22px 22px 22px;white-space:pre-line;font-size:16px;line-height:1.45;position:relative}
-  .msg small{display:block;margin-top:10px;font-size:13px;color:var(--muted)}
-  .ej{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--amber);color:var(--amber-ink);border-radius:999px;padding:3px 12px;margin-bottom:6px}
-  .share{display:flex;justify-content:center;margin-top:16px}
-  @media (prefers-reduced-motion:reduce){.dot{animation:none}}
-
-  /* ---------- condiciones de ahora y proxima hora ---------- */
-  .wx{display:none;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}
-  .wx.on{display:grid}
-  .wxb{padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
-  [data-theme="light"] .wxb{background:rgba(255,255,255,.7);border-color:rgba(23,33,44,.14)}
-  .wxb .lb{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .wxb .big{font-size:40px;font-weight:800;line-height:1.05;color:var(--strong);display:flex;align-items:center;gap:8px;margin-top:4px}
-  .wxb .big i{font-style:normal;font-size:30px}
-  .wxb .ds{font-size:15px;color:var(--text);margin-top:4px}
-  .wxb .mt{font-size:13px;color:var(--muted);margin-top:4px}
-  .wxc{font-size:12px;color:var(--muted);margin:-6px 0 14px;display:none}.wx.on+.wxc{display:block}
-  .fen{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px;padding:0;list-style:none}
-  .fen li{text-align:center;font-size:13px;font-weight:600;padding:12px 4px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
-  .fen svg{width:38px;height:38px;display:block;margin:0 auto 6px;color:var(--amber)}
-  @media (max-width:420px){.fen{grid-template-columns:repeat(4,1fr);gap:8px}.fen li{font-size:11.5px;padding:10px 2px}.wxb .big{font-size:34px}}
-
-  /* ---------- radar y proximas horas ---------- */
-  #radarMap{height:340px;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:#0b1118;margin-top:14px}
-  .rdn{font-size:13px;color:var(--muted);margin-top:8px}
-  .hrs{display:none;gap:8px;overflow-x:auto;padding:2px 0 8px;margin:0 0 14px;-webkit-overflow-scrolling:touch}
-  .hrs.on{display:flex}
-  .hr{flex:none;width:64px;text-align:center;padding:10px 4px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);font-size:13px}
-  [data-theme="light"] .hr{background:rgba(255,255,255,.7);border-color:rgba(23,33,44,.14)}
-  .hr b{display:block;font-size:17px;color:var(--strong);margin:2px 0}.hr i{font-style:normal;font-size:20px;display:block}
-  .hr .pp{color:#6fb7ff;font-weight:700}.hr .gs{color:var(--muted);font-size:11.5px}
-
-  /* ---------- v4: aspecto de app ---------- */
-  body{padding-bottom:86px}
-  .now{margin:16px 0 14px;text-align:left}
-  .now h2{flex-wrap:wrap}
-  .clk{margin-left:auto;font-size:34px;font-weight:800;letter-spacing:0;color:var(--strong);font-variant-numeric:tabular-nums;line-height:1;text-shadow:0 2px 0 rgba(0,0,0,.35)}
-  .fecha{margin:-4px 0 12px;font-size:14px;color:var(--muted)}.fecha::first-letter{text-transform:uppercase}
-  .hero .now{color:var(--text)} .hero .now .st{font-size:20px}
-  .hrs{scrollbar-width:none}.hrs::-webkit-scrollbar{display:none}
-  .rkt{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
-  .rk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .rki{text-align:center;padding:10px 2px 8px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);font-size:11.5px;font-weight:600;position:relative;overflow:hidden}
-  [data-theme="light"] .rki{background:rgba(255,255,255,.7);border-color:rgba(23,33,44,.14)}
-  .rki svg{width:30px;height:30px;display:block;margin:0 auto 4px;color:var(--muted)}
-  .rki em{display:block;font-style:normal;font-weight:800;font-size:11px;margin-top:2px;color:var(--muted)}
-  .rki::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.12)}
-  .rki.n1 svg,.rki.n1 em{color:#f5d000}.rki.n1::after{background:#f5d000}
-  .rki.n2 svg,.rki.n2 em{color:#ff8a1f}.rki.n2::after{background:#ff8a1f}.rki.n2{border-color:rgba(255,138,31,.55)}
-  .rki.n3 svg,.rki.n3 em{color:#ff3b30}.rki.n3::after{background:#ff3b30}.rki.n3{border-color:rgba(255,59,48,.7);box-shadow:0 0 18px rgba(255,59,48,.25)}
-  .wxc2{font-size:12px;color:var(--muted);margin:8px 0 0}
-  .ad{margin:14px 0;padding:14px 16px;border-radius:16px;border:1px dashed var(--line);background:rgba(255,255,255,.04);text-align:center;font-size:14px;color:var(--muted);min-height:74px;display:flex;flex-direction:column;justify-content:center;gap:4px}
-  .ad small{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
-  [data-plan="premium"] .ad{display:none}
-  .perm{display:grid;gap:10px;margin-top:14px}
-  .pb{font:inherit;color:inherit;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card);cursor:pointer}
-  .pb b{display:block;font-size:16px}.pb small{display:block;font-size:13px;color:var(--muted);margin-top:3px;min-height:1em}
-  .pb.ok{border-color:#3ddc84}
-  .tab{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:50;display:flex;justify-content:space-around;padding:8px 6px;border-radius:24px;
-    background:rgba(11,17,24,.94);border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);box-shadow:0 14px 34px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2);max-width:520px;margin:0 auto}
-  [data-theme="light"] .tab{background:rgba(255,255,255,.96);border-color:rgba(23,33,44,.16)}
-  .tab a{flex:1;text-align:center;text-decoration:none;font-size:11.5px;font-weight:700;color:var(--muted);padding:6px 2px;border-radius:16px}
-  .tab a svg{width:24px;height:24px;display:block;margin:0 auto 3px}
-  .tab a.on{color:var(--amber);background:rgba(245,179,1,.12)}
-  @media (max-width:560px){
-    .hero h1{font-size:26px;line-height:1.15;margin-top:6px}
-    .tools{margin-top:-2px}.tools .tg{padding:6px 10px;font-size:12.5px}
-    .cities{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-20px;padding-right:20px}.cities::-webkit-scrollbar{display:none}.cities a{flex:none}
-    .now{padding:16px 14px 14px}.gl{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-    #radarMap{height:300px}
-  }
-
-  /* ---------- modo viaje ---------- */
-  .vj{display:flex;gap:8px;margin-top:14px}
-  .vj input{flex:1;min-width:0;font:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
-  .vj .btn{flex:none;padding:12px 18px}
-  .vjo{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-  .vjo button{font:inherit;color:inherit;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer}
-  .vjc{margin-top:14px;padding:16px}
-  .vjc .rt{font-size:20px;font-weight:800;color:var(--strong)}.vjc .sb{font-size:14px;color:var(--muted);margin-top:2px}
-  .vjp{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid rgba(255,255,255,.14)}
-  .vjp:first-of-type{margin-top:12px}
-  .vjp i{font-style:normal;font-size:28px;flex:none;width:36px;text-align:center}.vjp b{display:block;color:var(--strong)}.vjp span{font-size:14px;color:var(--muted)}
-  .vjw{margin-top:12px;padding:10px 14px;border-radius:12px;background:rgba(255,138,31,.16);border:1px solid rgba(255,138,31,.55);font-weight:700}
-  .vja{display:grid;gap:10px;margin-top:12px}.vja[hidden]{display:none}.vja a.pb{text-decoration:none;display:block}
-  #viaje h3,#ajustes h3{margin:26px 0 10px;font-size:18px}
-  .aux{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .aux a{display:block;text-decoration:none;text-align:center;font-weight:700;font-size:14px;padding:13px 6px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
-  .aux a small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
-  .tab a{font-size:10.5px}
-
-  /* ---------- sonido: ecualizador animado para ubicar el boton ---------- */
-  .eq{display:inline-flex;align-items:flex-end;gap:2px;height:14px;width:17px;margin-right:2px}
-  .eq i{flex:1;background:currentColor;border-radius:1px;height:3px;opacity:.55}
-  #bSnd[aria-pressed="true"]{border-color:var(--amber);color:var(--amber);box-shadow:0 0 0 0 rgba(245,179,1,.55);animation:sndp 1.8s infinite}
-  #bSnd[aria-pressed="true"] .eq i{opacity:1;animation:eq .9s ease-in-out infinite}
-  #bSnd[aria-pressed="true"] .eq i:nth-child(2){animation-delay:-.3s}#bSnd[aria-pressed="true"] .eq i:nth-child(3){animation-delay:-.6s}#bSnd[aria-pressed="true"] .eq i:nth-child(4){animation-delay:-.15s}
-  @keyframes eq{0%,100%{height:3px}50%{height:14px}}
-  @keyframes sndp{70%{box-shadow:0 0 0 9px rgba(245,179,1,0)}100%{box-shadow:0 0 0 0 rgba(245,179,1,0)}}
-  @media (prefers-reduced-motion:reduce){#bSnd[aria-pressed="true"],#bSnd[aria-pressed="true"] .eq i{animation:none}#bSnd[aria-pressed="true"] .eq i{height:10px}}
-  /* ---------- radio local ---------- */
-  .rdo{position:fixed;left:10px;right:10px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:49;max-width:520px;margin:0 auto;display:none;align-items:center;gap:10px;padding:8px 12px;border-radius:18px;
-    background:rgba(11,17,24,.94);border:1px solid rgba(245,179,1,.5);box-shadow:0 10px 26px rgba(0,0,0,.5);font-size:14px;font-weight:700}
-  [data-theme="light"] .rdo{background:rgba(255,255,255,.97)}
-  .rdo.on{display:flex}.rdo span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .rdo button{font:inherit;flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--amber);color:var(--amber-ink);font-size:17px;cursor:pointer}
-  .rdo button.x{background:transparent;color:var(--muted);width:30px}
-  body.conradio{padding-bottom:150px}
-
-  /* ---------- riesgo de ahora (tira deslizable) y tablero personalizable ---------- */
-  .now{display:flex;flex-direction:column}
-  .now>h2{order:-3}.now>.fecha{order:-2}.now>#nowOf{order:99}
-  .blk[hidden]{display:none}
-  .ryt{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:2px 0 8px}
-  .rya{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px;scroll-snap-type:x proximity}.rya::-webkit-scrollbar{display:none}
-  .ryi{flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);scroll-snap-align:start}
-  [data-theme="light"] .ryi{background:rgba(255,255,255,.7);border-color:rgba(23,33,44,.14)}
-  .ryi svg{width:34px;height:34px;flex:none}.ryi b{display:block;font-size:15px;color:var(--strong);line-height:1.15}.ryi em{font-style:normal;font-size:12.5px;font-weight:800}
-  .ryi.n0 em{color:var(--muted);font-weight:500}
-  .ryi.n1{border-color:rgba(245,208,0,.6)}.ryi.n1 svg,.ryi.n1 em{color:#f5d000}
-  .ryi.n2{border-color:rgba(255,138,31,.7);background:rgba(255,138,31,.10)}.ryi.n2 svg,.ryi.n2 em{color:#ff8a1f}
-  .ryi.n3{border-color:rgba(255,59,48,.8);background:rgba(255,59,48,.12);animation:rojo 1.6s infinite}.ryi.n3 svg,.ryi.n3 em{color:#ff3b30}
-  @keyframes rojo{50%{box-shadow:0 0 20px rgba(255,59,48,.45)}}
-  .dsh{display:grid;gap:8px;margin-top:12px}
-  .dsr{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
-  .dsr span{flex:1;font-weight:600}.dsr.off span{opacity:.45;text-decoration:line-through}
-  .dsr button{font:inherit;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:transparent;color:inherit;cursor:pointer}
-  .dsr button:disabled{opacity:.25}
-  .dsx{font:inherit;color:var(--muted);background:none;border:0;text-decoration:underline;margin-top:10px;cursor:pointer;padding:6px 0}
-  @media (prefers-reduced-motion:reduce){.ryi.n3{animation:none}}
-
-  /* ---------- version de prueba premium, encuesta e informe ---------- */
-  .pl{display:none;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:3px 9px;margin-left:8px;vertical-align:middle}
-  [data-plan="premium"] .pl{display:inline-block}
-  .enc{padding:18px 16px;margin-bottom:26px;display:none}[data-plan="premium"] .enc{display:block}
-  .enc b{font-size:18px;color:var(--strong)}.enc p{margin:6px 0 12px}
-  .encb{display:grid;gap:8px}.encb a{display:block;text-decoration:none;text-align:center;font-weight:700;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06)}
-  .sgc{margin-top:14px;padding:18px 16px}.sgc h3{margin:0 0 4px;font-size:18px}.sgc .sb{font-size:14px;color:var(--muted)}
-  .sgc .cod{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all;color:var(--muted);margin-top:10px}
-  .sgb{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.sgb a,.sgb button{font:inherit;font-weight:700;font-size:14px;text-decoration:none;color:inherit;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
-  @media print{body{background:#fff!important;color:#000!important;padding:0}body>*:not(main),main>*:not(#seguro),.tab,.rdo,#sgForm,.sgb{display:none!important}
-    #seguro{background:#fff!important}#seguro *{color:#000!important}.sgc{border:1px solid #999!important;box-shadow:none!important;background:#fff!important}[data-rv]{opacity:1!important;transform:none!important}}
-
-  /* ---------- boton central para avisarle a alguien ---------- */
-  .tab{align-items:flex-end}
-  .tab .cta{flex:1.15;font:inherit;font-size:11.5px;font-weight:800;border:0;cursor:pointer;color:var(--amber-ink);background:linear-gradient(160deg,#ffd24a,#f5b301 55%,#c98a00);border-radius:18px;padding:9px 2px 7px;margin:-16px 4px 0;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -3px 0 rgba(0,0,0,.18),0 8px 18px rgba(245,179,1,.35)}
-  .tab .cta svg{width:26px;height:26px;display:block;margin:0 auto 2px}
-  .tab .cta:active{transform:translateY(1px)}
-
-  /* ---------- ubicacion precisa (premium) ---------- */
-  .prc{font:inherit;font-size:14px;font-weight:700;color:inherit;display:inline-flex;align-items:center;gap:6px;margin:10px 0 0;padding:8px 12px;border-radius:999px;border:1px solid rgba(245,179,1,.6);background:rgba(245,179,1,.10);cursor:pointer}
-  .prc i{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:2px 7px}
-  .prc.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}.prc.on i{background:rgba(0,0,0,.22);color:#fff}
-  [data-plan="gratis"] .prc{opacity:.6}
-
-  /* ---------- cielo segun el estado real + rendimiento en celular ---------- */
-  [data-cielo="claro"] .clouds,[data-cielo="calma"] .clouds{opacity:.28}
-  [data-cielo="nublado"] .clouds{opacity:.8}
-  .clouds{transition:opacity 1.5s}
-  .js [data-rv]{opacity:1!important;transform:none!important}
-  @media (max-width:560px){
-    .gl,.tab,.cities a,.rdo,.wxb,.hr,.rki,.ryi{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-    .gl{background:rgba(22,33,45,.92)}[data-theme="light"] .gl{background:rgba(255,255,255,.94)}
-    .c2{display:none}.c1{animation-duration:120s}
-  }
-
-  /* ---------- pantalla inicial de permisos ---------- */
-  .onb{position:fixed;inset:0;z-index:80;background:rgba(4,7,11,.86);display:flex;align-items:center;justify-content:center;padding:18px}
-  .onb[hidden]{display:none}
-  .onbc{max-width:420px;width:100%;padding:24px 20px 16px;text-align:center;background:rgba(22,33,45,.97)!important;color:#e9eef3}
-  .onbc svg{width:64px;height:74px}.onbc h2{margin:6px 0 14px;font-size:24px;color:#fff}
-  .onbc ul{list-style:none;padding:0;margin:0 0 18px;text-align:left;display:grid;gap:12px}
-  .onbc li b{display:block;color:#fff}.onbc li{font-size:14.500px;color:#b9c6d3}
-  .onbc .btn{width:100%;justify-content:center}.onbc .dsx{color:#9fb0c1}
-
-  /* ---------- ajustes junto al sonido, insignias premium, encuesta emergente ---------- */
-  .tg.cfg{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-  @media (max-width:480px){.tools .wrap{display:flex;flex-wrap:nowrap;gap:6px;align-items:center}.tools .tg{padding:6px 8px;font-size:12px;gap:5px;margin:0;white-space:nowrap}.tools .tg.cfg svg{width:15px;height:15px}}.tg.cfg svg{width:17px;height:17px;margin:0;flex:none}
-  .pmi{font-style:normal;font-size:9.500px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:2px 7px;vertical-align:middle;margin-left:6px}
-  .tab a,.tab .cta{position:relative}
-  .pmd{position:absolute;top:1px;right:14%;font-style:normal;font-size:10px;color:#f5b301}.tab .cta .pmd{color:#2e2000;right:10px;top:4px}
-  #ajustes .enc{display:none!important}
-  #encC .enc{display:block!important;background:none!important;border:0!important;box-shadow:none!important;padding:0;margin:0 0 6px;text-align:left}
-  #encC .enc b{color:#fff}#encC .enc p{color:#b9c6d3}#encC .encb a{color:#e9eef3}
-
-  /* ---------- riesgo actual destacado, volver al inicio, avisar con foto o video ---------- */
-  .ryB{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;margin:0 0 14px;border:1.5px solid rgba(52,211,153,.55);background:rgba(52,211,153,.10)}
-  .ryB .ic{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:rgba(52,211,153,.18);color:#34d399}.ryB .ic svg{width:36px;height:36px}
-  .ryB small{display:block;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.ryB b{display:block;font-size:21px;line-height:1.15;color:var(--strong)}.ryB em{font-style:normal;font-size:13px;color:var(--muted)}
-  .ryB.n1{border-color:rgba(245,208,0,.7);background:rgba(245,208,0,.10)}.ryB.n1 .ic{background:rgba(245,208,0,.2);color:#f5d000}
-  .ryB.n2{border-color:rgba(255,138,31,.8);background:rgba(255,138,31,.13)}.ryB.n2 .ic{background:rgba(255,138,31,.24);color:#ff8a1f}
-  .ryB.n3{border-color:rgba(255,59,48,.9);background:rgba(255,59,48,.15);animation:rojo 1.6s infinite}.ryB.n3 .ic{background:rgba(255,59,48,.28);color:#ff3b30}
-  @media (prefers-reduced-motion:reduce){.ryB.n3{animation:none}}
-  .volver{display:inline-flex;align-items:center;gap:6px;margin:0 0 14px;padding:8px 14px;border-radius:999px;border:1px solid rgba(128,128,128,.4);color:var(--strong);text-decoration:none;font-weight:700;font-size:14px}
-  .volver.flot{position:fixed;left:12px;top:12px;z-index:60;margin:0;background:rgba(18,27,37,.94);color:#fff;border-color:rgba(255,255,255,.3);box-shadow:0 6px 18px rgba(0,0,0,.4)}.volver[hidden]{display:none}
-  .avc{text-align:left}.avc h2{text-align:center;font-size:21px}
-  .avb{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-  .avb button{font:inherit;font-weight:700;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
-  .onbc .avb svg{width:30px;height:30px;color:#f5b301}
-  .avp{position:relative;margin-bottom:12px}.avp[hidden]{display:none}.avp img,.avp video{width:100%;max-height:200px;object-fit:cover;border-radius:14px;display:block}
-  .avp button{position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;font-size:20px;line-height:1;cursor:pointer}
-  #avMsg{width:100%;font:inherit;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:10px 12px;resize:vertical}
-  .avn{display:block;color:#9fb0c1;font-size:12.5px;margin:6px 0 12px}#avSt{color:#ffb4ab;margin:8px 0 0}#avSt:empty{display:none}
-  .avc .dsx{display:block;margin:6px auto 0}
-
-  /* ---------- viaje iniciado: panel flotante ---------- */
-  .pb.vjgo{background:linear-gradient(160deg,#25a05a,#157a41);border-color:rgba(255,255,255,.25)}.pb.vjgo b{color:#fff;font-size:17px}.pb.vjgo small{color:#d9f5e4}
-  .vjf{position:fixed;left:10px;right:10px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:58;max-width:520px;margin:0 auto;padding:10px 12px;border-radius:18px;background:rgba(14,22,31,.96);border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 28px rgba(0,0,0,.55);color:#e9eef3}
-  .vjf[hidden]{display:none}.vjf1{display:flex;justify-content:space-between;gap:10px;align-items:baseline;text-decoration:none;color:inherit}
-  .vjf1 b{color:#fff;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vjf1 span{font-size:13px;color:#b9c6d3;white-space:nowrap;font-variant-numeric:tabular-nums}
-  .vjfa{font-size:13.5px;margin:6px 0 8px;color:#7fe0a8}.vjfa.w{color:#ffb35c;font-weight:700}
-  .vjf3{display:flex;gap:8px}.vjf3 a,.vjf3 button{flex:1;font:inherit;font-size:13.5px;font-weight:700;text-align:center;text-decoration:none;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:8px 6px;cursor:pointer}
-
-  /* ---------- riesgo climatologico: icono propio; Ajustes con aspecto de panel ---------- */
-  .rgi{width:18px;height:18px;vertical-align:-4px;margin-right:6px;color:#f5b301}
-  #ajustes{background:linear-gradient(180deg,rgba(245,179,1,.10),transparent 220px),var(--bg-2);border-top:3px solid #f5b301}
-  .cfgh{display:flex;align-items:center;gap:14px;margin-bottom:18px}.cfgh h2{margin:0;font-size:30px}.cfgh p{margin:2px 0 0;color:var(--muted);font-size:14.5px}
-  .cfgi{flex:none;width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;box-shadow:0 8px 20px rgba(245,179,1,.3)}.cfgi svg{width:32px;height:32px}
-  .cfgg{border:1px solid var(--line);background:var(--card);border-radius:22px;padding:16px;margin-bottom:14px}
-  #ajustes .wrap{padding-top:34px}.dsr span{font-size:14.5px}
-  #ajustes .cfgg h3{display:flex;align-items:center;gap:10px;margin:0 0 6px;padding:0;font-size:19px}.cfgg h3>svg{flex:none;width:36px;height:36px;padding:8px;border-radius:11px;background:rgba(245,179,1,.16);color:#f5b301}
-  .cfgg>p{font-size:14.5px;color:var(--muted);margin:0 0 4px}.cfgg .pb,.cfgg .dsr{background:rgba(128,128,128,.10)}
-  .pb.pbi{display:grid;grid-template-columns:44px 1fr;column-gap:12px;align-items:center}.pb.pbi .pi{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(128,128,128,.18);color:var(--strong)}
-  .pb.pbi .pi svg{width:22px;height:22px}.pb.pbi.ok .pi{background:rgba(52,211,153,.2);color:#34d399}
-  .dsg{font-style:normal;color:var(--muted);letter-spacing:-3px;margin-right:4px}
-
-  .onb{overflow-y:auto;align-items:flex-start}.onbc{margin:auto}.onbc ul{grid-template-columns:minmax(0,1fr)}.onbc li .vj input{min-width:0}
-  .onbc li .vj{margin-top:8px}.onbc li .vj input{color:#fff;background:rgba(0,0,0,.3);border-color:rgba(255,255,255,.25)}.onbc li .vj .btn{width:auto}
-  .onbc .vjo{max-height:150px;overflow-y:auto}.onbc .vjo button{color:#e9eef3}
-
-  .gift{display:none;text-align:left;margin:0 0 16px;padding:12px 14px;border-radius:16px;border:1.5px solid rgba(245,179,1,.7);background:rgba(245,179,1,.12)}[data-trial="1"] .gift{display:block}
-  .gift b{display:block;color:#ffd24a;font-size:17px}.gift span{font-size:14px;color:#d8e0e8}
-  .trc p{color:#b9c6d3;margin:0 0 12px}.trc ul{gap:8px;margin-bottom:14px}.trc li{color:#fff;font-size:15.5px;font-weight:600}.trc .trk{font-size:13px;color:#9fb0c1}
-
-  .vjm{margin-top:12px;border-radius:18px;overflow:hidden;border:1px solid var(--line);scroll-margin-top:70px}.vjm[hidden]{display:none}.vjm iframe{display:block;width:100%;height:340px;border:0}
-  .vjfw{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:8px}.vjfw:empty{display:none}
-  .vjfw>div{font-size:13px;color:#fff;background:rgba(255,255,255,.07);border-radius:10px;padding:6px 8px;line-height:1.25}.vjfw small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9fb0c1}
-  .vjfw .rn{font-weight:800;color:#34d399}.vjfw .rn svg{width:15px;height:15px;vertical-align:-3px;margin-right:3px}.vjfw .rn.n1{color:#f5d000}.vjfw .rn.n2{color:#ff8a1f}.vjfw .rn.n3{color:#ff3b30}
-  body.conradio .vjf{bottom:calc(146px + env(safe-area-inset-bottom))}
-  #blk-ya{display:none!important}   /* el riesgo actual ya se ve en el cuadro destacado */
-  .zly{display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0 10px;font-size:13.5px;font-weight:600;color:var(--muted)}.zly>span{display:inline-flex;align-items:center;gap:6px}
-  .zly i{width:14px;height:14px;border-radius:4px;display:inline-block;opacity:.85}.zly i.rr{background:linear-gradient(90deg,#3dd6f5,#2fb34a,#f5d000)}
-  #lugares .wrap{padding-top:28px;padding-bottom:10px}
-  .lgc{display:flex;align-items:center;gap:8px;padding:12px 14px;border-radius:16px;margin-bottom:10px;border:1.5px solid rgba(52,211,153,.55);background:rgba(52,211,153,.10)}
-  .lgc.amarillo{border-color:rgba(245,208,0,.8);background:rgba(245,208,0,.12)}.lgc.naranja{border-color:rgba(255,138,31,.85);background:rgba(255,138,31,.14)}.lgc.rojo{border-color:rgba(255,59,48,.9);background:rgba(255,59,48,.15)}
-  .lgt{flex:1;min-width:0}.lgt b{display:block;font-size:17px;color:var(--strong)}.lgt span{font-size:13.5px;color:var(--muted)}
-  .lgc button{font:inherit;font-weight:700;font-size:13.5px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--strong);padding:6px 10px;cursor:pointer}.lgc button.x{padding:6px 9px}
-  .lgnew{font:inherit;font-weight:700;width:100%;padding:12px;border-radius:14px;border:1.5px dashed rgba(128,128,128,.5);background:transparent;color:var(--strong);cursor:pointer}
-  .lgf{margin-top:10px}.lgf input{width:100%;font:inherit;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--strong)}
-  .lgb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.lgb button{font:inherit;font-weight:700;padding:10px 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--strong);cursor:pointer}
-  #lgSt{display:block;margin-top:6px;color:var(--muted)}.lgp,.lge{font-size:13px;color:var(--muted);margin:8px 0 0}
-  .lgtip{font-weight:700;font-size:12px}
-  #radarMap{position:relative;z-index:0;isolation:isolate}
-.ofc{margin-top:18px}.ofc h3{font-size:19px;margin:0 0 4px}.ofr{font-size:13.5px;color:var(--muted);margin:0 0 10px}
-  .ofa{border-left:5px solid #f5d000;background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:10px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .ofa.naranja{border-left-color:#ff8a1f}.ofa.rojo{border-left-color:#ff3b30}.ofa b{display:block;font-size:16px;color:var(--strong)}.ofa small{display:block;color:var(--muted);font-size:12.5px;margin:2px 0 8px}
-  .ofa blockquote{margin:0 0 8px;padding:0 0 0 10px;border-left:2px solid var(--line);font-size:14px;color:var(--strong);white-space:pre-line}
-  .ofa details{margin:0 0 8px;font-size:14px}.ofa summary{cursor:pointer;font-weight:700}.ofa details p{white-space:pre-line;margin:6px 0 0}.ofa a{font-weight:700;font-size:14px}
-  .ofn{font-size:14px;color:var(--muted)}.ofall summary{cursor:pointer;font-weight:700;margin:6px 0 10px}
-  .lgc.yo{border-style:solid;border-width:2px}
-  .spon{display:block;margin:6px 0 4px;padding:14px 16px;border-radius:16px;border:1.5px solid rgba(245,179,1,.6);background:linear-gradient(135deg,rgba(245,179,1,.14),rgba(245,179,1,.04));text-decoration:none;color:var(--strong)}
-  .spon small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#c98a00}.spon b{display:block;font-size:16px;margin:2px 0}.spon span{font-size:13.5px;color:var(--muted)}
-  .cmp{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--card);margin:12px 0}
-  .cmp>div{display:grid;grid-template-columns:1fr 64px 76px;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid var(--line);font-size:14px}
-  .cmp>div:first-child{border-top:0}.cmp .ch{background:rgba(245,179,1,.14);font-size:13px}.cmp .ch b{text-align:center}
-  .cmp i,.cmp em{font-style:normal;text-align:center;font-weight:800}.cmp em{font-size:11.5px;color:#c98a00;font-weight:700}.cmp .pr span{color:var(--muted)}
-  .cmpn{font-size:13.5px;color:var(--muted)}
-</style>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:title" content="Aviso Sul · O temporal não manda aviso. A gente manda.">
+<meta property="og:description" content="Avisos oficiais do INMET no seu celular, com mapa e o que fazer. Paraná, Santa Catarina e Rio Grande do Sul.">
+<meta property="og:image" content="https://avisosul.com/icon-512.png">
+<link rel="stylesheet" href="/assets/site.css?v=1">
 </head>
-<body>
+<body data-tit-es="Aviso Sul · Alerta de temporal, granizo y viento en el Sur de Brasil">
+<svg class="svg-hide" aria-hidden="true"><symbol id="i-riesgo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5l22 8v16c0 14-9.500 25-22 30C19.500 54 10 43 10 29V13z"/><path d="M23 33h17a6 6 0 0 0 1-11.900A9 9 0 0 0 24 22.500 5.500 5.500 0 0 0 23 33z"/><path class="f" d="M33 35l-6 9h5l-2 8 8-11h-5l2-6z"/></g></symbol><symbol id="i-granizo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><circle class="f" cx="22" cy="46" r="3.500"/><circle class="f" cx="34" cy="50" r="3.500"/><circle class="f" cx="44" cy="45" r="3.500"/><circle class="f" cx="27" cy="57" r="3.500"/><circle class="f" cx="41" cy="57" r="3.500"/></g></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><path d="M22 43l-3 8M32 43l-3 8M42 43l-3 8M26 54l-2 6M36 54l-2 6"/></g></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h30a7 7 0 1 0-7-7M8 35h42a7 7 0 1 1-7 7M8 46h20a6 6 0 1 1-6 6"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path class="f" d="M37 5 16 34h13l-6 25 25-33H35l7-21z"/></g></symbol></svg>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none"><style>.f{fill:currentColor;stroke:none}
-  /* ---------- tema: interruptor chico, solo iconos ---------- */
-  #bTheme{position:relative;width:66px;height:36px;padding:0 9px;display:inline-flex;align-items:center;justify-content:space-between;gap:0}
-  #bTheme svg{display:block!important;width:17px;height:17px;position:relative;z-index:1;margin:0;transition:color .25s}
-  #bTheme::before{content:"";position:absolute;top:3px;left:3px;width:30px;height:28px;border-radius:999px;background:var(--amber);transition:transform .25s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 2px 6px rgba(0,0,0,.35)}
-  [data-theme="light"] #bTheme::before{transform:translateX(30px)}
-  [data-theme="night"] #bTheme .ic-moon,[data-theme="light"] #bTheme .ic-sun{color:var(--amber-ink)}
-  #bTheme .lbl-theme{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  @media (max-width:560px){
-    .brand{white-space:nowrap;font-size:19px;flex:none}.brand svg{width:26px;height:26px}
-    .pl{font-size:8.500px;padding:2px 6px;margin-left:6px}
-    .top .wrap{gap:8px}.seg{flex:none}.seg button{padding:6px 9px;font-size:12.5px}
-  }
-  @media (max-width:400px){.seg button{font-size:0;padding:7px 11px}.seg button::after{content:attr(data-set);font-size:12.500px;text-transform:uppercase;font-weight:700}}
-</style><symbol id="i-riesgo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5l22 8v16c0 14-9.500 25-22 30C19.500 54 10 43 10 29V13z"/><path d="M23 33h17a6 6 0 0 0 1-11.900A9 9 0 0 0 24 22.500 5.500 5.500 0 0 0 23 33z"/><path class="f" d="M33 35l-6 9h5l-2 8 8-11h-5l2-6z"/></g></symbol><symbol id="i-granizo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><circle class="f" cx="22" cy="46" r="3.500"/><circle class="f" cx="34" cy="50" r="3.500"/><circle class="f" cx="44" cy="45" r="3.500"/><circle class="f" cx="27" cy="57" r="3.500"/><circle class="f" cx="41" cy="57" r="3.500"/></g></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><path d="M22 43l-3 8M32 43l-3 8M42 43l-3 8M26 54l-2 6M36 54l-2 6"/></g></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h30a7 7 0 1 0-7-7M8 35h42a7 7 0 1 1-7 7M8 46h20a6 6 0 1 1-6 6"/></g></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path class="f" d="M37 5 16 34h13l-6 25 25-33H35l7-21z"/></g></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
-<div class="hero" id="hero">
-  <!-- nubes: textura generada con ruido, sin imágenes externas -->
-  <div class="clouds c1" aria-hidden="true">
-    <svg viewBox="0 0 1600 520" preserveAspectRatio="none">
-      <filter id="n1" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency=".0045 .011" numOctaves="5" seed="7"/>
-        <feColorMatrix values="0 0 0 0 .13  0 0 0 0 .17  0 0 0 0 .22  1.9 0 0 0 -.72"/>
-        <feGaussianBlur stdDeviation="1.2"/>
-      </filter>
-      <rect width="1600" height="520" filter="url(#n1)"/>
-    </svg>
+<header class="top">
+  <div class="wrap">
+    <a class="marca" href="/"><svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>Aviso Sul</a>
+    <nav class="menu" aria-label="Menu">
+      <a href="#agora" data-es="Ahora">Agora</a>
+      <a href="#como" data-es="Cómo funciona">Como funciona</a>
+      <a href="#planos" data-es="Planes">Planos</a>
+      <a href="#duvidas" data-es="Preguntas">Dúvidas</a>
+    </nav>
+    <div class="idi" role="group" aria-label="Idioma"><button type="button" data-l="pt">PT</button><button type="button" data-l="es">ES</button></div>
+    <a class="btn btn-sol btn-sm" href="/app/" data-es="Abrir la app">Abrir o app</a>
   </div>
-  <div class="clouds c2" aria-hidden="true">
-    <svg viewBox="0 0 1600 520" preserveAspectRatio="none">
-      <filter id="n2" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency=".007 .016" numOctaves="4" seed="23"/>
-        <feColorMatrix values="0 0 0 0 .24  0 0 0 0 .29  0 0 0 0 .35  1.7 0 0 0 -.78"/>
-        <feGaussianBlur stdDeviation="2"/>
-      </filter>
-      <rect width="1600" height="520" filter="url(#n2)"/>
-    </svg>
-  </div>
-  <div class="scrim" aria-hidden="true"></div>
-
-  <!-- silueta de barrio con un auto en la calle -->
-  <svg class="sil" viewBox="0 0 800 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-    <path d="M0 120V96h20V70l34-22 34 22v26h18V58h8V40h4v18h30v38h26V74l44-26 44 26v22h22V66l10-8V30h3v28l10 8v30h40V80h70v16h24V62l40-24 40 24v34h30V72h46v24h22V54h6V34h4v20h28v42h30V78l32-20 32 20v18h30v24z"/>
-    <rect class="win" x="44" y="78" width="9" height="9"/><rect class="win" x="208" y="82" width="9" height="9"/>
-    <rect class="win" x="470" y="74" width="9" height="9"/><rect class="win" x="726" y="86" width="9" height="9"/>
-    <path d="M330 96v-6c1-5 4-7 9-8l7-9c2-3 4-4 8-4h22c4 0 6 1 9 4l9 9c6 1 9 3 10 8v6z"/>
-    <circle cx="346" cy="100" r="7"/><circle cx="390" cy="100" r="7"/>
-    <path d="M0 106h800v14H0z"/>
-  </svg>
-
-  <header class="top">
-    <div class="wrap">
-      <div class="brand">
-        <svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>
-        Aviso Sul<span class="pl">Premium</span>
-      </div>
-      <div class="seg" role="group" aria-label="Idioma">
-        <button type="button" data-set="pt">Português</button>
-        <button type="button" data-set="es">Español</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="tools">
-    <div class="wrap">
-      <button type="button" class="tg" id="bTheme">
-        <svg class="ic-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 14.500A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z"/></svg>
-        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.500 1.500M17.500 17.500 19 19M19 5l-1.500 1.500M6.500 17.500 5 19"/></svg>
-        <span class="lbl-theme"></span>
-      </button>
-      <a class="tg cfg" id="bCfg" href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
-    </div>
-  </div>
-
-  <div class="hero-in">
-    <div class="wrap">
-      <span class="tag" data-k="tag"></span>
-      <span class="cities" id="cities"></span>
-      <button type="button" class="prc" id="bPrec"><span aria-hidden="true">📍</span> <span class="pt">Minha localização precisa</span><span class="es">Mi ubicación precisa</span><i>Premium</i></button>
-      <div class="now gl" aria-live="polite">
-      <h2><i class="dot off" id="nowDot"></i><span data-k="now"></span><b class="clk" id="bigClock"></b></h2>
-      <p class="fecha" id="bigDate"></p>
-      <div class="wx" id="wx">
-        <div class="wxb"><div class="lb"><span id="wxClock"></span> · <span class="pt">agora</span><span class="es">ahora</span></div>
-          <div class="big"><i id="wxIco"></i><span id="wxTemp"></span></div><div class="ds" id="wxDs"></div><div class="mt" id="wxMt"></div></div>
-        <div class="wxb"><div class="lb"><span class="pt">Próxima hora</span><span class="es">Próxima hora</span></div>
-          <div class="big"><i id="wxIco2"></i><span id="wxTemp2"></span></div><div class="ds" id="wxDs2"></div><div class="mt" id="wxMt2"></div></div>
-      </div>
-      <p class="wxc"><span class="pt">Condições e próxima hora: modelo de previsão do MET Norway (CC BY 4.0). Não é medição local.</span><span class="es">Condiciones y próxima hora: modelo de pronóstico de MET Norway (CC BY 4.0). No es una medición local.</span></p>
-      <div class="hrs" id="hrs" aria-label="Próximas horas"></div>
-      <p class="st" id="nowSt"></p>
-      <div class="rkt"><svg class="rgi" aria-hidden="true"><use href="#i-riesgo"/></svg><span class="pt">Risco climatológico · 12 h</span><span class="es">Riesgo climatológico · 12 h</span></div>
-      <div class="rk" id="rk"></div>
-      <p class="wxc2"><span class="pt">Estimativa própria a partir da previsão e dos avisos oficiais em vigor. Não substitui os avisos oficiais.</span><span class="es">Estimación propia a partir del pronóstico y de los avisos oficiales vigentes. No reemplaza los avisos oficiales.</span></p>
-      <div id="nowList"></div>
-      <p class="up" id="nowUp"></p>
-      <div class="of" id="nowOf"></div>
-    </div>
-      <!-- PENDIENTE: pegar aca el bloque de Google AdSense (solo se ve en el plan gratis) -->
-      <div class="ad" data-ad="1"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div>
-
-      <h1 class="pt">Ficou sabendo do granizo <em>quando já estava caindo?</em></h1>
-      <h1 class="es">¿Te enteraste del granizo <em>cuando ya estaba cayendo?</em></h1>
-
-      <p class="lead" data-k="lead"></p>
-
-      <div class="btns">
-        <!-- PENDIENTE: reemplazar href por el enlace real del canal de WhatsApp -->
-        <a class="btn btn-wa" href="#canais" data-canal="whatsapp">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.300-4.200A8 8 0 1 1 8.300 19z"/></svg>
-          <span class="pt">Seguir o canal no WhatsApp</span><span class="es">Seguir el canal en WhatsApp</span>
-        </a>
-        <!-- PENDIENTE: reemplazar href por el enlace real del canal de Telegram -->
-        <a class="btn btn-tg" href="#canais" data-canal="telegram">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/></svg>
-          <span class="pt">Canal no Telegram</span><span class="es">Canal en Telegram</span>
-        </a>
-      </div>
-      <p class="free pt">Gratuito. Sem cadastro: é só seguir o canal.</p>
-      <p class="free es">Gratis. Sin registro: solo hay que seguir el canal.</p>
-      <button type="button" class="tg inst" id="bInst" hidden>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
-        <span class="pt">Instalar no celular</span><span class="es">Instalar en el celular</span>
-      </button>
-    </div>
-  </div>
-</div>
+</header>
 
 <main>
-<section id="lugares">
+<section class="hero">
+  <div class="lluvia" aria-hidden="true"></div>
   <div class="wrap">
-    <h2 class="pt">Meus lugares</h2>
-    <h2 class="es">Mis lugares</h2>
-    <p class="pt">Avisamos se um aviso oficial chegar à sua casa, ao trabalho ou ao campo.</p>
-    <p class="es">Te avisamos si un aviso oficial toca tu casa, tu trabajo o tu campo.</p>
-    <div id="lgList"></div>
-    <button type="button" class="lgnew" id="lgNew">＋ <span class="pt">Adicionar lugar</span><span class="es">Agregar lugar</span></button>
-    <div class="lgf" id="lgForm" hidden>
-      <input type="text" id="lgName" maxlength="30" autocomplete="off" aria-label="Nombre">
-      <div class="lgb">
-        <button type="button" id="lgGps">📍 <span class="pt">Onde estou agora</span><span class="es">Donde estoy ahora</span></button>
-        <button type="button" id="lgMap">🗺️ <span class="pt">Tocar no mapa</span><span class="es">Tocar en el mapa</span></button>
+    <div>
+      <span class="kick" data-es="Aviso Sul · alerta de temporal en el Sur">Aviso Sul · alerta de temporal no Sul</span>
+      <h1 data-es="El temporal no avisa. Nosotros sí.">O temporal não manda aviso. A gente manda.</h1>
+      <p class="lead" data-es="Granizo, lluvia fuerte, viento y tormenta eléctrica en Paraná, Santa Catarina y Rio Grande do Sul. Los avisos oficiales del INMET llegan a tu celular con mapa y qué hacer, para tu casa, tu trabajo y tu campo.">Granizo, chuva forte, vendaval e tempestade elétrica no Paraná, em Santa Catarina e no Rio Grande do Sul. Os avisos oficiais do INMET chegam no seu celular com mapa e o que fazer, para a sua casa, o trabalho e a roça.</p>
+      <div class="btns">
+        <a class="btn btn-sol" href="/app/" data-es="Abrir gratis">Abrir grátis</a>
+        <a class="btn btn-lin" href="#planos" data-es="Ver planes">Ver planos</a>
       </div>
-      <small id="lgSt"></small>
+      <p class="small" data-es="Lo básico es gratis para siempre. Sin registro. Abre en el navegador y se instala como app.">O básico é grátis para sempre. Sem cadastro. Abre no navegador e instala como app.</p>
     </div>
-    <p class="lgp"><span class="pt">Grátis: 1 lugar. Premium: até 10.</span><span class="es">Gratis: 1 lugar. Premium: hasta 10.</span></p>
+    <aside class="vivo" aria-live="polite">
+      <div class="t"><span class="punto"></span><span data-es="Ahora en el Sur">Agora no Sul</span></div>
+      <div class="n" id="vN">–</div>
+      <div id="vTxt" class="muted" data-es="Consultando los avisos del INMET…">Consultando os avisos do INMET…</div>
+      <div class="niv" id="vNiv"></div>
+      <div class="cids" id="vCid"></div>
+      <p class="small" id="vAt" style="margin:12px 0 0"></p>
+    </aside>
   </div>
 </section>
-<div class="wrap"><a class="spon" id="spon" href="#patrocinio">
-  <!-- PENDIENTE: poner aca el logo y el enlace del patrocinador cuando haya uno -->
-  <small class="pt">Patrocinador</small><small class="es">Patrocinador</small>
-  <b class="pt">Este espaço pode ser da sua empresa</b><b class="es">Este espacio puede ser de tu empresa</b>
-  <span class="pt">Apareça para quem acompanha o tempo no Sul. Fale com a gente.</span><span class="es">Aparecé ante quienes siguen el tiempo en el Sur. Escribinos.</span>
-</a></div>
-<section class="alt" id="radar">
-  <div class="wrap" data-rv>
-    <h2 class="pt">Avisos oficiais e radar</h2>
-    <h2 class="es">Avisos oficiales y radar</h2>
-    <p class="pt">As áreas coloridas são os avisos do INMET em vigor; por cima, onde está chovendo agora. Toque numa área para ver o aviso.</p>
-    <p class="es">Las zonas pintadas son los avisos del INMET vigentes; encima, dónde está lloviendo ahora. Tocá una zona para ver el aviso.</p>
-    <div class="zly"><span><i style="background:#f5d000"></i><span class="pt">Amarelo</span><span class="es">Amarillo</span></span><span><i style="background:#ff8a1f"></i><span class="pt">Laranja</span><span class="es">Naranja</span></span><span><i style="background:#ff3b30"></i><span class="pt">Vermelho</span><span class="es">Rojo</span></span><span><i class="rr"></i>Radar</span></div>
-    <div id="radarMap"></div>
-    <p class="rdn" id="zonaNote"></p>
-    <p class="rdn" id="radarNote"></p>
-    <div class="ofc" id="ofBox">
-      <h3><span class="pt">Texto oficial dos avisos que te atingem</span><span class="es">Texto oficial de los avisos que te tocan</span></h3>
-      <p class="ofr" id="ofRef"></p>
-      <div id="ofList"></div>
-      <details class="ofall" id="ofAllBox" hidden><summary id="ofAllSum"></summary><div id="ofAll"></div></details>
+
+<section class="sec" id="agora">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Ahora mismo">Agora mesmo</span>
+      <h2 data-es="Esto es lo que Aviso Sul está vigilando.">Isto é o que o Aviso Sul está vigiando.</h2>
+      <p class="lead" data-es="Cada zona pintada es un aviso oficial vigente del INMET, con el contorno que publicó el organismo. Encima, el radar muestra dónde está lloviendo.">Cada área colorida é um aviso oficial em vigor do INMET, com o contorno publicado pelo órgão. Por cima, o radar mostra onde está chovendo.</p>
     </div>
-  </div>
-</section>
-
-<section class="alt" id="exemplo">
-  <div class="wrap" data-rv>
-    <h2 class="pt">Assim chega o aviso no seu WhatsApp</h2>
-    <h2 class="es">Así llega el aviso a tu WhatsApp</h2>
-    <p class="pt">O aviso oficial, uma sugestão prática e um botão para avisar quem você quiser.</p>
-    <p class="es">El aviso oficial, una sugerencia práctica y un botón para avisarle a quien quieras.</p>
-    <div class="msg gl"><span class="ej pt">Exemplo</span><span class="ej es">Ejemplo</span>
-<span data-k="ej"></span><small data-k="ejpie"></small></div>
-    <div class="share"><a class="btn btn-wa" id="bShare" href="#" target="_blank" rel="noopener"><span class="pt">Avisar alguém agora</span><span class="es">Avisarle a alguien ahora</span></a></div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap" data-rv>
-    <h2 class="pt">A informação existe. O problema é que está espalhada.</h2>
-    <h2 class="es">La información existe. El problema es que está dispersa.</h2>
-    <p class="pt">O INMET publica em um lugar, a Defesa Civil em outro, a prefeitura nas redes sociais. Quem não acompanha tudo ao mesmo tempo fica sabendo tarde, com o carro na rua e a roupa no varal.</p>
-    <p class="es">El INMET publica en un lugar, la Defesa Civil en otro, la prefeitura en sus redes. Quien no sigue todo al mismo tiempo se entera tarde, con el auto en la calle y la ropa tendida.</p>
-    <p data-k="hist"></p>
-  </div>
-</section>
-
-<section class="alt">
-  <div class="wrap" data-rv>
-    <h2 class="pt">O que você recebe no canal</h2>
-    <h2 class="es">Qué recibes en el canal</h2>
-    <ul class="list pt">
-      <li><strong>Resumo da manhã</strong><span>O que os avisos oficiais indicam para o dia na região.</span></li>
-      <li><strong>Avisos oficiais em vigor</strong><span>Sempre com o nome do órgão e o link para o texto original.</span></li>
-      <li><strong>Aviso na véspera</strong><span>Quando há aviso oficial de temporal para o dia seguinte.</span></li>
-    </ul>
-    <ul class="list es">
-      <li><strong>Resumen de la mañana</strong><span>Lo que indican los avisos oficiales para el día en la región.</span></li>
-      <li><strong>Avisos oficiales vigentes</strong><span>Siempre con el nombre del organismo y el enlace al texto original.</span></li>
-      <li><strong>Aviso la noche anterior</strong><span>Cuando hay un aviso oficial de temporal para el día siguiente.</span></li>
-    </ul>
-    <p class="soon pt"><b>Em breve:</b> relatos de moradores, estradas interditadas e cortes de luz e água.</p>
-    <p class="soon es"><b>Próximamente:</b> reportes de vecinos, rutas cortadas y cortes de luz y agua.</p>
-  </div>
-</section>
-
-
-<section id="fenomenos">
-  <div class="wrap" data-rv>
-    <h2 class="pt">Não é só granizo</h2>
-    <h2 class="es">No es solo granizo</h2>
-    <p class="pt">Repassamos o aviso oficial sempre que o órgão responsável emite um para estes fenômenos:</p>
-    <p class="es">Te pasamos el aviso oficial cada vez que el organismo responsable emite uno por estos fenómenos:</p>
-    <ul class="fen"><li><svg aria-hidden="true"><use href="#i-granizo"/></svg><span class="pt">Granizo</span><span class="es">Granizo</span></li><li><svg aria-hidden="true"><use href="#i-chuva"/></svg><span class="pt">Chuvas e alagamentos</span><span class="es">Lluvias e inundaciones</span></li><li><svg aria-hidden="true"><use href="#i-vendaval"/></svg><span class="pt">Ventos fortes</span><span class="es">Vientos fuertes</span></li><li><svg aria-hidden="true"><use href="#i-raios"/></svg><span class="pt">Tempestade elétrica</span><span class="es">Tormenta eléctrica</span></li></ul>
-  </div>
-</section>
-
-<section>
-  <div class="wrap" data-rv>
-    <h2 class="pt">De onde vem a informação</h2>
-    <h2 class="es">De dónde viene la información</h2>
-    <p class="pt">Compartilhamos o que os órgãos públicos publicam, sem alterar o conteúdo e citando a fonte.</p>
-    <p class="es">Compartimos lo que publican los organismos públicos, sin alterar el contenido y citando la fuente.</p>
-    <ul class="fontes" id="fontes"></ul>
-  </div>
-</section>
-
-<section class="alt" id="aviso-legal">
-  <div class="wrap" data-rv>
-    <div class="aviso">
-      <h2 class="pt">Serviço independente e não oficial</h2>
-      <h2 class="es">Servicio independiente y no oficial</h2>
-      <p data-k="noof"></p>
-      <p class="pt"><strong>Em emergência, ligue:</strong></p>
-      <p class="es"><strong>En una emergencia, llama:</strong></p>
-      <div class="tel" id="tels"></div>
+    <div id="mapa" role="region" aria-label="Mapa de avisos" data-es-aria="Mapa de avisos"></div>
+    <div class="ley">
+      <span><i style="background:#f5d000"></i><span data-es="Amarillo · peligro potencial">Amarelo · perigo potencial</span></span>
+      <span><i style="background:#ff8a1f"></i><span data-es="Naranja · peligro">Laranja · perigo</span></span>
+      <span><i style="background:#ff3b30"></i><span data-es="Rojo · gran peligro">Vermelho · grande perigo</span></span>
+      <span id="mNota"></span>
     </div>
   </div>
 </section>
 
-<section class="alt" id="premium">
-  <div class="wrap" data-rv>
-    <h2 class="pt">Grátis ou Premium</h2>
-    <h2 class="es">Gratis o Premium</h2>
-    <p class="pt">Os avisos oficiais são sempre grátis. O Premium soma mais lugares e ferramentas.</p>
-    <p class="es">Los avisos oficiales son siempre gratis. Premium suma más lugares y herramientas.</p>
+<section class="sec alt" id="como">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Cómo funciona">Como funciona</span>
+      <h2 data-es="Tres pasos, y el cielo deja de sorprenderte.">Três passos, e o céu para de te pegar de surpresa.</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card paso"><span class="num">1</span><h3 data-es="Marcá tus lugares">Marque seus lugares</h3><p data-es="Tu casa, el trabajo, el campo, la escuela de los chicos. Con el GPS o tocando el mapa.">Sua casa, o trabalho, o sítio, a escola das crianças. Pelo GPS ou tocando no mapa.</p></div>
+      <div class="card paso"><span class="num">2</span><h3 data-es="Vigilamos el INMET cada 10 minutos">A gente vigia o INMET a cada 10 minutos</h3><p data-es="Y cruzamos el contorno oficial de cada aviso con tus lugares, de día y de noche.">E cruza o contorno oficial de cada aviso com os seus lugares, de dia e de noite.</p></div>
+      <div class="card paso"><span class="num">3</span><h3 data-es="El aviso llega con qué hacer">O aviso chega com o que fazer</h3><p data-es="Color, hasta qué hora y las instrucciones oficiales, en palabras simples.">Cor, até que horas e as instruções oficiais, em palavras simples.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="cores">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Entendé el aviso">Entenda o aviso</span>
+      <h2 data-es="Qué quiere decir cada color.">O que cada cor quer dizer.</h2>
+      <p class="lead" data-es="El INMET clasifica sus avisos en tres niveles. Esto es lo que conviene hacer en cada uno.">O INMET classifica os avisos em três níveis. Isto é o que vale fazer em cada um.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card cor"><span class="tag" data-es="Amarillo">Amarelo</span><h3 data-es="Peligro potencial">Perigo potencial</h3><p data-es="Puede haber daños puntuales. Seguí tu día, pero con un ojo en el cielo y el celular a mano.">Podem acontecer estragos pontuais. Siga o seu dia, mas de olho no céu e com o celular por perto.</p></div>
+      <div class="card cor laranja"><span class="tag" data-es="Naranja">Laranja</span><h3 data-es="Peligro">Perigo</h3><p data-es="Riesgo real de cortes de luz, ramas caídas y calles anegadas. Guardá el auto, entrá lo que vuela y evitá salir a la ruta.">Risco real de falta de luz, galhos caídos e ruas alagadas. Guarde o carro, recolha o que pode voar e evite pegar a estrada.</p></div>
+      <div class="card cor vermelho"><span class="tag" data-es="Rojo">Vermelho</span><h3 data-es="Gran peligro">Grande perigo</h3><p data-es="Riesgo para casas y para personas. Quedate en un lugar seguro, lejos de árboles y ventanas, y seguí a la Defensa Civil.">Risco para casas e para pessoas. Fique num lugar seguro, longe de árvores e janelas, e siga a Defesa Civil.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="fenomenos">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Lo que vigilamos">O que a gente vigia</span>
+      <h2 data-es="Lo que más daño hace en el Sur.">O que mais estraga no Sul.</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card"><div class="ico"><svg><use href="#i-granizo"/></svg></div><h3>Granizo</h3><p data-es="Abolla autos, rompe tejas y arrasa cultivos en minutos.">Amassa carro, quebra telha e acaba com a lavoura em minutos.</p><p class="dica" data-es="<b>Antes:</b> auto bajo techo o tapado con mantas o cartón."><b>Antes:</b> carro coberto ou protegido com mantas e papelão.</p></div>
+      <div class="card"><div class="ico"><svg><use href="#i-chuva"/></svg></div><h3 data-es="Lluvias e inundaciones">Chuva e alagamento</h3><p data-es="Mucha agua en poco tiempo: calles anegadas, arroyos que crecen y barrancas que ceden.">Muita água em pouco tempo: rua alagada, arroio que sobe e barranco que cede.</p><p class="dica" data-es="<b>Durante:</b> nunca cruces una calle o un puente con agua."><b>Durante:</b> nunca atravesse rua ou ponte com água.</p></div>
+      <div class="card"><div class="ico"><svg><use href="#i-vendaval"/></svg></div><h3 data-es="Vientos fuertes">Vendaval</h3><p data-es="Ráfagas que vuelan techos, tiran árboles y cortan la luz.">Rajadas que arrancam telhado, derrubam árvore e cortam a luz.</p><p class="dica" data-es="<b>Durante:</b> lejos de árboles, carteles y cables."><b>Durante:</b> longe de árvores, placas e fios.</p></div>
+      <div class="card"><div class="ico"><svg><use href="#i-raios"/></svg></div><h3 data-es="Tormenta eléctrica">Tempestade elétrica</h3><p data-es="Rayos, ráfagas y chaparrones juntos, muchas veces de golpe.">Raios, rajadas e pancadas juntos, muitas vezes de repente.</p><p class="dica" data-es="<b>Durante:</b> desenchufá aparatos y salí del agua y del campo abierto."><b>Durante:</b> tire aparelhos da tomada e saia da água e do campo aberto.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="vizinhos">
+  <div class="wrap dest">
+    <div>
+      <span class="kick" data-es="Vecino que avisa">Vizinho que avisa</span>
+      <h2 data-es="¿Viste caer piedra? Avisá a los de al lado.">Viu cair pedra? Avise quem está do lado.</h2>
+      <p class="lead" data-es="Sacá una foto o un video, escribí lo que está pasando y mandalo por WhatsApp. Aviso Sul suma la ciudad, el aviso oficial vigente y el enlace.">Tire uma foto ou faça um vídeo, escreva o que está acontecendo e mande pelo WhatsApp. O Aviso Sul junta a cidade, o aviso oficial em vigor e o link.</p>
+      <ul class="lista">
+        <li data-es="Un toque y sale a tu grupo de la familia, del barrio o de la cooperativa.">Um toque e vai para o grupo da família, do bairro ou da cooperativa.</li>
+        <li data-es="Lo que mandás es tuyo: no publicamos tu foto ni tu ubicación.">O que você manda é seu: a gente não publica sua foto nem sua localização.</li>
+      </ul>
+    </div>
+    <div class="mock">
+      <div class="doc"><b>📷 Chapecó · 17:42</b><br><span data-es="«Está cayendo piedra del tamaño de una arveja en el centro.»">“Tá caindo pedra do tamanho de ervilha no centro.”</span><br><br><span style="color:#ff8a1f;font-weight:800" data-es="🟠 Tormenta, aviso naranja del INMET hasta las 23:59">🟠 Tempestade, aviso laranja do INMET até as 23:59</span><br><span class="small">avisosul.com/chapeco</span></div>
+      <p class="small" style="margin:12px 0 0" data-es="Ejemplo de cómo se ve el mensaje.">Exemplo de como fica a mensagem.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="quem">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Para quién es">Para quem é</span>
+      <h2 data-es="Para todo el que tiene algo que cuidar bajo el cielo.">Para quem tem alguma coisa para cuidar debaixo do céu.</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card"><h3 data-es="🏠 Casa y familia">🏠 Casa e família</h3><p data-es="Saber a tiempo para entrar la ropa, cerrar ventanas y avisar a los tuyos.">Saber a tempo de recolher a roupa, fechar as janelas e avisar os seus.</p></div>
+      <div class="card"><h3 data-es="🚗 Auto en la calle">🚗 Carro na rua</h3><p data-es="Unos minutos de aviso son la diferencia entre un garaje y un chapista.">Uns minutos de aviso são a diferença entre a garagem e o funileiro.</p></div>
+      <div class="card"><h3 data-es="🌾 Productor rural">🌾 Produtor rural</h3><p data-es="Marcá el campo, el galpón y la lechería. Cada lugar con su propio aviso.">Marque a lavoura, o galpão e a sala de ordenha. Cada lugar com o seu aviso.</p></div>
+      <div class="card"><h3 data-es="📄 Quien usa el seguro">📄 Quem aciona o seguro</h3><p data-es="Al día siguiente, un resumen de los avisos oficiales que hubo en tu ciudad.">No dia seguinte, um resumo dos avisos oficiais que valeram na sua cidade.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="seguro">
+  <div class="wrap dest">
+    <div class="mock">
+      <div class="doc"><b data-es="Informe de avisos oficiales">Relatório de avisos oficiais</b><br><span class="small">Porto Alegre · 24/11/2026</span></div>
+      <div class="row"><span data-es="Tormenta, naranja">Tempestade, laranja</span><b>00:00 – 23:59</b></div>
+      <div class="row"><span data-es="Fuente">Fonte</span><b>INMET</b></div>
+      <div class="row"><span data-es="Verificación">Verificação</span><b data-es="enlace al INMET">link do INMET</b></div>
+    </div>
+    <div>
+      <span class="kick" data-es="Seguro">Seguro</span>
+      <h2 data-es="El día después, el papel que te piden.">No dia seguinte, o papel que pedem.</h2>
+      <p class="lead" data-es="Elegí el día del temporal y generá un resumen de los avisos oficiales que estaban vigentes en tu ciudad, con el enlace a cada aviso del INMET para verificarlo. Listo para imprimir o mandar al productor de seguros.">Escolha o dia do temporal e gere um resumo dos avisos oficiais que estavam em vigor na sua cidade, com o link de cada aviso do INMET para conferir. Pronto para imprimir ou mandar para o corretor.</p>
+      <p class="small" data-es="Es un resumen de datos públicos, no un certificado oficial ni una pericia.">É um resumo de dados públicos, não é certidão oficial nem perícia.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="planos">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Gratis y Premium">Grátis e Premium</span>
+      <h2 data-es="Lo básico es gratis para siempre. Premium cuida el resto.">O básico é grátis para sempre. O Premium cuida do resto.</h2>
+      <p class="lead" data-es="Los primeros 7 días tenés Premium completo, sin tarjeta. Después elegís.">Nos primeiros 7 dias você tem o Premium completo, sem cartão. Depois você escolhe.</p>
+    </div>
+    <div class="planes">
+      <div class="plan"><h3 data-es="Gratis">Grátis</h3><div class="preco">R$ 0</div><p class="q" data-es="Para tu casa, para siempre.">Para a sua casa, para sempre.</p>
+        <ul><li data-es="Avisos oficiales en el mapa">Avisos oficiais no mapa</li><li data-es="1 lugar">1 lugar</li><li data-es="Riesgo de las próximas 12 horas">Risco das próximas 12 horas</li><li data-es="Radar e informe para el seguro">Radar e relatório para o seguro</li></ul>
+        <a class="btn btn-lin" href="/app/" data-es="Abrir gratis">Abrir grátis</a></div>
+      <div class="plan"><h3 data-es="Mensual">Mensal</h3><div class="preco">R$ 14,90<small data-es=" /mes"> /mês</small></div><p class="q" data-es="Se renueva cada mes. Cancelás cuando quieras.">Renova todo mês. Cancele quando quiser.</p>
+        <ul><li data-es="Todo lo de Premium">Tudo do Premium</li></ul>
+        <a class="btn btn-lin" href="/planos/#mensal" data-es="Suscribirme">Assinar</a></div>
+      <div class="plan top-p"><span class="sello" data-es="Ideal para el verano">Ideal para o verão</span><h3 data-es="Pase de temporada">Passe da temporada</h3><div class="preco">R$ 44,90</div><p class="q" data-es="Pago único. Premium hasta el 31 de marzo de 2027. No se renueva.">Pagamento único. Premium até 31 de março de 2027. Não renova.</p>
+        <ul><li data-es="Todo lo de Premium">Tudo do Premium</li><li data-es="Sin renovación automática">Sem renovação automática</li></ul>
+        <a class="btn btn-sol" href="/planos/#temporada" data-es="Quiero el pase">Quero o passe</a></div>
+      <div class="plan"><span class="sello" data-es="El más barato">O mais em conta</span><h3 data-es="Anual">Anual</h3><div class="preco">R$ 89,90<small data-es=" /año"> /ano</small></div><p class="q" data-es="Sale R$ 7,49 por mes.">Sai por R$ 7,49 por mês.</p>
+        <ul><li data-es="Todo lo de Premium">Tudo do Premium</li></ul>
+        <a class="btn btn-lin" href="/planos/#anual" data-es="Suscribirme">Assinar</a></div>
+    </div>
     <div class="cmp" role="table">
-      <div class="ch" role="row"><span></span><b class="pt">Grátis</b><b class="es">Gratis</b><b>Premium</b></div>
-      <div role="row"><span class="pt">Avisos oficiais no mapa e texto oficial</span><span class="es">Avisos oficiales en el mapa y texto oficial</span><i>✓</i><i>✓</i></div>
-      <div role="row"><span class="pt">Alerta onde você está agora</span><span class="es">Alerta donde estás ahora</span><i>✓</i><i>✓</i></div>
-      <div role="row"><span class="pt">Risco climatológico das próximas 12 horas</span><span class="es">Riesgo climatológico de las próximas 12 horas</span><i>✓</i><i>✓</i></div>
-      <div role="row"><span class="pt">Radar de chuva</span><span class="es">Radar de lluvia</span><i>✓</i><i>✓</i></div>
-      <div role="row"><span class="pt">Relatório para o seguro</span><span class="es">Informe para el seguro</span><i>✓</i><i>✓</i></div>
-      <div role="row"><span class="pt">Meus lugares</span><span class="es">Mis lugares</span><i>1</i><i>10</i></div>
-      <div role="row"><span class="pt">Previsão no seu ponto exato</span><span class="es">Pronóstico en tu punto exacto</span><i>—</i><i>✓</i></div>
-      <div role="row"><span class="pt">Avisar com foto, vídeo e mensagem</span><span class="es">Avisar con foto, video y mensaje</span><i>—</i><i>✓</i></div>
-      <div role="row"><span class="pt">Sem publicidade</span><span class="es">Sin publicidad</span><i>—</i><i>✓</i></div>
-      <div role="row" class="pr"><span class="pt">Hora em que a tempestade chega a cada lugar</span><span class="es">Hora en que la tormenta llega a cada lugar</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
-      <div role="row" class="pr"><span class="pt">Aviso na noite anterior</span><span class="es">Aviso la noche anterior</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
-      <div role="row" class="pr"><span class="pt">Raios perto de você, na distância que escolher</span><span class="es">Rayos cerca tuyo, a la distancia que elijas</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
-      <div role="row" class="pr"><span class="pt">Alarmes próprios e horário de silêncio</span><span class="es">Alarmas propias y horario de silencio</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
-      <div role="row" class="pr"><span class="pt">Histórico da temporada por lugar</span><span class="es">Historial de la temporada por lugar</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
-      <div role="row" class="pr"><span class="pt">Assistente do tempo com IA</span><span class="es">Asistente del tiempo con IA</span><i>—</i><em class="pt">Em breve</em><em class="es">Pronto</em></div>
+      <div role="row"><span></span><span style="text-align:center" data-es="Gratis">Grátis</span><span style="text-align:center">Premium</span></div>
+      <div role="row"><span data-es="Avisos oficiales en el mapa y texto oficial">Avisos oficiais no mapa e texto oficial</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span data-es="Alerta donde estás ahora">Alerta onde você está agora</span><i>✓</i><i>✓</i></div>
+      <div role="row"><span data-es="Mis lugares">Meus lugares</span><i>1</i><i>10</i></div>
+      <div role="row"><span data-es="Pronóstico en tu punto exacto">Previsão no seu ponto exato</span><i>—</i><i>✓</i></div>
+      <div role="row"><span data-es="Avisar con foto, video y mensaje">Avisar com foto, vídeo e mensagem</span><i>—</i><i>✓</i></div>
+      <div role="row"><span data-es="Sin publicidad">Sem publicidade</span><i>—</i><i>✓</i></div>
+      <div role="row"><span data-es="Hora en que la tormenta llega a cada lugar">Hora em que a tempestade chega a cada lugar</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Aviso la noche anterior">Aviso na noite anterior</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Rayos cerca tuyo">Raios perto de você</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Alarmas propias y horario de silencio">Alarmes próprios e horário de silêncio</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Historial de la temporada por lugar">Histórico da temporada por lugar</span><i>—</i><em data-es="Pronto">Em breve</em></div>
+      <div role="row"><span data-es="Asistente del tiempo con IA">Assistente do tempo com IA</span><i>—</i><em data-es="Pronto">Em breve</em></div>
     </div>
-    <p class="pt cmpn">Os primeiros 7 dias são Premium grátis, sem cartão.</p>
-    <p class="es cmpn">Los primeros 7 días son Premium gratis, sin tarjeta.</p>
-    <div class="btns"><a class="btn btn-tg" href="#premium" data-canal="espera"><span class="pt">Quero o preço de fundador</span><span class="es">Quiero el precio de fundador</span></a></div>
+    <p class="pagos" data-es="El cobro con <b>Pix, tarjeta y boleto</b> se habilita en estos días. Mientras tanto, usá los 7 días gratis.">O pagamento com <b>Pix, cartão e boleto</b> será liberado nos próximos dias. Enquanto isso, aproveite os 7 dias grátis.</p>
   </div>
 </section>
 
-<section class="cta2" id="canais">
-  <div class="wrap" data-rv>
-    <h2 data-k="cta"></h2>
-    <div class="btns">
-      <!-- PENDIENTE: reemplazar href por el enlace real del canal de WhatsApp -->
-      <a class="btn btn-wa" href="#canais" data-canal="whatsapp">
-        <span class="pt">Seguir o canal no WhatsApp</span><span class="es">Seguir el canal en WhatsApp</span>
-      </a>
-      <!-- PENDIENTE: reemplazar href por el enlace real del canal de Telegram -->
-      <a class="btn btn-tg" href="#canais" data-canal="telegram">
-        <span class="pt">Canal no Telegram</span><span class="es">Canal en Telegram</span>
-      </a>
+<section class="sec" id="duvidas">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Preguntas">Dúvidas</span>
+      <h2 data-es="Lo que la gente nos pregunta.">O que o pessoal pergunta.</h2>
     </div>
+    <div class="faq">
+      <details><summary data-es="¿Aviso Sul es oficial?">O Aviso Sul é oficial?</summary><p data-es="No. Es un servicio independiente que toma los avisos públicos del INMET y te los acerca. No reemplaza a la Defensa Civil. En una emergencia llamá al 199 (Defensa Civil) o al 193 (Bomberos).">Não. É um serviço independente que pega os avisos públicos do INMET e leva até você. Não substitui a Defesa Civil. Em emergência, ligue 199 (Defesa Civil) ou 193 (Bombeiros).</p></details>
+      <details><summary data-es="¿Funciona en mi ciudad?">Funciona na minha cidade?</summary><p data-es="Sí, en cualquier punto de Paraná, Santa Catarina y Rio Grande do Sul: marcás tu lugar en el mapa o usás la ubicación del celular. Foz do Iguaçu, Chapecó, Florianópolis, Curitiba y Porto Alegre ya tienen su página.">Sim, em qualquer ponto do Paraná, de Santa Catarina e do Rio Grande do Sul: você marca o lugar no mapa ou usa a localização do celular. Foz do Iguaçu, Chapecó, Florianópolis, Curitiba e Porto Alegre já têm página própria.</p></details>
+      <details><summary data-es="¿Con cuánta anticipación me entero?">Com quanta antecedência eu fico sabendo?</summary><p data-es="Revisamos el INMET cada 10 minutos: un aviso nuevo aparece en Aviso Sul como mucho 10 minutos después de publicado. La anticipación del aviso la define el INMET y suele ser de horas.">A gente confere o INMET a cada 10 minutos: um aviso novo aparece no Aviso Sul no máximo 10 minutos depois de publicado. A antecedência do aviso é definida pelo INMET e costuma ser de horas.</p></details>
+      <details><summary data-es="¿Tengo que instalar algo?">Preciso instalar alguma coisa?</summary><p data-es="No. Abre en el navegador del celular. Si querés, lo agregás a la pantalla de inicio y queda como una app.">Não. Abre no navegador do celular. Se quiser, você adiciona na tela inicial e ele fica como um app. <a href="/instalar/">Veja como</a>.</p></details>
+      <details><summary data-es="¿Qué hago si viene granizo?">O que eu faço se vier granizo?</summary><p data-es="Entrá a un lugar techado y alejate de las ventanas. Si estás manejando, frená en un lugar seguro, lejos de árboles, y quedate dentro del auto. Después, sacá fotos de los daños para el seguro.">Entre num lugar coberto e fique longe das janelas. Se estiver dirigindo, pare num lugar seguro, longe de árvores, e fique dentro do carro. Depois, fotografe os estragos para o seguro.</p></details>
+      <details><summary data-es="¿Es gratis?">É grátis?</summary><p data-es="Los avisos oficiales, el mapa, el riesgo de 12 horas, el radar y un lugar son gratis para siempre. Premium agrega más lugares y herramientas, y lo probás 7 días sin tarjeta.">Os avisos oficiais, o mapa, o risco de 12 horas, o radar e um lugar são grátis para sempre. O Premium soma mais lugares e ferramentas, e você testa 7 dias sem cartão.</p></details>
+      <details><summary data-es="¿Cómo cancelo?">Como eu cancelo?</summary><p data-es="El pase de temporada no se renueva. El mensual y el anual se cancelan cuando quieras, y tenés 7 días para arrepentirte de la compra y pedir el reembolso.">O passe da temporada não renova. O mensal e o anual você cancela quando quiser, e tem 7 dias para se arrepender da compra e pedir o reembolso.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="fin">
+  <div class="wrap">
+    <h2 data-es="Cuando el cielo se cierre, ya vas a saber.">Quando o céu fechar, você já vai saber.</h2>
+    <p class="lead" style="margin:0 auto" data-es="Abrí Aviso Sul, marcá tu lugar y listo.">Abra o Aviso Sul, marque o seu lugar e pronto.</p>
+    <div class="btns"><a class="btn btn-sol" href="/app/" data-es="Abrir gratis">Abrir grátis</a><a class="btn btn-lin" href="/instalar/" data-es="Cómo instalarla">Como instalar</a></div>
   </div>
 </section>
 </main>
 
-<section class="alt" id="seguro">
-  <div class="wrap" data-rv>
-    <h2 class="pt">Relatório para o seguro</h2>
-    <h2 class="es">Informe para el seguro</h2>
-    <p class="pt">Escolha o dia do temporal e gere um resumo dos avisos oficiais que estavam em vigor na sua cidade, com um link público para conferir.</p>
-    <p class="es">Elegí el día del temporal y generá un resumen de los avisos oficiales que estaban vigentes en tu ciudad, con un enlace público para verificarlo.</p>
-    <form class="vj" id="sgForm"><input type="date" id="sgDia" aria-label="Fecha"><button type="submit" class="btn btn-wa"><span class="pt">Gerar</span><span class="es">Generar</span></button></form>
-    <div id="sgOut"></div>
-    <p class="wxc2"><span class="pt">É um resumo de dados públicos, não um certificado oficial nem uma perícia. O registro começa em 24/11/2026.</span><span class="es">Es un resumen de datos públicos, no un certificado oficial ni una pericia. El registro empieza el 24/11/2026.</span></p>
-  </div>
-</section>
-
-
-<section class="alt" id="ajustes">
-  <div class="wrap" data-rv>
-    <div class="cfgh"><span class="cfgi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg></span><div><h2><span class="pt">Ajustes</span><span class="es">Ajustes</span></h2><p><span class="pt">Permissões deste aparelho.</span><span class="es">Permisos de este dispositivo.</span></p></div></div>
-    <div class="cfgg">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="pt">Permissões</span><span class="es">Permisos</span></h3>
-      <p class="pt">Cada permissão é pedida só quando você toca no botão. Dá para usar o Aviso Sul sem nenhuma.</p>
-      <p class="es">Cada permiso se pide recién cuando tocás el botón. Podés usar Aviso Sul sin ninguno.</p>
-      <div class="perm">
-        <button type="button" class="pb pbi" id="pNotif"><i class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.700 21a2 2 0 0 1-3.400 0"/></svg></i><b><span class="pt">Ativar notificações</span><span class="es">Activar notificaciones</span></b><small id="pNotifS"></small></button>
-        <button type="button" class="pb pbi" id="pGeo"><i class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></i><b><span class="pt">Usar minha localização</span><span class="es">Usar mi ubicación</span></b><small id="pGeoS"></small></button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PENDIENTE: segundo bloque de Google AdSense -->
-<div class="wrap"><div class="ad" data-ad="2"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div></div>
-
-
-<div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbT">
-  <div class="onbc gl">
-    <svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>
-    <h2 id="onbT"><span class="pt">Ative o Aviso Sul</span><span class="es">Activá Aviso Sul</span></h2>
-    <div class="gift"><b>🎁 <span class="pt">7 dias grátis de Premium</span><span class="es">7 días gratis de Premium</span></b><span class="pt">Acesso total, sem publicidade e sem cartão. Depois você segue na versão grátis.</span><span class="es">Acceso total, sin publicidad y sin tarjeta. Después seguís en la versión gratis.</span></div>
-    <ul>
-      <li><b>🔔 <span class="pt">Notificações</span><span class="es">Notificaciones</span></b><span class="pt">Para avisar quando surgir um aviso oficial novo.</span><span class="es">Para avisarte cuando aparece un aviso oficial nuevo.</span></li>
-      <li><b>📍 <span class="pt">Localização</span><span class="es">Ubicación</span></b><span class="pt">Para mostrar o tempo do seu ponto exato. Não é guardada.</span><span class="es">Para mostrarte el tiempo de tu punto exacto. No se guarda.</span></li>
-    </ul>
-    <button type="button" class="btn btn-wa" id="onbOk"><span class="pt">Permitir e continuar</span><span class="es">Permitir y continuar</span></button>
-    <button type="button" class="dsx" id="onbNo"><span class="pt">Agora não</span><span class="es">Ahora no</span></button>
-  </div>
-</div>
-
-<div class="onb" id="pmo" hidden role="dialog" aria-modal="true">
-  <div class="onbc gl">
-    <h2><span class="pt">Função Premium</span><span class="es">Función Premium</span></h2>
-    <p class="pt" style="color:#b9c6d3">Avisar com foto e vídeo e a localização precisa fazem parte do plano Premium.</p>
-    <p class="es" style="color:#b9c6d3">Avisar con foto y video y la ubicación precisa son parte del plan Premium.</p>
-    <button type="button" class="btn btn-wa" id="pmoOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
-  </div>
-</div>
-<div class="onb" id="trO" hidden role="dialog" aria-modal="true">
-  <div class="onbc gl trc">
-    <h2 id="trT"></h2>
-    <p id="trX"></p>
-    <ul>
-      <li>📷 <span class="pt">Avisar com foto, vídeo e mensagem</span><span class="es">Avisar con foto, video y mensaje</span></li>
-      <li>📍 <span class="pt">Minha localização precisa</span><span class="es">Mi ubicación precisa</span></li>
-      <li>🚫 <span class="pt">Uso sem publicidade</span><span class="es">Uso sin publicidad</span></li>
-    </ul>
-    <p class="trk"><span class="pt">Continuam grátis: avisos oficiais, risco climatológico, previsão e relatório para o seguro.</span><span class="es">Siguen gratis: avisos oficiales, riesgo climatológico, pronóstico e informe para el seguro.</span></p>
-    <button type="button" class="btn btn-wa" id="trOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
-  </div>
-</div>
-
-<a class="volver flot" id="volverF" href="#hero" hidden>← <span class="pt">Voltar ao início</span><span class="es">Volver al inicio</span></a>
-<div class="onb" id="avO" hidden role="dialog" aria-modal="true">
-  <div class="onbc gl avc">
-    <h2><span class="pt">Avisar com foto ou vídeo</span><span class="es">Avisar con foto o video</span></h2>
-    <div class="avb">
-      <button type="button" id="avFoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="pt">Foto</span><span class="es">Foto</span></button>
-      <button type="button" id="avVideo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="5" width="15" height="14" rx="2"/><path d="M23 7l-7 5 7 5z"/></svg><span class="pt">Vídeo</span><span class="es">Video</span></button>
-    </div>
-    <input type="file" accept="image/*" capture="environment" id="avInF" hidden>
-    <input type="file" accept="video/*" capture="environment" id="avInV" hidden>
-    <div class="avp" id="avPrev" hidden></div>
-    <textarea id="avMsg" rows="3" maxlength="400"></textarea>
-    <small class="avn"><span class="pt">Junto vão a cidade, o estado oficial de agora e o link.</span><span class="es">Junto van la ciudad, el estado oficial de ahora y el enlace.</span></small>
-    <button type="button" class="btn btn-wa" id="avSend"><span class="pt">Enviar</span><span class="es">Enviar</span></button>
-    <small class="avn" id="avSt"></small>
-    <button type="button" class="dsx" id="avX"><span class="pt">Cancelar</span><span class="es">Cancelar</span></button>
-  </div>
-</div>
-
-
-<nav class="tab" aria-label="Navegación">
-  <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
-  <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="pt">Avisar</span><span class="es">Avisar</span><i class="pmd" aria-hidden="true">★</i></button>
-  <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
-</nav>
-
-<footer>
+<footer class="pie">
   <div class="wrap">
-    <p data-k="foot"></p>
-    <p data-k="foot2"></p>
-    <!-- PENDIENTE: agregar correo de contacto -->
+    <div>
+      <a class="marca" href="/" style="display:inline-flex;margin:0 0 10px"><svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>Aviso Sul</a>
+      <p data-es="Servicio independiente y no oficial. Los avisos son del INMET y no reemplazan a la Defensa Civil.">Serviço independente e não oficial. Os avisos são do INMET e não substituem a Defesa Civil.</p>
+      <div class="emerg"><a href="tel:199">199<small data-es="Defensa Civil">Defesa Civil</small></a><a href="tel:193">193<small data-es="Bomberos">Bombeiros</small></a></div>
+    </div>
+    <div>
+      <h4>Aviso Sul</h4>
+      <a href="/app/" data-es="Abrir la app">Abrir o app</a>
+      <a href="/#agora" data-es="Temporal ahora">Temporal agora</a>
+      <a href="/planos/" data-es="Planes y precios">Planos e preços</a>
+      <a href="/instalar/" data-es="Cómo instalar">Como instalar</a>
+    </div>
+    <div>
+      <h4 data-es="Ayuda">Ajuda</h4>
+      <a href="/privacidade/" data-es="Privacidad">Privacidade</a>
+      <a href="/planos/#cancelar" data-es="Cancelar la suscripción">Cancelar assinatura</a>
+      <a href="/planos/#arrependimento" data-es="Arrepentimiento de compra">Direito de arrependimento</a>
+      <a href="/planos/#patrocinio" data-es="Anunciá en Aviso Sul">Anuncie no Aviso Sul</a>
+      <a href="https://portal.inmet.gov.br/" target="_blank" rel="noopener" data-es="Fuente: INMET">Fonte: INMET</a>
+    </div>
   </div>
+  <div class="wrap" style="display:block;margin-top:22px"><span class="small" data-es="© 2026 Aviso Sul · Un proyecto de Deik Digital">© 2026 Aviso Sul · Um projeto da Deik Digital</span></div>
 </footer>
 
-<script>
-(function(){
-  var root=document.documentElement;
-  root.className+=' js';
-  function LS(k,v){try{if(v===undefined)return localStorage.getItem('avisosul-'+k);localStorage.setItem('avisosul-'+k,v)}catch(e){return null}}
-  function safe(fn){try{fn()}catch(e){if(window.console)console.warn('avisosul',e)}}
-
-  /* ---- idioma ---- */
-  function setLang(l){root.setAttribute('data-lang',l);root.setAttribute('lang',l==='es'?'es':'pt-BR');LS('lang',l);labelTheme();safe(pintar)}
-  /* ---- tema ---- */
-  var T={pt:{night:'Modo noite',light:'Versão clara'},es:{night:'Modo noche',light:'Versión clara'}};
-  function labelTheme(){var el=document.querySelector('.lbl-theme');if(!el)return;
-    var l=root.getAttribute('data-lang'),t=root.getAttribute('data-theme');
-    /* el botón muestra el modo al que se cambia */
-    el.textContent=T[l][t==='night'?'light':'night'];var bt=document.getElementById('bTheme');if(bt){bt.setAttribute('aria-label',el.textContent);bt.setAttribute('title',el.textContent)}}
-  function periodo(){var d=new Date(),h=d.getHours();return(h>=7&&h<20?'d':'n')+d.getDate()}
-  function temaHora(){return periodo().charAt(0)==='d'?'light':'night'}
-  function setTheme(t,manual){root.setAttribute('data-theme',t);if(manual)LS('tema',t+'|'+periodo());
-    var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='night'?'#0b1118':'#3d4955');labelTheme()}
-
-  /* ---- ciudades ----
-     Una sola página para todas las ciudades: ?c=foz o ?c=iguazu.
-     PENDIENTE: los enlaces de canal son genéricos y la lista de espera está vacía.
-     Este bloque es el único lugar donde hay que cargarlos. Con 'espera' vacío,
-     la sección del plan pago no se muestra. */
-  /* Lista de ciudades: [id, nombre, pais, idioma por defecto, lat, lon]. Para sumar una, agregar una linea aca
-     y la misma ciudad en ciudades.json (la leen los agentes). */
-  var LISTA=[['foz','Foz do Iguaçu','br','pt',-25.5478,-54.5882],['chapeco','Chapecó','br','pt',-27.1004,-52.6152],['florianopolis','Florianópolis','br','pt',-27.5954,-48.548],['curitiba','Curitiba','br','pt',-25.4284,-49.2733],['portoalegre','Porto Alegre','br','pt',-30.0346,-51.2177],['cordoba','Córdoba','ar','es',-31.4201,-64.1888]];
-  var OCULTAS={cordoba:1};   /* no aparece en la lista; se abre con avisosul.com/cordoba/ para pruebas */
-  /* PENDIENTE: enlaces reales por ciudad. Con 'espera' vacio la seccion del plan pago no se muestra. */
-  var CANALES={};
-  var CANAL_GEN={whatsapp:'https://whatsapp.com/channel/',telegram:'https://t.me/avisosul',espera:''};
-  var PAIS={
-    br:{org:'INMET',orgL:'INMET',dcpt:'da Defesa Civil',dces:'de la Defesa Civil',tz:'America/Sao_Paulo',oficial:[['INMET','https://avisos.inmet.gov.br/']],
-      tels:[['199','Defesa Civil','Defesa Civil'],['193','Bombeiros','Bomberos']],
-      ejpt:'🟠 Tempestade — aviso laranja do INMET, hoje das 15:00 às 21:00.',ejes:'🟠 Tormenta — aviso naranja del INMET, hoy de 15:00 a 21:00.'},
-    ar:{org:'SMN',orgL:'Servicio Meteorológico Nacional (SMN)',dcpt:'da Defesa Civil',dces:'de Defensa Civil',tz:'America/Argentina/Buenos_Aires',oficial:[['SMN','https://www.smn.gob.ar/']],
-      tels:[['911','Emergências','Emergencias'],['100','Bombeiros','Bomberos'],['103','Defesa Civil','Defensa Civil']],
-      ejpt:'⚠️ Tempestades fortes com rajadas e possível granizo — aviso de curtíssimo prazo do SMN.',ejes:'⚠️ Tormentas fuertes con ráfagas y posible granizo — aviso a muy corto plazo del SMN.'}
-  };
-  var HIST={
-    foz:['Em 20 de novembro de 2026, um tornado F1 confirmado pelo Simepar atingiu Foz do Iguaçu. O Aviso Sul nasceu para que os avisos da região cheguem juntos, no celular.','El 20 de noviembre de 2026, un tornado F1 confirmado por Simepar golpeó Foz do Iguaçu. Aviso Sul nació para que los avisos de la región lleguen juntos, al celular.'],
-    iguazu:['Em 20 de novembro de 2026, o temporal que levou um tornado a Foz do Iguaçu também atingiu Puerto Iguazú. O Aviso Sul nasceu para que os avisos da região cheguem juntos, no celular.','El 20 de noviembre de 2026, el temporal que llevó un tornado a Foz do Iguaçu también alcanzó Puerto Iguazú. Aviso Sul nació para que los avisos de la región lleguen juntos, al celular.']
-  };
-  var CIUDAD={},TZ={};
-  for(var _i=0;_i<LISTA.length;_i++){(function(x){
-    var id=x[0],n=x[1],P=PAIS[x[2]],h=HIST[id]||['O Aviso Sul nasceu para que os avisos oficiais da região cheguem juntos, no celular.','Aviso Sul nació para que los avisos oficiales de la región lleguen juntos, al celular.'];
-    var can={},k;for(k in CANAL_GEN)can[k]=(CANALES[id]&&CANALES[id][k]!==undefined)?CANALES[id][k]:CANAL_GEN[k];
-    TZ[id]=P.tz;
-    CIUDAD[id]={lang:x[3],nombre:n,geo:[x[4],x[5]],canales:can,fontes:[P.orgL],oficial:P.oficial,tels:P.tels,
-      pt:{ad:'Espaço disponível para negócios de '+n,now:'Agora em '+n,tag:n+' e região',hist:h[0],lead:'O Aviso Sul reúne em um só canal os avisos oficiais de tempo severo para '+n+' e região.',
-        noof:'O Aviso Sul não é um órgão público e não substitui os avisos do '+P.org+' nem os alertas '+P.dcpt+'. Um aviso pode atrasar ou não chegar: não receber aviso não significa que não há risco.',
-        cta:'Receba os avisos de '+n+' no celular',foot:'Aviso Sul · '+n+' · Serviço independente, sem vínculo com órgãos públicos.',foot2:'Fonte dos avisos: '+P.org+'.',
-        ej:P.ejpt+'\n\nDeixou roupa no varal ou o carro na rua? Dá tempo de guardar.',ejpie:'Fonte: '+P.org+' (aviso oficial). Aviso Sul é independente e não oficial.'},
-      es:{ad:'Espacio disponible para comercios de '+n,now:'Ahora en '+n,tag:n+' y la región',hist:h[1],lead:'Aviso Sul reúne en un solo canal los avisos oficiales de tiempo severo para '+n+' y la región.',
-        noof:'Aviso Sul no es un organismo público y no reemplaza los avisos del '+P.org+' ni las alertas '+P.dces+'. Un aviso puede demorarse o no llegar: no recibir un aviso no significa que no haya riesgo.',
-        cta:'Recibí los avisos de '+n+' en tu celular',foot:'Aviso Sul · '+n+' · Servicio independiente, sin vínculo con organismos públicos.',foot2:'Fuente de los avisos: '+P.org+'.',
-        ej:P.ejes+'\n\n¿Dejaste ropa tendida o el auto en la calle? Todavía hay tiempo de entrarlos.',ejpie:'Fuente: '+P.org+' (aviso oficial). Aviso Sul es independiente y no oficial.'}};
-  })(LISTA[_i])}
-  var qc=/[?&]c=([a-z]+)\b/.exec(location.search)||/^\/([a-z]+)(\/|$)/.exec(location.pathname),cid=qc&&CIUDAD[qc[1]]?qc[1]:(CIUDAD[LS('c')]?LS('c'):'foz');LS('c',cid);
-  var WEB=location.protocol!=='file:';
-  var C=CIUDAD[cid];
-  function esc(t){return String(t).replace(/[&<>"]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
-  function pintar(){
-    var l=root.getAttribute('data-lang')==='es'?'es':'pt',t=C[l],i,e;
-    e=document.querySelectorAll('[data-k]');for(i=0;i<e.length;i++){var k=e[i].getAttribute('data-k');if(t[k])e[i].textContent=t[k]}
-    e=document.getElementById('fontes');if(e){e.innerHTML=C.fontes.map(function(f){return'<li>'+esc(f)+'</li>'}).join('')}
-    e=document.getElementById('tels');if(e){e.innerHTML=C.tels.map(function(x){return'<a href="tel:'+x[0]+'">'+x[0]+' <small>'+esc(l==='es'?x[2]:x[1])+'</small></a>'}).join('')}
-    e=document.getElementById('cities');if(e){var h='';for(var id in CIUDAD){if(OCULTAS[id]&&id!==cid)continue;h+='<a href="'+(WEB?'/'+id+'/':'?c='+id)+'"'+(id===cid?' aria-current="true"':'')+'>'+esc(CIUDAD[id].nombre)+'</a>'}e.innerHTML=h}
-    document.title='Aviso Sul — '+C.nombre;
-    e=document.getElementById('bShare');if(e){e.href='https://wa.me/?text='+encodeURIComponent(t.ej+'\n\n'+(l==='es'?'Avisos gratis en tu WhatsApp: ':'Avisos grátis no seu WhatsApp: ')+'https://avisosul.com/'+cid+'/')}
-    safe(pintarAhora);safe(pintarWx);
-  }
-  var RADIO_ON=false,PREC=null;
-  /* Escena del cielo: sale del estado real. Hasta tener datos, calma (sin lluvia, sin rayos, sin sonido de lluvia). */
-  var ESC={lluvia:0,granizo:false,rayos:false};
-  /* ---- estado en vivo ----
-     Lee datos/<ciudad>.json, que escriben los agentes con los avisos oficiales vigentes.
-     Si el archivo no existe o tiene mas de 90 minutos, no se afirma nada: se manda a la fuente oficial. */
-  /* Los agentes corren en GitHub y dejan ahi los datos; la pagina los lee directo, sin volver a publicar el sitio. */
-  /* datos en vivo: primero los que genera la tarea programada de Hostinger (/vivo/), si faltan los de GitHub */
-  function getJ(rel){var a=(location.hostname==='localhost')?['/'+rel]:['/vivo/'+rel,'https://raw.githubusercontent.com/DeikDigital/avisosul/main/'+rel];
-    function go(i){return fetch(a[i]+'?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw r.status;return r.json()}).catch(function(e){if(i+1<a.length)return go(i+1);throw e})}
-    return go(0)}
-  var DATOS=null,DATOS_ERR=false;
-  function hhmm(iso){var d=new Date(iso);return isNaN(d)?'':('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
-  function pintarAhora(){
-    var l=root.getAttribute('data-lang')==='es'?'es':'pt',st=document.getElementById('nowSt');if(!st)return;
-    var li=document.getElementById('nowList'),up=document.getElementById('nowUp'),dot=document.getElementById('nowDot'),of=document.getElementById('nowOf');
-    of.innerHTML=C.oficial.map(function(o){return'<a href="'+o[1]+'" target="_blank" rel="noopener">'+(l==='es'?'Ver en ':'Ver no ')+esc(o[0])+'</a>'}).join('');
-    li.innerHTML='';up.textContent='';dot.className='dot off';
-    var viejo=DATOS&&(Date.now()-new Date(DATOS.actualizado).getTime()>90*60000);
-    if(!DATOS||viejo||isNaN(new Date(DATOS.actualizado))){
-      st.textContent=DATOS_ERR||viejo?(l==='es'?'Estado en vivo no disponible en este momento. Consultá la fuente oficial.':'Estado ao vivo indisponível neste momento. Consulte a fonte oficial.'):(l==='es'?'Consultando avisos oficiales…':'Consultando avisos oficiais…');return}
-    var a=(DATOS.avisos||[]).filter(function(x){return!x.hasta||new Date(x.hasta)>new Date()});
-    dot.className='dot';
-    if(!a.length){st.textContent=l==='es'?'Sin avisos oficiales vigentes.':'Sem avisos oficiais em vigor.'}
-    else{st.textContent=a.length+(l==='es'?(a.length>1?' avisos oficiales vigentes':' aviso oficial vigente'):(a.length>1?' avisos oficiais em vigor':' aviso oficial em vigor'));
-      li.innerHTML=a.map(function(x){var q=(x.desde?hhmm(x.desde):'')+(x.hasta?' – '+hhmm(x.hasta):'');
-        return'<div class="av"><i class="lv '+esc(x.nivel||'')+'"></i><div><b>'+esc(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es))+'</b><span>'+esc(DATOS.fuente||'')+(q?' · '+q:'')+(x.url?' · <a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+(l==='es'?'texto original':'texto original')+'</a>':'')+'</span></div></div>'}).join('')}
-    up.textContent=(l==='es'?'Actualizado ':'Atualizado às ')+hhmm(DATOS.actualizado)+(l==='es'?'. No recibir un aviso no significa que no haya riesgo.':'. Não receber aviso não significa que não há risco.');
-  }
-  function cargarAhora(){
-    if(!WEB||!window.fetch){DATOS_ERR=true;safe(pintarAhora);return}
-    getJ('datos/'+cid+'.json').then(function(j){DATOS=j;DATOS_ERR=false;safe(pintarAhora);safe(ofPintar)}).catch(function(){DATOS=null;DATOS_ERR=true;safe(pintarAhora)});
-  }
-  /* ---- hora local, condiciones y proxima hora (datos/<ciudad>_tiempo.json) ---- */
-  var WX=null;
-  function reloj(){var d=new Date(),o={hour:'2-digit',minute:'2-digit',hour12:false,timeZone:TZ[cid]},t;
-    try{t=d.toLocaleTimeString('es-AR',o)}catch(x){t=hhmm(d.toISOString())}
-    var a=document.getElementById('wxClock'),b=document.getElementById('bigClock'),f=document.getElementById('bigDate');
-    if(a)a.textContent=t;if(b)b.textContent=t;
-    if(f){var l=root.getAttribute('data-lang')==='es'?'es-AR':'pt-BR';try{f.textContent=d.toLocaleDateString(l,{weekday:'long',day:'numeric',month:'long',timeZone:TZ[cid]})}catch(x){}}}
-  function pintarWx(){
-    var b=document.getElementById('wx');if(!b)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
-    var ok=WX&&typeof WX.temp==='number'&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);
-    b.className='wx'+(ok?' on':'');if(!ok)return;
-    function set(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
-    set('wxIco',WX.ahora.ico||'');set('wxTemp',WX.temp+'°');set('wxDs',WX.ahora[l]||'');
-    set('wxMt',(l==='es'?'Viento ':'Vento ')+WX.viento_kmh+' km/h · '+(l==='es'?'humedad ':'umidade ')+WX.humedad+'%');
-    set('wxIco2',WX.prox.ico||'');set('wxTemp2',WX.prox.temp+'°');set('wxDs2',WX.prox[l]||'');
-    set('wxMt2',WX.prox.mm>0?(l==='es'?'Lluvia estimada ':'Chuva estimada ')+String(WX.prox.mm).replace('.',',')+' mm':(l==='es'?'Sin lluvia prevista':'Sem chuva prevista'));
-    reloj();
-  }
-  var _pw=pintarWx;pintarWx=function(){_pw();safe(pintarHoras)};
-  function cargarWx(){if(!WEB||!window.fetch)return;
-    getJ('datos/'+cid+'_tiempo.json').then(function(j){if(PREC)return;WX=j;safe(pintarWx);if(Date.now()-new Date(j.actualizado).getTime()>40*60000)wxDirecto()}).catch(function(){if(PREC)return;WX=null;safe(pintarWx);wxDirecto()})}
-  /* ---- proximas horas (viene en el mismo archivo de condiciones, campo 'horas') ---- */
-  function pintarHoras(){var e=document.getElementById('hrs');if(!e)return;
-    var ok=WX&&WX.horas&&WX.horas.length&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);e.className='hrs'+(ok?' on':'');if(!ok)return;
-    e.innerHTML=WX.horas.map(function(h){return'<div class="hr">'+esc(h.h)+'<i>'+esc(h.ico||'')+'</i><b>'+esc(h.temp)+'°</b><span class="pp">'+(h.prob==null?'':esc(h.prob)+'%')+'</span><div class="gs">'+(h.racha==null?'':esc(h.racha)+' km/h')+'</div></div>'}).join('')}
-  /* ---- radar: mapa base de OpenStreetMap + capa de RainViewer. Se carga recien cuando la seccion entra en pantalla. ---- */
-  var RADAR=null;
-  function radarNota(t){var e=document.getElementById('radarNote');if(e)e.textContent=t}
-  function radarCapa(){
-    var l=root.getAttribute('data-lang')==='es'?'es':'pt';
-    fetch('https://api.rainviewer.com/public/weather-maps.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
-      var p=j.radar&&j.radar.past||[];if(!p.length)throw 0;var f=p[p.length-1];
-      if(RADAR.capa)RADAR.map.removeLayer(RADAR.capa);
-      RADAR.capa=L.tileLayer(j.host+f.path+'/256/{z}/{x}/{y}/2/1_1.png',{opacity:.75,maxNativeZoom:7,maxZoom:10,attribution:'Radar: <a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a>'}).addTo(RADAR.map);
-      radarNota((l==='es'?'Imagen de las ':'Imagem das ')+hhmm(new Date(f.time*1000).toISOString())+(l==='es'?'. Fuente: RainViewer. No reemplaza los avisos oficiales.':'. Fonte: RainViewer. Não substitui os avisos oficiais.'));
-    }).catch(function(){radarNota(l==='es'?'Radar no disponible en este momento.':'Radar indisponível neste momento.')});
-  }
-  /* ---- zonas oficiales: se cargan siempre (Mis lugares las usa); el mapa las dibuja cuando esta listo ---- */
-  var ZONAS=null,COLZ={amarillo:'#f5d000',naranja:'#ff8a1f',rojo:'#ff3b30'};
-  function zonasCargar(){getJ('datos/zonas.json').then(function(j){ZONAS=j;safe(zonasCapa);safe(lugPintar);safe(lugEval);safe(ofPintar)}).catch(function(){})}
-  function zonasCapa(){
-    if(!ZONAS||!RADAR||!RADAR.map)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
-    if(RADAR.zonas)RADAR.map.removeLayer(RADAR.zonas);var g=L.featureGroup(),n=0;
-    (ZONAS.avisos||[]).forEach(function(a){var c=COLZ[a.nivel]||'#f5d000';n++;
-      (a.poligonos||[]).forEach(function(p){L.polygon(p,{color:c,weight:2,opacity:.9,fillColor:c,fillOpacity:.22})
-        .bindPopup('<b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b><br>'+(l==='es'?'Hasta las ':'Até as ')+hhmm(a.hasta)+(a.descripcion?'<br><small>'+esc(a.descripcion.slice(0,160))+(a.descripcion.length>160?'…':'')+'</small>':'')+'<br><a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+(l==='es'?'Ver en INMET':'Ver no INMET')+'</a>').addTo(g)})});
-    g.addTo(RADAR.map);RADAR.zonas=g;if(RADAR.lug)RADAR.lug.bringToFront();
-    var e=document.getElementById('zonaNote');if(e)e.textContent=n?(n+(l==='es'?(n>1?' avisos oficiales vigentes en el mapa. Fuente: INMET.':' aviso oficial vigente en el mapa. Fuente: INMET.'):(n>1?' avisos oficiais em vigor no mapa. Fonte: INMET.':' aviso oficial em vigor no mapa. Fonte: INMET.'))):(l==='es'?'Sin avisos oficiales vigentes en la región.':'Sem avisos oficiais em vigor na região.')}
-  /* ---- donde estas ahora: si ya diste permiso de ubicacion, todo se centra en tu posicion en tiempo real ---- */
-  var YO=null,YOCEN=false;
-  function refPunto(){return YO||C.geo}
-  function yoIniciar(){if(!navigator.geolocation||YO===false)return;
-    navigator.geolocation.watchPosition(function(p){var n=[p.coords.latitude,p.coords.longitude],primera=!YO;YO=n;
-      safe(lugPintar);safe(ofPintar);safe(yoCapa);if(primera)safe(lugEval)},function(){},{enableHighAccuracy:false,maximumAge:300000,timeout:20000})}
-  safe(function(){if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')yoIniciar();
-      r.onchange=function(){if(r.state==='granted')yoIniciar()}}).catch(function(){})}});
-  function yoCapa(){if(!YO||!RADAR||!RADAR.map||!window.L)return;
-    if(RADAR.yo)RADAR.yo.setLatLng(YO);else RADAR.yo=L.circleMarker(YO,{radius:9,color:'#fff',weight:3,fillColor:'#16a34a',fillOpacity:1}).bindTooltip(L2('Vos','Você'),{permanent:true,direction:'right',className:'lgtip'}).addTo(RADAR.map);
-    if(!YOCEN){YOCEN=true;RADAR.map.setView(YO,8)}}
-  /* ---- texto oficial de los avisos que tocan tu ubicacion (o la ciudad si no hay permiso) ---- */
-  function ofTarjeta(a,l){var d=document.createElement('article');d.className='ofa '+(a.nivel||'');
-    d.innerHTML='<b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b><small>'+L2('Vigente hasta las ','Em vigor até as ')+hhmm(a.hasta)+' · INMET</small>'+
-      (a.descripcion?'<blockquote>'+esc(a.descripcion)+'</blockquote>':'')+(a.instruccion?'<details><summary>'+L2('Qué hacer (instrucciones oficiales)','O que fazer (instruções oficiais)')+'</summary><p>'+esc(a.instruccion)+'</p></details>':'')+
-      '<a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+L2('Ver el aviso oficial en INMET','Ver o aviso oficial no INMET')+'</a>';return d}
-  function ofPintar(){var box=document.getElementById('ofList');if(!box||!ZONAS)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt',av=lugAvisos(refPunto(),YO?null:((DATOS&&DATOS.avisos)||[]).map(function(x){return avId(x.url)}));
-    document.getElementById('ofRef').textContent=YO?L2('Según tu ubicación en tiempo real.','Pela sua localização em tempo real.'):L2('Para ','Para ')+C.nombre+L2('. Activá la ubicación para verlo donde estás.','. Ative a localização para ver onde você está.');
-    box.innerHTML='';if(!av.length)box.innerHTML='<p class="ofn">'+L2('Ningún aviso oficial vigente toca este punto.','Nenhum aviso oficial em vigor atinge este ponto.')+'</p>';
-    av.forEach(function(a){box.appendChild(ofTarjeta(a,l))});
-    var todos=(ZONAS.avisos||[]).filter(function(a){return av.indexOf(a)<0}),ab=document.getElementById('ofAllBox');ab.hidden=!todos.length;
-    document.getElementById('ofAllSum').textContent=L2('Otros avisos vigentes en el sur','Outros avisos em vigor no Sul')+' ('+todos.length+')';
-    var al=document.getElementById('ofAll');al.innerHTML='';todos.slice().reverse().forEach(function(a){al.appendChild(ofTarjeta(a,l))})}
-  /* ---- mis lugares: se guardan en el telefono; el aviso se evalua con el contorno oficial ---- */
-  var LUG=[],LUGPICK=null;try{LUG=JSON.parse(LS('lugares')||'[]')||[]}catch(e){LUG=[]}
-  function lugGuardar(){LS('lugares',JSON.stringify(LUG))}
-  function dentro(g,p){var y=g[0],x=g[1],ok=false;for(var i=0,j=p.length-1;i<p.length;j=i++){var yi=p[i][0],xi=p[i][1],yj=p[j][0],xj=p[j][1];
-    if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))ok=!ok}return ok}
-  /* distancia aproximada (km) del punto al borde del contorno: en el limite (rios, costas) se cuenta hasta 5 km */
-  function cerca(g,p){var k=111.32,c=Math.cos(g[0]*Math.PI/180),best=1e9;for(var i=0,j=p.length-1;i<p.length;j=i++){
-      var ax=(p[j][1]-g[1])*k*c,ay=(p[j][0]-g[0])*k,bx=(p[i][1]-g[1])*k*c,by=(p[i][0]-g[0])*k,dx=bx-ax,dy=by-ay,t=dx||dy?Math.max(0,Math.min(1,-(ax*dx+ay*dy)/(dx*dx+dy*dy))):0,
-      ex=ax+t*dx,ey=ay+t*dy,d=Math.sqrt(ex*ex+ey*ey);if(d<best)best=d}return best<=5}
-  function avId(u){var m=/(\d+)\s*$/.exec(u||'');return m?m[1]:''}
-  function lugAvisos(g,ids){var o={amarillo:1,naranja:2,rojo:3};return((ZONAS&&ZONAS.avisos)||[]).filter(function(a){return(ids&&ids.indexOf(String(a.id))>=0)||(a.poligonos||[]).some(function(p){return dentro(g,p)||cerca(g,p)})})
-    .sort(function(a,b){return(o[b.nivel]||0)-(o[a.nivel]||0)})}
-  function lugPintar(){var box=document.getElementById('lgList');if(!box)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
-    box.innerHTML=LUG.length?'':'<p class="lge">'+L2('Todavía no agregaste lugares.','Você ainda não adicionou lugares.')+'</p>';
-    if(YO){var ay=lugAvisos(YO),y0=ay[0],dy=document.createElement('div');dy.className='lgc yo '+(y0?y0.nivel:'ok');
-      dy.innerHTML='<div class="lgt"><b>📍 '+L2('Donde estás ahora','Onde você está agora')+'</b><span>'+(y0?esc(l==='es'?y0.titulo_es:y0.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(y0.hasta):(ZONAS?L2('Sin avisos oficiales','Sem avisos oficiais'):L2('Consultando…','Consultando…')))+'</span></div>';
-      if(!LUG.length)box.innerHTML='';box.appendChild(dy)}
-    LUG.forEach(function(u,i){var av=lugAvisos(u.g),a=av[0],d=document.createElement('div');d.className='lgc '+(a?a.nivel:'ok');
-      d.innerHTML='<div class="lgt"><b>'+esc(u.n)+'</b><span>'+(a?esc(l==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta)+(av.length>1?' · +'+(av.length-1):''):(ZONAS?L2('Sin avisos oficiales','Sem avisos oficiais'):L2('Consultando…','Consultando…')))+'</span></div>'+
-        '<button type="button" data-v="'+i+'">'+L2('Ver','Ver')+'</button><button type="button" class="x" data-q="'+i+'" aria-label="'+L2('Quitar','Remover')+'">×</button>';
-      box.appendChild(d)});
-    box.querySelectorAll('[data-v]').forEach(function(b){b.addEventListener('click',function(){var u=LUG[+b.getAttribute('data-v')];document.getElementById('radar').scrollIntoView({behavior:'smooth'});
-      var t=setInterval(function(){if(RADAR&&RADAR.map){clearInterval(t);RADAR.map.setView(u.g,8)}},300);setTimeout(function(){clearInterval(t)},8000)})});
-    box.querySelectorAll('[data-q]').forEach(function(b){b.addEventListener('click',function(){LUG.splice(+b.getAttribute('data-q'),1);lugGuardar();lugPintar()})});
-    lugCapa()}
-  function lugCapa(){if(!RADAR||!RADAR.map||!window.L)return;if(RADAR.lug)RADAR.map.removeLayer(RADAR.lug);var g=L.featureGroup();
-    LUG.forEach(function(u){L.circleMarker(u.g,{radius:7,color:'#fff',weight:3,fillColor:'#2563eb',fillOpacity:1}).bindTooltip(u.n,{permanent:true,direction:'right',className:'lgtip'}).addTo(g)});
-    g.addTo(RADAR.map);RADAR.lug=g}
-  /* aviso nuevo sobre un lugar: notificacion (mientras la app este abierta) */
-  function lugEval(){var vis={};try{vis=JSON.parse(LS('lugvis')||'{}')||{}}catch(e){}
-    LUG.forEach(function(u){lugAvisos(u.g).forEach(function(a){var k=u.id+'|'+a.id;if(vis[k])return;vis[k]=1;
-      safe(function(){notificar('Aviso Sul · '+u.n,(root.getAttribute('data-lang')==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta))})})});
-    LS('lugvis',JSON.stringify(vis))}
-  function lugAgregar(g){var n=(document.getElementById('lgName').value||'').trim()||L2('Mi lugar','Meu lugar');
-    var u={id:String(Date.now()),n:n,g:[Math.round(g[0]*1e4)/1e4,Math.round(g[1]*1e4)/1e4]};LUG.push(u);lugGuardar();
-    var vis={};try{vis=JSON.parse(LS('lugvis')||'{}')||{}}catch(e){}lugAvisos(u.g).forEach(function(a){vis[u.id+'|'+a.id]=1});LS('lugvis',JSON.stringify(vis));
-    LUGPICK=null;document.getElementById('lgForm').hidden=true;document.getElementById('lgName').value='';lugPintar();
-    document.getElementById('lugares').scrollIntoView({behavior:'smooth'})}
-  safe(function(){var nw=document.getElementById('lgNew'),f=document.getElementById('lgForm'),stt=document.getElementById('lgSt');if(!nw)return;
-    nw.addEventListener('click',function(){if(LUG.length>=(esPremium()?10:1)){if(!esPremium()){bloqueo();return}stt.textContent=L2('Llegaste al máximo de 10 lugares.','Você chegou ao máximo de 10 lugares.');f.hidden=false;return}
-      f.hidden=!f.hidden;stt.textContent='';document.getElementById('lgName').placeholder=L2('Casa, Trabajo, Campo…','Casa, Trabalho, Sítio…');if(!f.hidden)document.getElementById('lgName').focus()});
-    document.getElementById('lgGps').addEventListener('click',function(){if(!navigator.geolocation){stt.textContent=L2('Este navegador no da la ubicación.','Este navegador não fornece a localização.');return}
-      stt.textContent=L2('Buscando tu ubicación…','Buscando sua localização…');
-      navigator.geolocation.getCurrentPosition(function(p){lugAgregar([p.coords.latitude,p.coords.longitude])},function(){stt.textContent=L2('No se pudo obtener la ubicación. Revisá el permiso.','Não foi possível obter a localização. Confira a permissão.')},{enableHighAccuracy:true,timeout:15000})});
-    document.getElementById('lgMap').addEventListener('click',function(){LUGPICK=1;stt.textContent=L2('Tocá el lugar en el mapa de abajo.','Toque o lugar no mapa abaixo.');
-      document.getElementById('radar').scrollIntoView({behavior:'smooth'})});
-    lugPintar()});
-  safe(zonasCargar);setInterval(function(){safe(zonasCargar)},10*60000);
-  function radarInit(){
-    if(RADAR||!WEB)return;RADAR={};
-    var c=document.createElement('link');c.rel='stylesheet';c.href='/lib/leaflet/leaflet.css';document.head.appendChild(c);
-    var j=document.createElement('script');j.src='/lib/leaflet/leaflet.js';
-    j.onload=function(){safe(function(){
-      RADAR.map=L.map('radarMap',{scrollWheelZoom:false,zoomControl:true}).setView(C.geo,6);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(RADAR.map);
-      L.circleMarker(C.geo,{radius:7,color:'#f5b301',weight:3,fillColor:'#f5b301',fillOpacity:.9}).addTo(RADAR.map).bindTooltip(C.nombre);
-      RADAR.map.on('click',function(e){if(LUGPICK)lugAgregar([e.latlng.lat,e.latlng.lng])});
-      zonasCapa();lugCapa();yoCapa();radarCapa();setInterval(function(){safe(radarCapa)},10*60000)})};
-    j.onerror=function(){radarNota('Radar no disponible en este momento.')};document.head.appendChild(j);
-  }
-  safe(function(){var m=document.getElementById('radarMap');if(!m)return;
-    if(!('IntersectionObserver' in window)){radarInit();return}
-    var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();radarInit()}},{rootMargin:'300px'});io.observe(m)});
-  /* ---- riesgo por fenomeno: avisos oficiales vigentes + pronostico de 12 horas ---- */
-  var FEN=[['granizo','Granizo','Granizo'],['chuva','Chuva','Lluvia'],['vendaval','Ventos','Vientos'],['raios','Tempestade','Tormenta']];
-  var NV={pt:['Sem aviso','Moderado','Alto','Extremo'],es:['Sin aviso','Moderado','Alto','Extremo']};
-  function riesgoDe(h){var r={},i;function up(k,n){if(!(r[k]>=n))r[k]=n}
-    if(h.length){var pm=0,gm=0,tmx=-99,tmn=99,ry=false;for(i=0;i<h.length;i++){pm=Math.max(pm,h[i].prob||0);gm=Math.max(gm,h[i].racha||0);tmx=Math.max(tmx,h[i].temp);tmn=Math.min(tmn,h[i].temp);if(h[i].ico==='⛈️')ry=true}
-      up('chuva',pm>=80?2:pm>=50?1:0);up('vendaval',gm>=75?3:gm>=55?2:gm>=40?1:0);up('calor',tmx>=38?3:tmx>=35?2:tmx>=32?1:0);
-      up('frio',tmn<=0?3:tmn<=3?2:tmn<=7?1:0);up('geada',tmn<=0?2:tmn<=3?1:0);if(ry)up('raios',2)}
-    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<90*60000))?DATOS.avisos:[];
-    for(i=0;i<av.length;i++){if(av[i].desde&&new Date(av[i].desde)>new Date(Date.now()+(h.length>1?12:0)*3600000))continue;
-      var t=((av[i].titulo_pt||'')+' '+(av[i].titulo_es||'')).toLowerCase(),n=av[i].nivel==='rojo'?3:av[i].nivel==='naranja'?2:1;
-      if(/tempest|tormenta/.test(t)){up('chuva',n);up('vendaval',n);up('raios',n);up('granizo',n)}
-      if(/chuva|lluvia/.test(t))up('chuva',n);if(/vent|vient|vendaval/.test(t))up('vendaval',n);if(/granizo/.test(t))up('granizo',n);
-      if(/geada|helada/.test(t))up('geada',n);if(/calor/.test(t))up('calor',n);if(/frio|frío/.test(t))up('frio',n);if(/seca|sequ|estiagem|umidade|humedad/.test(t))up('seca',n);if(/raio|rayo/.test(t))up('raios',n)}
-    return r}
-  function pintarRiesgo(){var e=document.getElementById('rk');if(!e)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
-    var h=(WX&&WX.horas&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))?WX.horas:[],r=riesgoDe(h);
-    e.innerHTML=FEN.map(function(f){var n=r[f[0]]||0;return'<div class="rki n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('');
-    /* riesgo de ahora: solo la hora actual y los avisos ya vigentes; se muestran unicamente los fenomenos con nivel */
-    var y=document.getElementById('rya');if(!y)return;var ra=riesgoDe(h.slice(0,1)),act=FEN.filter(function(f){return ra[f[0]]>0}).sort(function(a,b){return ra[b[0]]-ra[a[0]]});
-    var bg=document.getElementById('ryBig');if(!bg){var nw=document.querySelector('.now h2');if(nw){bg=document.createElement('div');bg.id='ryBig';nw.parentNode.insertBefore(bg,nw.nextSibling)}}
-    if(bg){if(!h.length&&!act.length){bg.hidden=true}else{bg.hidden=false;var f0=act[0],n0=f0?ra[f0[0]]:0;bg.className='ryB n'+n0;
-      bg.innerHTML=(f0?'<span class="ic"><svg aria-hidden="true"><use href="#i-'+f0[0]+'"/></svg></span>':'<span class="ic"><svg aria-hidden="true"><use href="#i-riesgo"/></svg></span>')+
-        '<div><small>'+(l==='es'?'Riesgo climatológico ahora':'Risco climatológico agora')+'</small><b>'+(f0?esc(l==='es'?f0[2]:f0[1])+' · '+NV[l][n0]:(l==='es'?'Sin riesgo':'Sem risco'))+'</b>'+(act.length>1?'<em>+ '+act.slice(1).map(function(f){return esc(l==='es'?f[2]:f[1])}).join(', ')+'</em>':'')+'</div>'}}
-    y.innerHTML=act.length?act.map(function(f){var n=ra[f[0]];return'<div class="ryi n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg><div><b>'+esc(l==='es'?f[2]:f[1])+'</b><em>'+NV[l][n]+'</em></div></div>'}).join('')
-      :'<div class="ryi n0"><div><b>'+(l==='es'?'Sin riesgo ahora':'Sem risco agora')+'</b><em>'+(l==='es'?'según avisos y pronóstico':'segundo avisos e previsão')+'</em></div></div>'}
-  var _pa=pintarAhora;pintarAhora=function(){_pa();safe(pintarRiesgo);safe(reloj)};
-  var _pw2=pintarWx;pintarWx=function(){_pw2();safe(pintarRiesgo)};
-  /* ---- pestañas inferiores ---- */
-  safe(function(){var t=document.querySelectorAll('.tab a');if(!t.length||!('IntersectionObserver' in window))return;
-    var m={};for(var i=0;i<t.length;i++)m[t[i].getAttribute('href').slice(1)]=t[i];t[0].className='on';
-    var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){for(var k in m)m[k].className='';m[x.target.id].className='on'}})},{rootMargin:'-45% 0px -45% 0px'});
-    for(var k in m){var el=document.getElementById(k);if(el)io.observe(el)}});
-  /* ---- permisos: se piden solo al tocar cada boton ---- */
-  function L2(es,pt){return root.getAttribute('data-lang')==='es'?es:pt}
-  function st(id,t,ok){var e=document.getElementById(id+'S');if(e)e.textContent=t;var b=document.getElementById(id);if(b&&ok!==undefined)b.classList.toggle('ok',!!ok)}
-  function notifOn(){return('Notification' in window)&&Notification.permission==='granted'&&LS('notif')==='on'}
-  function notificar(titulo,cuerpo){if(!notifOn())return;var o={body:cuerpo,icon:'/icon-192.png',badge:'/icon-192.png',tag:'avisosul-'+cid};
-    if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(function(r){r.showNotification(titulo,o)}).catch(function(){try{new Notification(titulo,o)}catch(x){}});else try{new Notification(titulo,o)}catch(x){}}
-  function vigilar(){if(!DATOS||!DATOS.avisos)return;var k='vistos-'+cid,ya=(LS(k)||'').split('|'),nu=[];
-    DATOS.avisos.forEach(function(a){var id=(a.url||a.titulo_es||'')+'';if(ya.indexOf(id)<0){nu.push(a);ya.push(id)}});
-    if(nu.length&&LS(k)!==null)notificar('Aviso Sul · '+C.nombre,L2(nu[0].titulo_es||nu[0].titulo_pt,nu[0].titulo_pt||nu[0].titulo_es)+' ('+(DATOS.fuente||'')+')');
-    LS(k,ya.slice(-40).join('|'))}
-  var _pa2=pintarAhora;pintarAhora=function(){_pa2();safe(vigilar)};
-  safe(function(){
-    var n=document.getElementById('pNotif'),g=document.getElementById('pGeo');
-    if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
-    else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
-    st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
-    n.addEventListener('click',function(){
-      if(!('Notification' in window)){st('pNotif',L2('Este navegador no admite notificaciones. En iPhone, primero instalá la página en la pantalla de inicio.','Este navegador não permite notificações. No iPhone, instale a página na tela inicial primeiro.'));return}
-      Notification.requestPermission().then(function(p){if(p==='granted'){LS('notif','on');st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);notificar('Aviso Sul',L2('Notificaciones activadas para ','Notificações ativadas para ')+C.nombre)}
-        else st('pNotif',L2('Permiso no concedido. Se puede cambiar en los ajustes del navegador.','Permissão não concedida. Dá para mudar nos ajustes do navegador.'),false)})});
-    g.addEventListener('click',function(){
-      if(!navigator.geolocation){st('pGeo',L2('Este navegador no admite ubicación.','Este navegador não permite localização.'));return}
-      st('pGeo',L2('Buscando…','Buscando…'));
-      navigator.geolocation.getCurrentPosition(function(p){var best=null,bd=1e9;LISTA.forEach(function(x){var R=6371,a=(p.coords.latitude-x[4])*Math.PI/180,b=(p.coords.longitude-x[5])*Math.PI/180,
-          q=Math.sin(a/2)*Math.sin(a/2)+Math.cos(x[4]*Math.PI/180)*Math.cos(p.coords.latitude*Math.PI/180)*Math.sin(b/2)*Math.sin(b/2),d=2*R*Math.asin(Math.sqrt(q));if(d<bd){bd=d;best=x}});
-        if(bd>150){st('pGeo',L2('Todavía no cubrimos tu zona. La ciudad más cercana es ','Ainda não cobrimos sua região. A cidade mais próxima é ')+best[1]+' ('+Math.round(bd)+' km).',false);return}
-        if(best[0]===cid){st('pGeo',L2('Ya estás viendo tu ciudad: ','Você já está vendo sua cidade: ')+best[1]+'.',true);return}
-        LS('c',best[0]);location.href=WEB?'/'+best[0]+'/':'?c='+best[0]},
-        function(){st('pGeo',L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.'),false)},{timeout:10000,maximumAge:600000})});
-  });
-  /* ---- codigos de tiempo de Open-Meteo (los usa mi ubicacion precisa) ---- */
-  var WMOT=[[[95,96,99],'Trovoadas','Tormenta eléctrica','⛈️'],[[65,82,67],'Chuva forte','Lluvia fuerte','🌧️'],[[61,63,80,81,66],'Chuva','Lluvia','🌧️'],[[51,53,55,56,57],'Garoa','Llovizna','🌦️'],[[71,73,75,77,85,86],'Neve','Nieve','🌨️'],[[45,48],'Nevoeiro','Niebla','🌫️'],[[3],'Nublado','Nublado','☁️'],[[2],'Parcialmente nublado','Parcialmente nublado','⛅'],[[1],'Poucas nuvens','Algo nublado','🌤️'],[[0],'Céu limpo','Despejado','☀️']];
-  function wmo(c){for(var i=0;i<WMOT.length;i++)if(WMOT[i][0].indexOf(c)>=0)return WMOT[i];return[[],'','','']}
-  function km(a,b){var R=6371,x=(b[0]-a[0])*Math.PI/180,y=(b[1]-a[1])*Math.PI/180,q=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(q))}
-  /* ---- tablero personalizable: orden y visibilidad de cada cuadro, guardados en el dispositivo ---- */
-  var BLK=[['wx','Agora e próxima hora','Ahora y próxima hora'],['ya','Risco climatológico agora','Riesgo climatológico ahora'],['hrs','Próximas 12 horas','Próximas 12 horas'],['av','Avisos oficiais','Avisos oficiales'],['rk','Risco climatológico 12 h','Riesgo climatológico 12 h']];
-  function dashGet(){return BLK.map(function(b){return{id:b[0],on:true}})}
-  function dashGetViejo(){var d;try{d=JSON.parse(LS('dash')||'null')}catch(e){d=null}
-    var ids=BLK.map(function(b){return b[0]});if(!d||!d.length)return ids.map(function(i){return{id:i,on:true}});
-    d=d.filter(function(x){return ids.indexOf(x.id)>=0});ids.forEach(function(i){if(!d.some(function(x){return x.id===i}))d.push({id:i,on:true})});return d}
-  function dashAplicar(){var d=dashGet();d.forEach(function(x,n){var e=document.getElementById('blk-'+x.id);if(e){e.style.order=n+1;e.hidden=!x.on}});
-    var box=document.getElementById('dsh');if(!box)return;box.innerHTML='';
-    d.forEach(function(x,n){var b=BLK.filter(function(q){return q[0]===x.id})[0],r=document.createElement('div');r.className='dsr'+(x.on?'':' off');
-      r.innerHTML='<span>'+esc(L2(b[2],b[1]))+'</span><button type="button" data-a="up" aria-label="Subir"'+(n===0?' disabled':'')+'>▲</button><button type="button" data-a="dn" aria-label="Bajar"'+(n===d.length-1?' disabled':'')+'>▼</button><button type="button" data-a="tg" aria-label="Mostrar u ocultar">'+(x.on?'👁':'—')+'</button>';
-      r.addEventListener('click',function(ev){var a=ev.target.getAttribute&&ev.target.getAttribute('data-a');if(!a)return;var dd=dashGet();
-        if(a==='tg')dd[n].on=!dd[n].on;else{var m=a==='up'?n-1:n+1;if(m<0||m>=dd.length)return;var t=dd[n];dd[n]=dd[m];dd[m]=t}
-        LS('dash',JSON.stringify(dd));dashAplicar()});box.appendChild(r)})}
-  safe(function(){var now=document.querySelector('.now');if(!now)return;
-    function caja(id,els){var c=document.createElement('div');c.className='blk';c.id='blk-'+id;now.appendChild(c);els.forEach(function(e){if(e)c.appendChild(e)});return c}
-    var q=function(x){return now.querySelector(x)};
-    caja('wx',[q('#wx'),q('.wxc')]);
-    var ya=caja('ya',[]);ya.innerHTML='<div class="ryt"><svg class="rgi" aria-hidden="true"><use href="#i-riesgo"/></svg><span class="pt">Risco climatológico agora</span><span class="es">Riesgo climatológico ahora</span></div><div class="rya" id="rya"></div>';
-    caja('hrs',[q('#hrs')]);caja('av',[q('#nowSt'),q('#nowList'),q('#nowUp')]);caja('rk',[q('.rkt'),q('#rk'),q('.wxc2')]);
-    document.getElementById('dsReset').addEventListener('click',function(){LS('dash','');dashAplicar()});
-    dashAplicar()});
-  /* ---- plan: mientras se prueba con contactos, todo abre como Premium (sin publicidad). ?plan=gratis muestra la version con publicidad. ---- */
-  /* prueba gratis: 7 dias de Premium desde la primera apertura en este dispositivo; despues pasa a gratis. ?plan=premium|gratis lo fija, ?plan=prueba la reinicia, ?dia=N simula el dia */
-  var TR={on:false,dias:0,fin:false};
-  safe(function(){var q=/[?&]plan=(gratis|premium|prueba)\b/.exec(location.search);if(q){if(q[1]==='prueba'){LS('plan','');LS('t0','');LS('tav','');LS('tfin','')}else LS('plan',q[1])}
-    var f=LS('plan'),t0=+LS('t0');if(!t0){t0=Date.now();LS('t0',String(t0))}
-    var el=(Date.now()-t0)/864e5,d=/[?&]dia=(\d+)/.exec(location.search);if(d)el=+d[1];
-    TR.on=!f&&el<7;TR.dias=Math.max(0,Math.ceil(7-el));TR.fin=!f&&el>=7;
-    root.setAttribute('data-plan',f==='gratis'?'gratis':f==='premium'?'premium':(el<7?'premium':'gratis'));root.setAttribute('data-trial',TR.on?'1':'0')});
-  function trTxt(){var p=document.querySelector('.pl');if(p)p.textContent=TR.on?L2('Prueba · ','Teste · ')+TR.dias+(TR.dias===1?L2(' día',' dia'):L2(' días',' dias')):'Premium';
-    var t=document.getElementById('trT'),x=document.getElementById('trX');if(!t)return;
-    t.textContent=TR.fin?L2('Tu prueba Premium terminó','Seu teste Premium terminou'):L2('Mañana termina tu prueba Premium','Amanhã termina seu teste Premium');
-    x.textContent=TR.fin?L2('Ahora estás en la versión gratis. Ya no tenés:','Agora você está na versão grátis. Você não tem mais:'):L2('Desde mañana seguís en la versión gratis. Vas a dejar de tener:','A partir de amanhã você segue na versão grátis. Você deixa de ter:')}
-  safe(function(){var o=document.getElementById('trO');if(!o)return;var k=TR.fin?'tfin':(TR.on&&TR.dias<=1?'tav':'');
-    document.getElementById('trOk').addEventListener('click',function(){o.hidden=true});if(!k||LS(k))return;
-    setTimeout(function(){if(!document.getElementById('onb').hidden)return;LS(k,'1');trTxt();o.hidden=false;
-      safe(function(){notificar('Aviso Sul',document.getElementById('trT').textContent)})},2500)});
-  function encuesta(){var b=document.getElementById('encB');if(!b)return;var br=LISTA.filter(function(x){return x[0]===cid})[0][2]==='br';
-    var op=br?['Sim, até R$ 9,90 por mês','Sim, até R$ 19,90 por mês','Só se for grátis','Não usaria']:['Sí, hasta $3.000 por mes','Sí, hasta $6.000 por mes','Solo si es gratis','No la usaría'];
-    b.innerHTML=op.map(function(o){return'<a target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent('Aviso Sul Premium ('+C.nombre+'): '+o+'. ')+'">'+esc(o)+'</a>'}).join('')+'<small style="color:var(--muted);font-size:12.5px">'+L2('Se abre WhatsApp con tu respuesta: mandásela a quien te pasó la app y, si querés, sumá un comentario.','Abre o WhatsApp com sua resposta: envie para quem te passou o app e, se quiser, acrescente um comentário.')+'</small>'}
-  /* ---- informe para el seguro: lee el historial publico que guardan los agentes ---- */
-  safe(function(){var f=document.getElementById('sgForm'),d=document.getElementById('sgDia'),out=document.getElementById('sgOut');if(!f)return;
-    var hoy=new Date(Date.now()-3*3600000).toISOString().slice(0,10);d.value=hoy;d.max=hoy;d.min='2026-11-24';
-    f.addEventListener('submit',function(ev){ev.preventDefault();var dia=d.value;if(!dia)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
-      var ruta='historial/'+cid+'/'+dia+'.json',ver='https://github.com/DeikDigital/avisosul/commits/main/'+ruta;
-      out.innerHTML='<div class="sgc gl"><div class="sb">'+L2('Buscando…','Buscando…')+'</div></div>';
-      getJ(ruta).catch(function(e){if(e===404)return{avisos:{}};throw e}).then(function(j){
-        var a=Object.keys(j.avisos||{}).map(function(k){return j.avisos[k]}),fd=dia.split('-').reverse().join('/');
-        var cuerpo=a.length?a.map(function(x){return'<div class="av"><i class="lv '+esc(x.nivel||'')+'"></i><div><b>'+esc(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es))+'</b><span>'+esc(j.fuente||'')+' · '+L2('vigencia ','vigência ')+hhmm(x.desde)+(x.hasta?' – '+hhmm(x.hasta):'')+' · '+L2('registrado de ','registrado das ')+hhmm(x.visto_desde)+L2(' a ',' às ')+hhmm(x.visto_hasta)+' · <a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+L2('aviso original','aviso original')+'</a></span></div></div>'}).join('')
-          :'<p class="sb" style="margin-top:10px">'+L2('No hay avisos oficiales registrados para ese día en esta ciudad.','Não há avisos oficiais registrados para esse dia nesta cidade.')+'</p>';
-        out.innerHTML='<div class="sgc gl"><h3>Aviso Sul · '+esc(C.nombre)+' · '+fd+'</h3><div class="sb">'+L2('Avisos oficiales registrados ese día','Avisos oficiais registrados nesse dia')+': '+a.length+'</div>'+cuerpo+
-          '<div class="cod">'+L2('Registro público con fecha y hora de cada guardado: ','Registro público com data e hora de cada gravação: ')+esc(ver)+'</div>'+
-          '<div class="sgb"><a href="'+esc(ver)+'" target="_blank" rel="noopener">'+L2('Verificar el registro','Conferir o registro')+'</a><button type="button" id="sgPrint">'+L2('Imprimir o guardar PDF','Imprimir ou salvar PDF')+'</button></div></div>';
-        document.getElementById('sgPrint').addEventListener('click',function(){window.print()})
-      }).catch(function(){out.innerHTML='<div class="sgc gl"><div class="sb">'+L2('No se pudo leer el registro. Probá de nuevo en un momento.','Não foi possível ler o registro. Tente de novo em instantes.')+'</div></div>'})})});
-  /* ---- avisarle a alguien: comparte el estado real de la ciudad (aviso vigente o condiciones), nunca el ejemplo ---- */
-  function textoAviso(){var l=root.getAttribute('data-lang')==='es'?'es':'pt',t,u='https://avisosul.com/'+cid+'/';
-    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<90*60000))?DATOS.avisos.filter(function(x){return!x.hasta||new Date(x.hasta)>new Date()}):null;
-    if(av&&av.length){var x=av[0];t='⚠️ '+C.nombre+': '+(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es))+' ('+(DATOS.fuente||'')+(x.hasta?L2(', hasta las ',', até as ')+hhmm(x.hasta):'')+').'}
-    else if(av)t=C.nombre+': '+L2('sin avisos oficiales vigentes en este momento.','sem avisos oficiais em vigor neste momento.');
-    else t=L2('Mirá cómo está el tiempo en ','Veja como está o tempo em ')+C.nombre+'.';
-    if(WX&&typeof WX.temp==='number'&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))t+=' '+L2('Ahora ','Agora ')+WX.temp+'°, '+(WX.ahora[l]||'').toLowerCase()+'.';
-    return t+'\n\n'+L2('Avisos gratis en tu celular: ','Avisos grátis no seu celular: ')+u}
-  var AVF=null;
-  function avPrev(){var p=document.getElementById('avPrev');p.innerHTML='';p.hidden=!AVF;if(!AVF)return;var u=URL.createObjectURL(AVF),e=document.createElement(/^video/.test(AVF.type)?'video':'img');e.src=u;if(e.tagName==='VIDEO'){e.muted=true;e.controls=true;e.playsInline=true}p.appendChild(e);
-    var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Quitar');x.addEventListener('click',function(){AVF=null;avPrev()});p.appendChild(x)}
-  function compartirAviso(ev){if(ev)ev.preventDefault();if(!esPremium()){bloqueo();return}
-    document.getElementById('avMsg').placeholder=L2('Contá qué está pasando (opcional)','Conte o que está acontecendo (opcional)');document.getElementById('avSt').textContent='';document.getElementById('avO').hidden=false}
-  safe(function(){var o=document.getElementById('avO'),iF=document.getElementById('avInF'),iV=document.getElementById('avInV');if(!o)return;
-    document.getElementById('avFoto').addEventListener('click',function(){iF.click()});document.getElementById('avVideo').addEventListener('click',function(){iV.click()});
-    [iF,iV].forEach(function(i){i.addEventListener('change',function(){if(i.files&&i.files[0]){AVF=i.files[0];avPrev()}i.value=''})});
-    document.getElementById('avX').addEventListener('click',function(){o.hidden=true});
-    document.getElementById('avSend').addEventListener('click',function(){var m=document.getElementById('avMsg').value.trim(),t=(m?m+'\n\n':'')+textoAviso(),fin=function(){o.hidden=true;AVF=null;avPrev();document.getElementById('avMsg').value=''};
-      if(AVF){if(navigator.canShare&&navigator.canShare({files:[AVF]})){navigator.share({files:[AVF],text:t}).then(fin).catch(function(){})}
-        else document.getElementById('avSt').textContent=L2('Este navegador no deja enviar la foto o el video desde la página. Quitalo para mandar solo el texto.','Este navegador não deixa enviar a foto ou o vídeo pela página. Remova para mandar só o texto.');return}
-      if(navigator.share)navigator.share({text:t}).then(fin).catch(function(){});else{window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener');fin()}})});
-  /* boton flotante para volver al inicio mientras se mira Ajustes */
-  safe(function(){var v=document.getElementById('volverF'),a=document.getElementById('ajustes');if(!v||!a||!('IntersectionObserver' in window))return;
-    new IntersectionObserver(function(es){v.hidden=!es[0].isIntersecting},{rootMargin:'-30% 0px -30% 0px'}).observe(a)});
-  safe(function(){var a=document.getElementById('tabShare'),b=document.getElementById('bShare');if(a)a.addEventListener('click',compartirAviso);if(b)b.addEventListener('click',compartirAviso)});
-  /* ---- mi ubicacion precisa (premium): condiciones y proximas horas del punto exacto, por GPS. Los avisos oficiales siguen siendo los de la ciudad. ---- */
-  function precCargar(){if(!PREC)return;var eraPrec=PREC!==C.geo;
-    fetch('https://api.open-meteo.com/v1/forecast?latitude='+PREC[0]+'&longitude='+PREC[1]+'&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,precipitation_probability,precipitation,wind_gusts_10m,weather_code&forecast_hours=13&timezone=auto').then(function(r){return r.json()}).then(function(j){
-      if(eraPrec&&!PREC)return;var c=j.current,h=j.hourly,w=wmo(c.weather_code),w1=wmo(h.weather_code[1]);
-      WX={actualizado:new Date().toISOString(),fuente:'Open-Meteo',temp:Math.round(c.temperature_2m),humedad:Math.round(c.relative_humidity_2m),viento_kmh:Math.round(c.wind_speed_10m),
-        ahora:{pt:w[1],es:w[2],ico:w[3]},prox:{pt:w1[1],es:w1[2],ico:w1[3],mm:h.precipitation[1],temp:Math.round(h.temperature_2m[1])},
-        horas:h.time.slice(0,12).map(function(t,i){return{h:t.slice(11,13)+'h',temp:Math.round(h.temperature_2m[i]),prob:h.precipitation_probability[i],racha:Math.round(h.wind_gusts_10m[i]),ico:wmo(h.weather_code[i])[3]}})};
-      safe(pintarWx)}).catch(function(){})}
-  function precUI(){var b=document.getElementById('bPrec');if(b)b.className='prc'+(PREC?' on':'');
-    var n=document.querySelector('.now [data-k=now]');if(n&&PREC)n.textContent=L2('Ahora en tu ubicación','Agora na sua localização');
-    var c=document.querySelector('.now .wxc');if(c&&PREC)c.textContent=L2('Tu punto exacto por GPS. Pronóstico: Open-Meteo. Los avisos oficiales son los de ','Seu ponto exato por GPS. Previsão: Open-Meteo. Os avisos oficiais são os de ')+C.nombre+'.'}
-  function precPedir(silencio){if(!navigator.geolocation||!esPremium())return;
-    navigator.geolocation.getCurrentPosition(function(p){PREC=[+p.coords.latitude.toFixed(3),+p.coords.longitude.toFixed(3)];LS('prec','on');precUI();precCargar();
-      if(RADAR&&RADAR.map){RADAR.map.setView(PREC,8);L.circleMarker(PREC,{radius:6,color:'#3da5ff',weight:3,fillColor:'#3da5ff',fillOpacity:.9}).addTo(RADAR.map)}},
-      function(){if(!silencio){var b=document.getElementById('bPrec');if(b)b.title=L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.')}LS('prec','')},{enableHighAccuracy:true,timeout:12000,maximumAge:120000})}
-  safe(function(){var b=document.getElementById('bPrec');if(!b)return;
-    b.addEventListener('click',function(){if(!esPremium()){bloqueo();return}if(PREC){PREC=null;LS('prec','');precUI();safe(pintar);safe(cargarWx);return}precPedir(false)});
-    if(LS('prec')==='on'&&navigator.permissions&&navigator.permissions.query)navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')precPedir(true)}).catch(function(){});
-    setInterval(function(){if(PREC)precPedir(true)},10*60000)});
-  function escena(){var ok=WX&&WX.ahora&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000),ic=ok?WX.ahora.ico:'',n={lluvia:0,granizo:false,rayos:false};
-    if(ic==='⛈️'){n.lluvia=1;n.rayos=true}else if(ic==='🌧️')n.lluvia=.8;else if(ic==='🌦️')n.lluvia=.35;
-    var av=(DATOS&&DATOS.avisos)||[];if(n.lluvia>0)for(var i=0;i<av.length;i++)if(/granizo/i.test((av[i].titulo_es||'')+(av[i].titulo_pt||'')))n.granizo=true;
-    root.setAttribute('data-cielo',!ok?'calma':n.lluvia?'lluvia':/☀️|🌤️|🌙/.test(ic)?'claro':'nublado');
-    ESC=n;
-  }
-  function wxDirecto(){if(PREC||!WEB)return;var g=C.geo;PREC=g;precCargar();PREC=null}
-  var _pw3=pintarWx;pintarWx=function(){_pw3();safe(precUI);safe(escena)};
-  /* ---- permisos al principio: una pantalla en la primera visita. El navegador solo deja pedirlos despues de un toque. ---- */
-  safe(function(){var o=document.getElementById('onb');if(!o||(LS('onb')&&!/[?&]onb=1\b/.test(location.search)))return;o.hidden=false;
-    function cerrar(){LS('onb','1');o.hidden=true}
-    document.getElementById('onbNo').addEventListener('click',cerrar);
-    document.getElementById('onbOk').addEventListener('click',function(){cerrar();
-      var pedirUb=function(){safe(function(){precPedir(false)})};
-      if('Notification' in window&&Notification.permission==='default'){var p;try{p=Notification.requestPermission()}catch(e){p=null}
-        if(p&&p.then)p.then(function(r){if(r==='granted'){LS('notif','on');safe(txtFijos)}pedirUb()},pedirUb);else pedirUb()}
-      else{if('Notification' in window&&Notification.permission==='granted')LS('notif','on');pedirUb()}})});
-  /* ---- funciones premium: en el plan gratis muestran un aviso en lugar de abrirse ---- */
-  function esPremium(){return root.getAttribute('data-plan')==='premium'}
-  function bloqueo(){var o=document.getElementById('pmo');if(o)o.hidden=false}
-  safe(function(){var b=document.getElementById('pmoOk');if(b)b.addEventListener('click',function(){document.getElementById('pmo').hidden=true})});
-
-
-
-  safe(function(){
-    /* por defecto: claro de dia (7 a 20 h) y oscuro de noche; si la persona lo cambia a mano, vale hasta el proximo cambio de dia/noche */
-    function temaAuto(){var m=(LS('tema')||'').split('|');setTheme(m[1]===periodo()&&(m[0]==='night'||m[0]==='light')?m[0]:temaHora())}
-    temaAuto();setInterval(function(){var m=(LS('tema')||'').split('|');if(m[1]!==periodo()&&root.getAttribute('data-theme')!==temaHora())temaAuto()},300000);
-    /* Idioma inicial:
-       - Publicada: portugués por defecto. Un enlace con ?lang=es abre en español.
-       - En pruebas (archivo local o localhost): siempre español.
-       - El botón de idioma cambia la vista en cualquier caso. */
-    var h=location.hostname,test=location.protocol==='file:'||h==='localhost'||h==='127.0.0.1';
-    var q=/[?&]lang=(pt|es)\b/.exec(location.search),sl=LS('lang');
-    if(q)setLang(q[1]);
-    else if(test)setLang('es');
-    else if(sl==='es'||sl==='pt')setLang(sl);
-    else setLang(C.lang);
-    var b=document.querySelectorAll('.seg button');
-    for(var i=0;i<b.length;i++)b[i].addEventListener('click',function(){setLang(this.getAttribute('data-set'))});
-    document.getElementById('bTheme').addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='night'?'light':'night',true)});
-  });
-
-  function txtFijos(){
-    safe(trTxt);safe(lugPintar);safe(ofPintar);
-    if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
-    else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
-    st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
-  }
-  var _pa3=pintarAhora;pintarAhora=function(){_pa3();safe(txtFijos)};
-  safe(reloj);
-  safe(cargarAhora);safe(cargarWx);setInterval(function(){safe(cargarAhora);safe(cargarWx)},5*60000);setInterval(function(){safe(reloj)},20000);
-  safe(function(){
-    var a=document.querySelectorAll('[data-canal]');
-    for(var i=0;i<a.length;i++){var u=C.canales[a[i].getAttribute('data-canal')];
-      if(u){a[i].setAttribute('href',u);a[i].setAttribute('target','_blank');a[i].setAttribute('rel','noopener')}}
-  });
-
-  /* ---- instalación en el celular (solo funciona con la página publicada en https) ---- */
-  safe(function(){
-    var b=document.getElementById('bInst'),ev=null;
-    if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register("/sw.js");
-    window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ev=e;b.hidden=false});
-    b.addEventListener('click',function(){if(!ev)return;ev.prompt();ev=null;b.hidden=true});
-    window.addEventListener('appinstalled',function(){b.hidden=true});
-  });
-
-  /* ---- aparición de secciones ---- */
-  safe(function(){
-    var els=document.querySelectorAll('[data-rv]');
-    function all(){for(var i=0;i<els.length;i++)els[i].className+=' in'}
-    if(!('IntersectionObserver' in window)){all();return}
-    var io=new IntersectionObserver(function(en){for(var i=0;i<en.length;i++)if(en[i].isIntersecting){en[i].target.className+=' in';io.unobserve(en[i].target)}},{threshold:.04});
-    for(var i=0;i<els.length;i++)io.observe(els[i]);
-    setTimeout(all,6000);
-  });
-
-})();
-</script>
+<div class="barra"><a class="btn btn-sol" href="/app/" data-es="Abrir Aviso Sul gratis">Abrir o Aviso Sul grátis</a></div>
+<script src="/assets/site.js?v=1"></script>
 </body>
 </html>

@@ -1,4 +1,6 @@
 RewriteEngine On
+DirectoryIndex index.html
+# la app: /app/ y una pagina por ciudad (las ciudades viejas siguen abriendo la app)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^[a-z]+/?$ /index.html [L]
+RewriteRule ^(app|foz|chapeco|florianopolis|curitiba|portoalegre|cordoba|saopaulo|rio|iguazu)/?$ /app.html [L]
