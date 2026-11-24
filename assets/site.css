@@ -156,3 +156,10 @@ p{margin:0 0 12px}
 .pasos .card::before{counter-increment:p;content:counter(p);position:absolute;left:20px;top:20px;width:34px;height:34px;border-radius:10px;background:var(--sol);color:#2a1d00;font-weight:900;display:grid;place-items:center}
 .texto{max-width:760px}.texto h2{font-size:24px;margin-top:30px}.texto p,.texto li{color:#c2ced9}
 .aviso-p{border:1px dashed var(--line);border-radius:16px;padding:14px 16px;color:var(--muted);font-size:14px;margin-top:16px}
+
+/* ---------- sin resplandores: superficies planas, sin brillos ni pulsos ---------- */
+*,*::before,*::after{box-shadow:none!important;text-shadow:none!important}
+.hero{background:#0e1823!important}
+.fin{background:var(--bg)!important}
+.punto{animation:none!important}
+.vivo{background:var(--card)!important}

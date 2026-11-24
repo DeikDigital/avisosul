@@ -8,8 +8,11 @@
   function safe(f){try{f()}catch(e){if(window.console)console.warn(e)}}
 
   /* ---- idioma ---- */
-  var q=/[?&]lang=(es|pt)\b/.exec(location.search);if(q)LS('lang',q[1]);
-  var lang=LS('lang')==='es'?'es':'pt';
+  var q=/[?&]lang=(es|pt)\b/.exec(location.search);if(q){LS('lang',q[1]);LS('langM','1')}
+  function langAuto(){var ls=(navigator.languages||[navigator.language||'']).map(function(x){return String(x).toLowerCase()});
+    for(var i=0;i<ls.length;i++){if(ls[i].indexOf('pt')===0)return 'pt';if(ls[i].indexOf('es')===0)return 'es'}
+    var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}return /Argentina|Montevideo|Asuncion|Santiago|Lima|Bogota|La_Paz/.test(tz)?'es':'pt'}
+  var lang=LS('lang')==='es'||LS('lang')==='pt'?LS('lang'):langAuto();
   function T(pt,es){return lang==='es'?es:pt}
   function aplicarIdioma(){
     root.lang=lang==='es'?'es':'pt-BR';
@@ -19,7 +22,7 @@
     if(document.body.dataset.titEs){if(!document.body.dataset.titPt)document.body.dataset.titPt=document.title;document.title=lang==='es'?document.body.dataset.titEs:document.body.dataset.titPt}
     safe(pintarVivo);
   }
-  document.querySelectorAll('.idi button').forEach(function(b){b.addEventListener('click',function(){lang=b.dataset.l;LS('lang',lang);aplicarIdioma()})});
+  document.querySelectorAll('.idi button').forEach(function(b){b.addEventListener('click',function(){lang=b.dataset.l;LS('lang',lang);LS('langM','1');aplicarIdioma()})});
 
   /* ---- datos en vivo ---- */
   var WEB=location.protocol==='http:'||location.protocol==='https:',LOCAL=location.hostname==='localhost';
@@ -71,5 +74,12 @@
     if(!('IntersectionObserver' in window)){mapaIniciar();return}
     var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();mapaIniciar()}},{rootMargin:'300px'});io.observe(m)});
 
+  /* idioma segun el pais de la conexion, si nunca se eligio a mano */
+  if(WEB&&!LS('langM'))fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){var p=String(j.country_code||'').toUpperCase(),l2=p==='BR'?'pt':(p==='AR'||p==='UY'||p==='PY')?'es':null;
+    if(l2&&l2!==lang){lang=l2;LS('lang',lang);aplicarIdioma()}}).catch(function(){});
+  /* "Quero": cuenta el interes por cada plan (validacion de precio, sin datos personales) */
+  document.querySelectorAll('[data-plano]').forEach(function(b){b.addEventListener('click',function(){
+    fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:b.dataset.plano})}).catch(function(){});
+    b.disabled=true;var m=T('Anotado, obrigado! O pagamento abre em breve.','¡Anotado, gracias! El pago abre pronto.');b.textContent=m;b.dataset.pt='Anotado, obrigado! O pagamento abre em breve.';b.dataset.es='¡Anotado, gracias! El pago abre pronto.'})});
   aplicarIdioma();cargar();setInterval(cargar,10*60000);
 })();
