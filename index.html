@@ -308,6 +308,12 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -3px 0 rgba(0,0,0,.18),0 8px 18px rgba(245,179,1,.35)}
   .tab .cta svg{width:26px;height:26px;display:block;margin:0 auto 2px}
   .tab .cta:active{transform:translateY(1px)}
+
+  /* ---------- ubicacion precisa (premium) ---------- */
+  .prc{font:inherit;font-size:14px;font-weight:700;color:inherit;display:inline-flex;align-items:center;gap:6px;margin:10px 0 0;padding:8px 12px;border-radius:999px;border:1px solid rgba(245,179,1,.6);background:rgba(245,179,1,.10);cursor:pointer}
+  .prc i{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:2px 7px}
+  .prc.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}.prc.on i{background:rgba(0,0,0,.22);color:#fff}
+  [data-plan="gratis"] .prc{opacity:.6}
 </style>
 </head>
 <body>
@@ -390,6 +396,7 @@
     <div class="wrap">
       <span class="tag" data-k="tag"></span>
       <span class="cities" id="cities"></span>
+      <button type="button" class="prc" id="bPrec"><span aria-hidden="true">📍</span> <span class="pt">Minha localização precisa</span><span class="es">Mi ubicación precisa</span><i>Premium</i></button>
       <div class="now gl" aria-live="polite">
       <h2><i class="dot off" id="nowDot"></i><span data-k="now"></span><b class="clk" id="bigClock"></b></h2>
       <p class="fecha" id="bigDate"></p>
@@ -708,7 +715,7 @@
     e=document.getElementById('bShare');if(e){e.href='https://wa.me/?text='+encodeURIComponent(t.ej+'\n\n'+(l==='es'?'Avisos gratis en tu WhatsApp: ':'Avisos grátis no seu WhatsApp: ')+'https://avisosul.com/'+cid+'/')}
     safe(pintarAhora);safe(pintarWx);
   }
-  var RADIO_ON=false;
+  var RADIO_ON=false,PREC=null;
   /* ---- estado en vivo ----
      Lee datos/<ciudad>.json, que escriben los agentes con los avisos oficiales vigentes.
      Si el archivo no existe o tiene mas de 45 minutos, no se afirma nada: se manda a la fuente oficial. */
@@ -756,7 +763,7 @@
   }
   var _pw=pintarWx;pintarWx=function(){_pw();safe(pintarHoras)};
   function cargarWx(){if(!WEB||!window.fetch)return;
-    fetch(DATOS_URL+cid+'_tiempo.json?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){WX=j;safe(pintarWx)}).catch(function(){WX=null;safe(pintarWx)})}
+    fetch(DATOS_URL+cid+'_tiempo.json?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(PREC)return;WX=j;safe(pintarWx)}).catch(function(){if(PREC)return;WX=null;safe(pintarWx)})}
   /* ---- proximas horas (viene en el mismo archivo de condiciones, campo 'horas') ---- */
   function pintarHoras(){var e=document.getElementById('hrs');if(!e)return;
     var ok=WX&&WX.horas&&WX.horas.length&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);e.className='hrs'+(ok?' on':'');if(!ok)return;
@@ -961,6 +968,26 @@
   function compartirAviso(ev){if(ev)ev.preventDefault();var t=textoAviso();
     if(navigator.share)navigator.share({text:t}).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener')}
   safe(function(){var a=document.getElementById('tabShare'),b=document.getElementById('bShare');if(a)a.addEventListener('click',compartirAviso);if(b)b.addEventListener('click',compartirAviso)});
+  /* ---- mi ubicacion precisa (premium): condiciones y proximas horas del punto exacto, por GPS. Los avisos oficiales siguen siendo los de la ciudad. ---- */
+  function precCargar(){if(!PREC)return;
+    fetch('https://api.open-meteo.com/v1/forecast?latitude='+PREC[0]+'&longitude='+PREC[1]+'&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,precipitation_probability,precipitation,wind_gusts_10m,weather_code&forecast_hours=13&timezone=auto').then(function(r){return r.json()}).then(function(j){
+      if(!PREC)return;var c=j.current,h=j.hourly,w=wmo(c.weather_code),w1=wmo(h.weather_code[1]);
+      WX={actualizado:new Date().toISOString(),fuente:'Open-Meteo',temp:Math.round(c.temperature_2m),humedad:Math.round(c.relative_humidity_2m),viento_kmh:Math.round(c.wind_speed_10m),
+        ahora:{pt:w[1],es:w[2],ico:w[3]},prox:{pt:w1[1],es:w1[2],ico:w1[3],mm:h.precipitation[1],temp:Math.round(h.temperature_2m[1])},
+        horas:h.time.slice(0,12).map(function(t,i){return{h:t.slice(11,13)+'h',temp:Math.round(h.temperature_2m[i]),prob:h.precipitation_probability[i],racha:Math.round(h.wind_gusts_10m[i]),ico:wmo(h.weather_code[i])[3]}})};
+      safe(pintarWx)}).catch(function(){})}
+  function precUI(){var b=document.getElementById('bPrec');if(b)b.className='prc'+(PREC?' on':'');
+    var n=document.querySelector('.now [data-k=now]');if(n&&PREC)n.textContent=L2('Ahora en tu ubicación','Agora na sua localização');
+    var c=document.querySelector('.now .wxc');if(c&&PREC)c.textContent=L2('Tu punto exacto por GPS. Pronóstico: Open-Meteo. Los avisos oficiales son los de ','Seu ponto exato por GPS. Previsão: Open-Meteo. Os avisos oficiais são os de ')+C.nombre+'.'}
+  function precPedir(silencio){if(!navigator.geolocation)return;
+    navigator.geolocation.getCurrentPosition(function(p){PREC=[+p.coords.latitude.toFixed(3),+p.coords.longitude.toFixed(3)];LS('prec','on');precUI();precCargar();
+      if(RADAR&&RADAR.map){RADAR.map.setView(PREC,8);L.circleMarker(PREC,{radius:6,color:'#3da5ff',weight:3,fillColor:'#3da5ff',fillOpacity:.9}).addTo(RADAR.map)}},
+      function(){if(!silencio){var b=document.getElementById('bPrec');if(b)b.title=L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.')}LS('prec','')},{enableHighAccuracy:true,timeout:12000,maximumAge:120000})}
+  safe(function(){var b=document.getElementById('bPrec');if(!b)return;
+    b.addEventListener('click',function(){if(PREC){PREC=null;LS('prec','');precUI();safe(pintar);safe(cargarWx);return}precPedir(false)});
+    if(LS('prec')==='on'&&navigator.permissions&&navigator.permissions.query)navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')precPedir(true)}).catch(function(){});
+    setInterval(function(){if(PREC)precPedir(true)},10*60000)});
+  var _pw3=pintarWx;pintarWx=function(){_pw3();safe(precUI)};
   function txtFijos(){
     safe(dashAplicar);safe(encuesta);
     var ri=document.getElementById('rdIn');if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade');
