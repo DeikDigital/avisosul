@@ -16,7 +16,7 @@ jobs:
   agente:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Elegir modo
         id: m
         run: |
@@ -26,6 +26,7 @@ jobs:
             *) echo "modo=${{ github.event.inputs.modo || 'nuevos' }}" >> "$GITHUB_OUTPUT" ;;
           esac
       - name: Correr agente de Brasil (INMET)
+        continue-on-error: true
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_OWNER: ${{ secrets.TELEGRAM_OWNER }}
@@ -33,6 +34,7 @@ jobs:
           PUBLICAR: ${{ vars.PUBLICAR }}
         run: python3 agente_inmet.py "${{ steps.m.outputs.modo }}"
       - name: Correr agente de Argentina (SMN)
+        continue-on-error: true
         if: steps.m.outputs.modo == 'nuevos'
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -42,6 +44,7 @@ jobs:
           PUBLICAR: ${{ vars.PUBLICAR }}
         run: python3 agente_smn.py nuevos
       - name: Condiciones de ahora y proxima hora (MET Norway)
+        continue-on-error: true
         if: steps.m.outputs.modo == 'nuevos'
         env:
           AVISOSUL_CONTACTO: ${{ vars.AVISOSUL_CONTACTO }}
