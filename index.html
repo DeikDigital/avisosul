@@ -334,6 +334,15 @@
   .onbc ul{list-style:none;padding:0;margin:0 0 18px;text-align:left;display:grid;gap:12px}
   .onbc li b{display:block;color:#fff}.onbc li{font-size:14.500px;color:#b9c6d3}
   .onbc .btn{width:100%;justify-content:center}.onbc .dsx{color:#9fb0c1}
+
+  /* ---------- ajustes junto al sonido, insignias premium, encuesta emergente ---------- */
+  .tg.cfg{width:38px;padding:0;justify-content:center;text-decoration:none;display:inline-flex;align-items:center}.tg.cfg svg{width:18px;height:18px;margin:0}
+  .pmi{font-style:normal;font-size:9.500px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:2px 7px;vertical-align:middle;margin-left:6px}
+  .tab a,.tab .cta{position:relative}
+  .pmd{position:absolute;top:1px;right:14%;font-style:normal;font-size:10px;color:#f5b301}.tab .cta .pmd{color:#2e2000;right:10px;top:4px}
+  #ajustes .enc{display:none!important}
+  #encC .enc{display:block!important;background:none!important;border:0!important;box-shadow:none!important;padding:0;margin:0 0 6px;text-align:left}
+  #encC .enc b{color:#fff}#encC .enc p{color:#b9c6d3}#encC .encb a{color:#e9eef3}
 </style>
 </head>
 <body>
@@ -415,6 +424,7 @@
       <button type="button" class="tg" id="bSnd" aria-pressed="false">
         <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="pt">Som</span><span class="es">Sonido</span>
       </button>
+      <a class="tg cfg" id="bCfg" href="#ajustes" aria-label="Ajustes" title="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900l2.100 2.100M17 17l2.100 2.100M4.900 19.100L7 17M17 7l2.100-2.100"/></svg></a>
     </div>
   </div>
 
@@ -641,8 +651,8 @@
     <div class="dsh" id="dsh"></div>
     <button type="button" class="dsx" id="dsReset"><span class="pt">Voltar à ordem original</span><span class="es">Volver al orden original</span></button>
     <div id="radio" style="height:1px"></div>
-    <h3 class="pt">Rádio local</h3>
-    <h3 class="es">Radio local</h3>
+    <h3 class="pt">Rádio local <i class="pmi">Premium</i></h3>
+    <h3 class="es">Radio local <i class="pmi">Premium</i></h3>
     <p class="pt">Escolha uma rádio de notícias da sua região para ouvir os relatos enquanto acompanha os avisos.</p>
     <p class="es">Elegí una radio de noticias de tu zona para escuchar los reportes mientras seguís los avisos.</p>
     <form class="vj" id="rdForm"><input type="text" id="rdIn" autocomplete="off" enterkeyhint="search" aria-label="Radio"><button type="submit" class="btn btn-tg"><span class="pt">Buscar</span><span class="es">Buscar</span></button></form>
@@ -670,10 +680,20 @@
   </div>
 </div>
 
+<div class="onb" id="pmo" hidden role="dialog" aria-modal="true">
+  <div class="onbc gl">
+    <h2><span class="pt">Função Premium</span><span class="es">Función Premium</span></h2>
+    <p class="pt" style="color:#b9c6d3">Avisar alguém e a rádio local fazem parte do plano Premium.</p>
+    <p class="es" style="color:#b9c6d3">Avisarle a alguien y la radio local son parte del plan Premium.</p>
+    <button type="button" class="btn btn-wa" id="pmoOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
+  </div>
+</div>
+<div class="onb" id="encO" hidden role="dialog" aria-modal="true"><div class="onbc gl" id="encC"><button type="button" class="dsx" id="encX"><span class="pt">Agora não</span><span class="es">Ahora no</span></button></div></div>
+
 <nav class="tab" aria-label="Navegación">
   <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
-  <a href="#radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="2.500"/><path d="M7 9l9-5"/><circle cx="8.500" cy="14.500" r="2.300"/><path d="M14 13h4M14 16h4"/></svg><span>Radio</span></a>
-  <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7h16v-7M12 15V3M7.500 7.500 12 3l4.500 4.500"/></svg><span class="pt">Avisar</span><span class="es">Avisar</span></button>
+  <a href="#radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="2.500"/><path d="M7 9l9-5"/><circle cx="8.500" cy="14.500" r="2.300"/><path d="M14 13h4M14 16h4"/></svg><span>Radio</span><i class="pmd" aria-hidden="true">★</i></a>
+  <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7h16v-7M12 15V3M7.500 7.500 12 3l4.500 4.500"/></svg><span class="pt">Avisar</span><span class="es">Avisar</span><i class="pmd" aria-hidden="true">★</i></button>
   <a href="#viaje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M6 17l1.500-6h9L18 17M8 11l1-4h6l1 4"/><circle cx="8" cy="18.500" r="1.600" fill="currentColor"/><circle cx="16" cy="18.500" r="1.600" fill="currentColor"/></svg><span class="pt">Viagem</span><span class="es">Viaje</span></a>
   <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900l2.100 2.100M17 17l2.100 2.100M4.900 19.100L7 17M17 7l2.100-2.100"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
 </nav>
@@ -945,7 +965,7 @@
   function rdBajarLluvia(){if(ac&&rainGain&&sndOn){var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.linearRampToValueAtTime((RADIO_ON?.004:.014)*ESC.lluvia,n+.6)}}
   safe(function(){var f=document.getElementById('rdForm'),inp=document.getElementById('rdIn'),ops=document.getElementById('rdOps'),a=document.getElementById('rdAudio');if(!f)return;
     function elegir(name,url){LS('radio',JSON.stringify({name:name,url:url}));ops.innerHTML='';a.src=url;a.play().catch(function(){});rdUI()}
-    f.addEventListener('submit',function(ev){ev.preventDefault();var q=inp.value.trim();if(!q)return;
+    f.addEventListener('submit',function(ev){ev.preventDefault();if(!esPremium()){bloqueo();return}var q=inp.value.trim();if(!q)return;
       if(/^https:\/\//i.test(q)){elegir(L2('Radio elegida','Rádio escolhida'),q);return}
       if(/^http:\/\//i.test(q)){ops.innerHTML='<button type="button" disabled>'+L2('Esa dirección no es segura (http). Hace falta una que empiece con https.','Esse endereço não é seguro (http). É preciso um que comece com https.')+'</button>';return}
       ops.innerHTML='<button type="button" disabled>'+L2('Buscando…','Buscando…')+'</button>';
@@ -955,7 +975,7 @@
         if(!rs.length){ops.innerHTML='<button type="button" disabled>'+L2('No encontramos radios con ese nombre. Probá con el nombre de la emisora o pegá la dirección del stream.','Não encontramos rádios com esse nome. Tente o nome da emissora ou cole o endereço do stream.')+'</button>';return}
         rs.forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent='▶ '+x.name.trim()+(x.state?' · '+x.state:'');b.addEventListener('click',function(){elegir(x.name.trim(),x.url_resolved)});ops.appendChild(b)})
       }).catch(function(){ops.innerHTML='<button type="button" disabled>'+L2('No se pudo buscar. Probá de nuevo.','Não foi possível buscar. Tente de novo.')+'</button>'})});
-    document.getElementById('rdPlay').addEventListener('click',function(){var r=rdGet();if(!r)return;if(!a.src)a.src=r.url;if(a.paused)a.play().catch(function(){});else a.pause()});
+    document.getElementById('rdPlay').addEventListener('click',function(){if(!esPremium()){bloqueo();return}var r=rdGet();if(!r)return;if(!a.src)a.src=r.url;if(a.paused)a.play().catch(function(){});else a.pause()});
     document.getElementById('rdX').addEventListener('click',function(){a.pause();a.removeAttribute('src');LS('radio','');rdUI()});
     ['play','pause','ended','error'].forEach(function(e){a.addEventListener(e,function(){RADIO_ON=!a.paused;rdBajarLluvia();rdUI()})});
     rdUI();
@@ -1008,7 +1028,7 @@
     else t=L2('Mirá cómo está el tiempo en ','Veja como está o tempo em ')+C.nombre+'.';
     if(WX&&typeof WX.temp==='number'&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))t+=' '+L2('Ahora ','Agora ')+WX.temp+'°, '+(WX.ahora[l]||'').toLowerCase()+'.';
     return t+'\n\n'+L2('Avisos gratis en tu celular: ','Avisos grátis no seu celular: ')+u}
-  function compartirAviso(ev){if(ev)ev.preventDefault();var t=textoAviso();
+  function compartirAviso(ev){if(ev)ev.preventDefault();if(!esPremium()){bloqueo();return}var t=textoAviso();
     if(navigator.share)navigator.share({text:t}).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener')}
   safe(function(){var a=document.getElementById('tabShare'),b=document.getElementById('bShare');if(a)a.addEventListener('click',compartirAviso);if(b)b.addEventListener('click',compartirAviso)});
   /* ---- mi ubicacion precisa (premium): condiciones y proximas horas del punto exacto, por GPS. Los avisos oficiales siguen siendo los de la ciudad. ---- */
@@ -1047,6 +1067,18 @@
       if('Notification' in window&&Notification.permission==='default'){var p;try{p=Notification.requestPermission()}catch(e){p=null}
         if(p&&p.then)p.then(function(r){if(r==='granted'){LS('notif','on');safe(txtFijos)}pedirUb()},pedirUb);else pedirUb()}
       else{if('Notification' in window&&Notification.permission==='granted')LS('notif','on');pedirUb()}})});
+  /* ---- funciones premium: en el plan gratis muestran un aviso en lugar de abrirse ---- */
+  function esPremium(){return root.getAttribute('data-plan')==='premium'}
+  function bloqueo(){var o=document.getElementById('pmo');if(o)o.hidden=false}
+  safe(function(){var b=document.getElementById('pmoOk');if(b)b.addEventListener('click',function(){document.getElementById('pmo').hidden=true})});
+  /* ---- encuesta de pago: aparece sola en el tercer uso, una unica vez ---- */
+  safe(function(){var o=document.getElementById('encO'),c=document.getElementById('encC'),e=document.getElementById('enc');if(!o||!c||!e)return;
+    c.insertBefore(e,c.firstChild);
+    function cerrar(){LS('enc','1');o.hidden=true}
+    document.getElementById('encX').addEventListener('click',cerrar);e.addEventListener('click',function(ev){if(ev.target.closest&&ev.target.closest('a'))cerrar()});
+    var nuevo=false;try{if(!sessionStorage.getItem('avisosul-uso')){sessionStorage.setItem('avisosul-uso','1');nuevo=true}}catch(x){nuevo=true}
+    var n=(+LS('usos')||0)+(nuevo?1:0);LS('usos',String(n));
+    if(n>=3&&!LS('enc')&&esPremium())setTimeout(function(){if(document.getElementById('onb').hidden)o.hidden=false},12000)});
   function txtFijos(){
     safe(dashAplicar);safe(encuesta);
     var ri=document.getElementById('rdIn');if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade');
