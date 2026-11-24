@@ -617,6 +617,7 @@
     <div id="vjOut"></div>
     <div class="vja" id="vjAct" hidden>
       <button type="button" class="pb" id="vjLive"><b><span class="pt">Acompanhar minha viagem ao vivo</span><span class="es">Seguir mi viaje en vivo</span></b><small id="vjLiveS"></small></button>
+      <a class="pb" id="vjMaps" href="#" target="_blank" rel="noopener"><b><span class="pt">Navegar com o Google Maps</span><span class="es">Navegar con Google Maps</span></b><small><span class="pt">Abre a rota no Maps. Com o celular ligado ao carro, aparece na tela do carro.</span><span class="es">Abre la ruta en Maps. Con el celular conectado al auto, se ve en la pantalla del auto.</span></small></a>
       <a class="pb" id="vjShare" href="#" target="_blank" rel="noopener"><b><span class="pt">Compartilhar minha viagem</span><span class="es">Compartir mi viaje</span></b><small><span class="pt">Envia destino, hora de chegada e previsão pelo WhatsApp.</span><span class="es">Manda destino, hora de llegada y pronóstico por WhatsApp.</span></small></a>
     </div>
     <h3 class="pt">Socorro na estrada</h3>
@@ -938,16 +939,27 @@
       var av=peor?'<div class="vjw">⚠️ '+esc((peor.fin?L2('Al llegar','Na chegada'):L2('En el camino, cerca de las ','No caminho, por volta das ')+peor.th)+': '+(l==='es'?peor.w[2]:peor.w[1])+', '+L2('ráfagas de ','rajadas de ')+peor.r.g+' km/h.')+'</div>':'';
       out.innerHTML='<div class="vjc gl"><div class="rt">'+esc(d.nombre)+' · '+Math.round(dist)+' km</div><div class="sb">'+L2('Saliendo ahora llegás cerca de las ','Saindo agora, chegada por volta das ')+hh+(VJ.orig?L2(' · desde tu ubicación',' · da sua localização'):L2(' · desde ',' · saindo de ')+esc(C.nombre))+'</div>'+av+filas+'</div>';
       document.getElementById('vjAct').hidden=false;var f=R[2],w=wmo(f.c);
+      document.getElementById('vjMaps').href='https://www.google.com/maps/dir/?api=1&travelmode=driving&destination='+d.geo[0]+','+d.geo[1];
       document.getElementById('vjShare').href='https://wa.me/?text='+encodeURIComponent(L2('Voy a ','Vou para ')+d.nombre+L2('. Llego cerca de las ','. Chego por volta das ')+hh+L2('. Al llegar: ','. Na chegada: ')+f.t+'°, '+(l==='es'?w[2]:w[1])+L2(', lluvia ',', chuva ')+f.p+'%.\n\nAviso Sul: https://avisosul.com/');
     }).catch(function(){out.innerHTML='<div class="vjc gl"><div class="sb">'+L2('No se pudo consultar el pronóstico. Probá de nuevo en un momento.','Não foi possível consultar a previsão. Tente de novo em instantes.')+'</div></div>'})}
+  var VJP=['AR','BR','PY','UY','CL','BO'];
+  function vjOM(q){return fetch('https://geocoding-api.open-meteo.com/v1/search?count=6&language='+L2('es','pt')+'&name='+encodeURIComponent(q.split(',')[0].trim())).then(function(r){return r.json()}).then(function(j){
+    return(j.results||[]).filter(function(x){return VJP.indexOf(x.country_code)>=0}).map(function(x){return{name:x.name,label:x.name+(x.admin1?', '+x.admin1:'')+' ('+x.country_code+')',lat:x.latitude,lon:x.longitude}})})}
+  function vjGeo(q){var o=VJ.orig||C.geo;
+    return fetch('https://photon.komoot.io/api/?limit=8&lat='+o[0]+'&lon='+o[1]+'&q='+encodeURIComponent(q)).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+      var v={},rs=[];(j.features||[]).forEach(function(f){var p=f.properties||{},g=f.geometry&&f.geometry.coordinates;if(!g||VJP.indexOf((p.countrycode||'').toUpperCase())<0)return;
+        var n=p.name||((p.street||'')+(p.housenumber?' '+p.housenumber:''))||p.city;if(!n)return;
+        if(p.name&&p.street&&p.osm_key==='place'&&p.housenumber)n=p.street+' '+p.housenumber;
+        var ex=[p.name&&p.street&&p.street!==n?p.street+(p.housenumber?' '+p.housenumber:''):'',p.city&&p.city!==n?p.city:'',p.state&&p.state!==n?p.state:''].filter(Boolean),lb=n+(ex.length?', '+ex.join(', '):'')+' ('+p.countrycode.toUpperCase()+')';
+        if(v[lb])return;v[lb]=1;rs.push({name:n,label:lb,lat:g[1],lon:g[0]})});
+      if(!rs.length)throw 0;return rs.slice(0,6)}).catch(function(){return vjOM(q)})}
   safe(function(){var f=document.getElementById('vjForm'),inp=document.getElementById('vjIn'),ops=document.getElementById('vjOps');if(!f)return;
     f.addEventListener('submit',function(ev){ev.preventDefault();var q=inp.value.trim();if(q.length<2)return;ops.innerHTML='';
-      fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language='+L2('es','pt')+'&name='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){
-        var rs=(j.results||[]).filter(function(x){return['AR','BR','PY','UY','CL','BO'].indexOf(x.country_code)>=0});
+      vjGeo(q).then(function(rs){
         if(!rs.length){ops.innerHTML='<button type="button" disabled>'+L2('No encontramos ese lugar.','Não encontramos esse lugar.')+'</button>';return}
-        function elegir(x){VJ.dest={nombre:x.name,geo:[x.latitude,x.longitude]};ops.innerHTML='';vjCalc()}
+        function elegir(x){VJ.dest={nombre:x.name,geo:[x.lat,x.lon]};ops.innerHTML='';vjCalc()}
         if(rs.length===1){elegir(rs[0]);return}
-        rs.forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent=x.name+(x.admin1?', '+x.admin1:'')+' ('+x.country_code+')';b.addEventListener('click',function(){elegir(x)});ops.appendChild(b)})
+        rs.forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent=x.label;b.addEventListener('click',function(){elegir(x)});ops.appendChild(b)})
       }).catch(function(){ops.innerHTML='<button type="button" disabled>'+L2('No se pudo buscar. Probá de nuevo.','Não foi possível buscar. Tente de novo.')+'</button>'})});
     document.getElementById('vjLive').addEventListener('click',function(){
       if(!navigator.geolocation){st('vjLive',L2('Este navegador no admite ubicación.','Este navegador não permite localização.'),false);return}
