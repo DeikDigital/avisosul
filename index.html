@@ -301,6 +301,13 @@
   .sgb{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.sgb a,.sgb button{font:inherit;font-weight:700;font-size:14px;text-decoration:none;color:inherit;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
   @media print{body{background:#fff!important;color:#000!important;padding:0}body>*:not(main),main>*:not(#seguro),.tab,.rdo,#sgForm,.sgb{display:none!important}
     #seguro{background:#fff!important}#seguro *{color:#000!important}.sgc{border:1px solid #999!important;box-shadow:none!important;background:#fff!important}[data-rv]{opacity:1!important;transform:none!important}}
+
+  /* ---------- boton central para avisarle a alguien ---------- */
+  .tab{align-items:flex-end}
+  .tab .cta{flex:1.15;font:inherit;font-size:11.5px;font-weight:800;border:0;cursor:pointer;color:var(--amber-ink);background:linear-gradient(160deg,#ffd24a,#f5b301 55%,#c98a00);border-radius:18px;padding:9px 2px 7px;margin:-16px 4px 0;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -3px 0 rgba(0,0,0,.18),0 8px 18px rgba(245,179,1,.35)}
+  .tab .cta svg{width:26px;height:26px;display:block;margin:0 auto 2px}
+  .tab .cta:active{transform:translateY(1px)}
 </style>
 </head>
 <body>
@@ -618,8 +625,8 @@
 <nav class="tab" aria-label="Navegación">
   <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
   <a href="#radar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M7.500 16.500a6.400 6.400 0 0 1 0-9M16.500 7.500a6.400 6.400 0 0 1 0 9M4.500 19.500a10.600 10.600 0 0 1 0-15M19.500 4.500a10.600 10.600 0 0 1 0 15"/></svg><span>Radar</span></a>
+  <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7h16v-7M12 15V3M7.500 7.500 12 3l4.500 4.500"/></svg><span class="pt">Avisar</span><span class="es">Avisar</span></button>
   <a href="#viaje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M6 17l1.500-6h9L18 17M8 11l1-4h6l1 4"/><circle cx="8" cy="18.500" r="1.600" fill="currentColor"/><circle cx="16" cy="18.500" r="1.600" fill="currentColor"/></svg><span class="pt">Viagem</span><span class="es">Viaje</span></a>
-  <a href="#canais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.300-4.200A8 8 0 1 1 8.300 19z"/></svg><span class="pt">Canal</span><span class="es">Canal</span></a>
   <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900l2.100 2.100M17 17l2.100 2.100M4.900 19.100L7 17M17 7l2.100-2.100"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
 </nav>
 
@@ -943,6 +950,17 @@
           '<div class="sgb"><a href="'+esc(ver)+'" target="_blank" rel="noopener">'+L2('Verificar el registro','Conferir o registro')+'</a><button type="button" id="sgPrint">'+L2('Imprimir o guardar PDF','Imprimir ou salvar PDF')+'</button></div></div>';
         document.getElementById('sgPrint').addEventListener('click',function(){window.print()})
       }).catch(function(){out.innerHTML='<div class="sgc gl"><div class="sb">'+L2('No se pudo leer el registro. Probá de nuevo en un momento.','Não foi possível ler o registro. Tente de novo em instantes.')+'</div></div>'})})});
+  /* ---- avisarle a alguien: comparte el estado real de la ciudad (aviso vigente o condiciones), nunca el ejemplo ---- */
+  function textoAviso(){var l=root.getAttribute('data-lang')==='es'?'es':'pt',t,u='https://avisosul.com/'+cid+'/';
+    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<45*60000))?DATOS.avisos.filter(function(x){return!x.hasta||new Date(x.hasta)>new Date()}):null;
+    if(av&&av.length){var x=av[0];t='⚠️ '+C.nombre+': '+(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es))+' ('+(DATOS.fuente||'')+(x.hasta?L2(', hasta las ',', até as ')+hhmm(x.hasta):'')+').'}
+    else if(av)t=C.nombre+': '+L2('sin avisos oficiales vigentes en este momento.','sem avisos oficiais em vigor neste momento.');
+    else t=L2('Mirá cómo está el tiempo en ','Veja como está o tempo em ')+C.nombre+'.';
+    if(WX&&typeof WX.temp==='number'&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))t+=' '+L2('Ahora ','Agora ')+WX.temp+'°, '+(WX.ahora[l]||'').toLowerCase()+'.';
+    return t+'\n\n'+L2('Avisos gratis en tu celular: ','Avisos grátis no seu celular: ')+u}
+  function compartirAviso(ev){if(ev)ev.preventDefault();var t=textoAviso();
+    if(navigator.share)navigator.share({text:t}).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener')}
+  safe(function(){var a=document.getElementById('tabShare'),b=document.getElementById('bShare');if(a)a.addEventListener('click',compartirAviso);if(b)b.addEventListener('click',compartirAviso)});
   function txtFijos(){
     safe(dashAplicar);safe(encuesta);
     var ri=document.getElementById('rdIn');if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade');
