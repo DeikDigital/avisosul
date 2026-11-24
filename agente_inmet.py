@@ -48,7 +48,14 @@ def leer_feed(origen):
 
 def _fecha(txt):
     m = re.match(r"(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d)", txt or "")
-    return dt.datetime(*map(int, m.groups()), tzinfo=BRT) if m else None
+    if not m:
+        return None
+    y, mo, d, h, mi = map(int, m.groups())
+    try:  # [M] el feed real trae a veces "24:00": es la medianoche del dia siguiente
+        base = dt.datetime(y, mo, d, tzinfo=BRT)
+    except ValueError:
+        return None
+    return base + dt.timedelta(hours=h, minutes=mi)
 
 
 def parsear(xml_bytes):
