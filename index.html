@@ -931,7 +931,7 @@
   }
   function cargarAhora(){
     if(!WEB||!window.fetch){DATOS_ERR=true;safe(pintarAhora);return}
-    getJ('datos/'+cid+'.json').then(function(j){DATOS=j;DATOS_ERR=false;safe(pintarAhora)}).catch(function(){DATOS=null;DATOS_ERR=true;safe(pintarAhora)});
+    getJ('datos/'+cid+'.json').then(function(j){DATOS=j;DATOS_ERR=false;safe(pintarAhora);safe(ofPintar)}).catch(function(){DATOS=null;DATOS_ERR=true;safe(pintarAhora)});
   }
   /* ---- hora local, condiciones y proxima hora (datos/<ciudad>_tiempo.json) ---- */
   var WX=null;
@@ -997,7 +997,7 @@
     d.innerHTML='<b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b><small>'+L2('Vigente hasta las ','Em vigor até as ')+hhmm(a.hasta)+' · INMET</small>'+
       (a.descripcion?'<blockquote>'+esc(a.descripcion)+'</blockquote>':'')+(a.instruccion?'<details><summary>'+L2('Qué hacer (instrucciones oficiales)','O que fazer (instruções oficiais)')+'</summary><p>'+esc(a.instruccion)+'</p></details>':'')+
       '<a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+L2('Ver el aviso oficial en INMET','Ver o aviso oficial no INMET')+'</a>';return d}
-  function ofPintar(){var box=document.getElementById('ofList');if(!box||!ZONAS)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt',av=lugAvisos(refPunto());
+  function ofPintar(){var box=document.getElementById('ofList');if(!box||!ZONAS)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt',av=lugAvisos(refPunto(),YO?null:((DATOS&&DATOS.avisos)||[]).map(function(x){return avId(x.url)}));
     document.getElementById('ofRef').textContent=YO?L2('Según tu ubicación en tiempo real.','Pela sua localização em tempo real.'):L2('Para ','Para ')+C.nombre+L2('. Activá la ubicación para verlo donde estás.','. Ative a localização para ver onde você está.');
     box.innerHTML='';if(!av.length)box.innerHTML='<p class="ofn">'+L2('Ningún aviso oficial vigente toca este punto.','Nenhum aviso oficial em vigor atinge este ponto.')+'</p>';
     av.forEach(function(a){box.appendChild(ofTarjeta(a,l))});
@@ -1009,7 +1009,12 @@
   function lugGuardar(){LS('lugares',JSON.stringify(LUG))}
   function dentro(g,p){var y=g[0],x=g[1],ok=false;for(var i=0,j=p.length-1;i<p.length;j=i++){var yi=p[i][0],xi=p[i][1],yj=p[j][0],xj=p[j][1];
     if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))ok=!ok}return ok}
-  function lugAvisos(g){var o={amarillo:1,naranja:2,rojo:3};return((ZONAS&&ZONAS.avisos)||[]).filter(function(a){return(a.poligonos||[]).some(function(p){return dentro(g,p)})})
+  /* distancia aproximada (km) del punto al borde del contorno: en el limite (rios, costas) se cuenta hasta 5 km */
+  function cerca(g,p){var k=111.32,c=Math.cos(g[0]*Math.PI/180),best=1e9;for(var i=0,j=p.length-1;i<p.length;j=i++){
+      var ax=(p[j][1]-g[1])*k*c,ay=(p[j][0]-g[0])*k,bx=(p[i][1]-g[1])*k*c,by=(p[i][0]-g[0])*k,dx=bx-ax,dy=by-ay,t=dx||dy?Math.max(0,Math.min(1,-(ax*dx+ay*dy)/(dx*dx+dy*dy))):0,
+      ex=ax+t*dx,ey=ay+t*dy,d=Math.sqrt(ex*ex+ey*ey);if(d<best)best=d}return best<=5}
+  function avId(u){var m=/(\d+)\s*$/.exec(u||'');return m?m[1]:''}
+  function lugAvisos(g,ids){var o={amarillo:1,naranja:2,rojo:3};return((ZONAS&&ZONAS.avisos)||[]).filter(function(a){return(ids&&ids.indexOf(String(a.id))>=0)||(a.poligonos||[]).some(function(p){return dentro(g,p)||cerca(g,p)})})
     .sort(function(a,b){return(o[b.nivel]||0)-(o[a.nivel]||0)})}
   function lugPintar(){var box=document.getElementById('lgList');if(!box)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
     box.innerHTML=LUG.length?'':'<p class="lge">'+L2('Todavía no agregaste lugares.','Você ainda não adicionou lugares.')+'</p>';
