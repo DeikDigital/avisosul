@@ -76,7 +76,8 @@ def parsear(xml_bytes):
             "inicio": _fecha(limpio("Início")), "fin": _fecha(limpio("Fim")),
             "descripcion": limpio("Descrição"),
             "areas": [a.strip() for a in area.split(",") if a.strip()],
-            "url": graf.group(1) if graf else link,
+            # [M] en el feed real el enlace legible es https://avisos.inmet.gov.br/<numero>
+            "url": graf.group(1) if graf else (f"https://avisos.inmet.gov.br/{m.group(1)}" if m else link),
         })
     return avisos
 
@@ -141,6 +142,15 @@ def ciudades(pais):
 def estado_publico(avisos, ahora, slug):
     """Escribe datos/<slug>.json con los avisos vigentes; la pagina lo lee para el estado en vivo."""
     vig = [a for a in avisos if a["inicio"] <= ahora < a["fin"]]
+    # [M] el INMET emite varios avisos del mismo fenomeno con areas que se superponen:
+    # para la pagina queda uno por fenomeno, el de mayor nivel.
+    orden = {"Perigo Potencial": 1, "Perigo": 2, "Grande Perigo": 3}
+    mejor = {}
+    for a in vig:
+        k = a["evento"]
+        if k not in mejor or orden.get(a["severidad"], 0) > orden.get(mejor[k]["severidad"], 0):
+            mejor[k] = a
+    vig = sorted(mejor.values(), key=lambda a: -orden.get(a["severidad"], 0))
     os.makedirs("datos", exist_ok=True)
     json.dump({"ciudad": slug, "fuente": "INMET", "actualizado": ahora.isoformat(timespec="seconds"), "avisos": [{
         "titulo_pt": f"{a['evento']} — aviso {NIVEL.get(a['severidad'], ('',))[0] or a['severidad']}",
