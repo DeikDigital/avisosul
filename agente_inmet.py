@@ -162,6 +162,60 @@ def estado_publico(avisos, ahora, slug):
     historial(slug, "INMET", pub, ahora)
 
 
+def poligonos(xml_bytes):
+    """Contornos de un aviso en formato CAP: <polygon>lat,lon lat,lon ...</polygon>."""
+    out = []
+    for el in ET.fromstring(xml_bytes).iter():
+        if el.tag.split("}")[-1] != "polygon" or not (el.text or "").strip():
+            continue
+        pts = []
+        for par in el.text.split():
+            v = par.split(",")
+            if len(v) >= 2:
+                try:
+                    pts.append((float(v[0]), float(v[1])))
+                except ValueError:
+                    pass
+        if len(pts) < 3:
+            continue
+        # [I] el estandar pide lat,lon; si vienen invertidos (lon < -36 en promedio) se dan vuelta
+        if sum(p[0] for p in pts) / len(pts) < -36:
+            pts = [(b, a) for a, b in pts]
+        paso = max(1, len(pts) // 300)  # se aliviana para el celular
+        out.append([[round(a, 3), round(b, 3)] for a, b in pts[::paso]])
+    return out
+
+
+def zonas(todos, ahora, regiones):
+    """Escribe datos/zonas.json con el contorno de cada aviso vigente que toca alguna ciudad; la pagina lo pinta en el mapa."""
+    reg = {r.lower() for r in regiones}
+    vig = [a for a in todos if a["inicio"] and a["fin"] and a["inicio"] <= ahora < a["fin"]
+           and any(x.lower() in reg for x in a["areas"])]
+    os.makedirs("cap", exist_ok=True)
+    orden = {"Perigo Potencial": 1, "Perigo": 2, "Grande Perigo": 3}
+    out = []
+    for a in sorted(vig, key=lambda x: orden.get(x["severidad"], 0)):
+        cache = os.path.join("cap", f"{a['id']}.json")
+        polys = json.load(open(cache)) if os.path.exists(cache) else None
+        if polys is None:
+            try:
+                polys = poligonos(leer_feed(f"https://apiprevmet3.inmet.gov.br/avisos/rss/{a['id']}"))
+                json.dump(polys, open(cache, "w"))
+            except Exception as e:  # un aviso sin contorno no frena al resto
+                print("zonas: sin contorno para", a["id"], type(e).__name__)
+                continue
+        if polys:
+            out.append({"id": a["id"], "nivel": NIVEL_ES.get(a["severidad"], ""),
+                        "titulo_pt": f"{a['evento']} — aviso {NIVEL.get(a['severidad'], ('',))[0] or a['severidad']}",
+                        "titulo_es": f"{EVENTO_ES.get(a['evento'], a['evento'])} — aviso {NIVEL_ES.get(a['severidad'], a['severidad'])}",
+                        "desde": a["inicio"].isoformat(timespec="seconds"), "hasta": a["fin"].isoformat(timespec="seconds"),
+                        "url": a["url"], "poligonos": polys})
+    os.makedirs("datos", exist_ok=True)
+    json.dump({"fuente": "INMET", "actualizado": ahora.isoformat(timespec="seconds"), "avisos": out},
+              open(os.path.join("datos", "zonas.json"), "w", encoding="utf-8"), ensure_ascii=False)
+    print(f"zonas: {len(out)} de {len(vig)} avisos con contorno, {sum(len(x['poligonos']) for x in out)} poligonos")
+
+
 def historial(slug, fuente, vigentes, ahora):
     """Deja constancia diaria de los avisos oficiales vistos en cada ciudad: historial/<ciudad>/<AAAA-MM-DD>.json.
     Sirve de base para el informe del seguro: el historial publico del repositorio fecha cada registro."""
@@ -234,6 +288,7 @@ def main():
         hubo = hubo or any(pt for _, pt, _ in borr)
     if a.modo == "nuevos":
         json.dump(vistos, open(ESTADO, "w"))
+        zonas(todos, ahora, [c["inmet"] for c in ciudades("br")])
     if not hubo:
         print("Sin mensajes para este modo.")
 

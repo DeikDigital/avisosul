@@ -400,6 +400,8 @@
   .vjfw .rn{font-weight:800;color:#34d399}.vjfw .rn svg{width:15px;height:15px;vertical-align:-3px;margin-right:3px}.vjfw .rn.n1{color:#f5d000}.vjfw .rn.n2{color:#ff8a1f}.vjfw .rn.n3{color:#ff3b30}
   body.conradio .vjf{bottom:calc(146px + env(safe-area-inset-bottom))}
   #blk-ya{display:none!important}   /* el riesgo actual ya se ve en el cuadro destacado */
+  .zly{display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0 10px;font-size:13.5px;font-weight:600;color:var(--muted)}.zly>span{display:inline-flex;align-items:center;gap:6px}
+  .zly i{width:14px;height:14px;border-radius:4px;display:inline-block;opacity:.85}.zly i.rr{background:linear-gradient(90deg,#3dd6f5,#2fb34a,#f5d000)}
 </style>
 </head>
 <body>
@@ -531,6 +533,19 @@
 </div>
 
 <main>
+<section class="alt" id="radar">
+  <div class="wrap" data-rv>
+    <h2 class="pt">Avisos oficiais e radar</h2>
+    <h2 class="es">Avisos oficiales y radar</h2>
+    <p class="pt">As áreas coloridas são os avisos do INMET em vigor; por cima, onde está chovendo agora. Toque numa área para ver o aviso.</p>
+    <p class="es">Las zonas pintadas son los avisos del INMET vigentes; encima, dónde está lloviendo ahora. Tocá una zona para ver el aviso.</p>
+    <div class="zly"><span><i style="background:#f5d000"></i><span class="pt">Amarelo</span><span class="es">Amarillo</span></span><span><i style="background:#ff8a1f"></i><span class="pt">Laranja</span><span class="es">Naranja</span></span><span><i style="background:#ff3b30"></i><span class="pt">Vermelho</span><span class="es">Rojo</span></span><span><i class="rr"></i>Radar</span></div>
+    <div id="radarMap"></div>
+    <p class="rdn" id="zonaNote"></p>
+    <p class="rdn" id="radarNote"></p>
+  </div>
+</section>
+
 <section class="alt" id="exemplo">
   <div class="wrap" data-rv>
     <h2 class="pt">Assim chega o aviso no seu WhatsApp</h2>
@@ -572,16 +587,6 @@
   </div>
 </section>
 
-<section class="alt" id="radar">
-  <div class="wrap" data-rv>
-    <h2 class="pt">Radar de chuva</h2>
-    <h2 class="es">Radar de lluvia</h2>
-    <p class="pt">Onde está chovendo agora na região. A imagem é atualizada a cada 10 minutos.</p>
-    <p class="es">Dónde está lloviendo ahora en la región. La imagen se actualiza cada 10 minutos.</p>
-    <div id="radarMap"></div>
-    <p class="rdn" id="radarNote"></p>
-  </div>
-</section>
 
 <section id="fenomenos">
   <div class="wrap" data-rv>
@@ -887,15 +892,24 @@
       radarNota((l==='es'?'Imagen de las ':'Imagem das ')+hhmm(new Date(f.time*1000).toISOString())+(l==='es'?'. Fuente: RainViewer. No reemplaza los avisos oficiales.':'. Fonte: RainViewer. Não substitui os avisos oficiais.'));
     }).catch(function(){radarNota(l==='es'?'Radar no disponible en este momento.':'Radar indisponível neste momento.')});
   }
+  function zonasCapa(){
+    getJ('datos/zonas.json').then(function(j){if(!RADAR||!RADAR.map)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
+      if(RADAR.zonas)RADAR.map.removeLayer(RADAR.zonas);var g=L.featureGroup(),COL={amarillo:'#f5d000',naranja:'#ff8a1f',rojo:'#ff3b30'},n=0;
+      (j.avisos||[]).forEach(function(a){var c=COL[a.nivel]||'#f5d000';n++;
+        (a.poligonos||[]).forEach(function(p){L.polygon(p,{color:c,weight:2,opacity:.9,fillColor:c,fillOpacity:.22})
+          .bindPopup('<b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b><br>'+(l==='es'?'Hasta las ':'Até as ')+hhmm(a.hasta)+'<br><a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+(l==='es'?'Ver en INMET':'Ver no INMET')+'</a>').addTo(g)})});
+      g.addTo(RADAR.map);RADAR.zonas=g;
+      var e=document.getElementById('zonaNote');if(e)e.textContent=n?(n+(l==='es'?(n>1?' avisos oficiales vigentes en el mapa. Fuente: INMET.':' aviso oficial vigente en el mapa. Fuente: INMET.'):(n>1?' avisos oficiais em vigor no mapa. Fonte: INMET.':' aviso oficial em vigor no mapa. Fonte: INMET.'))):(l==='es'?'Sin avisos oficiales vigentes en la región.':'Sem avisos oficiais em vigor na região.');
+    }).catch(function(){})}
   function radarInit(){
     if(RADAR||!WEB)return;RADAR={};
     var c=document.createElement('link');c.rel='stylesheet';c.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(c);
     var j=document.createElement('script');j.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
     j.onload=function(){safe(function(){
-      RADAR.map=L.map('radarMap',{scrollWheelZoom:false,zoomControl:true}).setView(C.geo,7);
+      RADAR.map=L.map('radarMap',{scrollWheelZoom:false,zoomControl:true}).setView(C.geo,6);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(RADAR.map);
       L.circleMarker(C.geo,{radius:7,color:'#f5b301',weight:3,fillColor:'#f5b301',fillOpacity:.9}).addTo(RADAR.map).bindTooltip(C.nombre);
-      radarCapa();setInterval(function(){safe(radarCapa)},10*60000)})};
+      zonasCapa();radarCapa();setInterval(function(){safe(zonasCapa);safe(radarCapa)},10*60000)})};
     j.onerror=function(){radarNota('Radar no disponible en este momento.')};document.head.appendChild(j);
   }
   safe(function(){var m=document.getElementById('radarMap');if(!m)return;
