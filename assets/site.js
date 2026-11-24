@@ -10,7 +10,7 @@
   /* ---- idioma ---- */
   var q=/[?&]lang=(es|pt)\b/.exec(location.search);if(q)LS('lang',q[1]);
   var lang=LS('lang')==='es'?'es':'pt';
-  function L(pt,es){return lang==='es'?es:pt}
+  function T(pt,es){return lang==='es'?es:pt}
   function aplicarIdioma(){
     root.lang=lang==='es'?'es':'pt-BR';
     document.querySelectorAll('[data-es]').forEach(function(e){if(e.dataset.pt===undefined)e.dataset.pt=e.innerHTML;e.innerHTML=lang==='es'?e.dataset.es:e.dataset.pt});
@@ -36,19 +36,19 @@
     if(!ZONAS){return}
     var av=ZONAS.avisos||[],c={amarillo:0,naranja:0,rojo:0};av.forEach(function(a){if(c[a.nivel]!==undefined)c[a.nivel]++});
     n.textContent=av.length;
-    document.getElementById('vTxt').textContent=av.length===1?L('aviso oficial do INMET em vigor no Sul agora','aviso oficial del INMET vigente en el Sur ahora'):L('avisos oficiais do INMET em vigor no Sul agora','avisos oficiales del INMET vigentes en el Sur ahora');
+    document.getElementById('vTxt').textContent=av.length===1?T('aviso oficial do INMET em vigor no Sul agora','aviso oficial del INMET vigente en el Sur ahora'):T('avisos oficiais do INMET em vigor no Sul agora','avisos oficiales del INMET vigentes en el Sur ahora');
     document.getElementById('vNiv').innerHTML=['rojo','naranja','amarillo'].map(function(k){return '<span><i style="background:'+COL[k]+'"></i>'+c[k]+' '+NIV[k][lang==='es'?1:0].toLowerCase()+'</span>'}).join('');
     var box=document.getElementById('vCid');box.innerHTML='';
     CIDS.forEach(function(x){var e=EST[x[0]],a=e&&e.avisos&&e.avisos.length?e.avisos.slice().sort(function(p,q){return(ORD[q.nivel]||0)-(ORD[p.nivel]||0)})[0]:null;
       var el=document.createElement('a');el.className='cid '+(a?a.nivel:'');el.href='/'+x[0]+'/';
-      el.innerHTML='<i></i><b>'+esc(x[1])+'</b><span>'+(e?(a?esc(L(a.titulo_pt,a.titulo_es).replace(/ — .*/,''))+' · '+NIV[a.nivel][lang==='es'?1:0]:L('Sem aviso','Sin aviso')):'…')+'</span>';box.appendChild(el)});
-    var u=document.getElementById('vAt');if(u&&ZONAS.actualizado)u.textContent=L('Atualizado às ','Actualizado a las ')+hhmm(ZONAS.actualizado)+L(' · Fonte: INMET',' · Fuente: INMET');
-    var m=document.getElementById('mNota');if(m)m.textContent=av.length?L('Toque numa área para ver o aviso oficial.','Tocá una zona para ver el aviso oficial.'):L('Nenhum aviso oficial em vigor no Sul agora.','Ningún aviso oficial vigente en el Sur ahora.');
+      el.innerHTML='<i></i><b>'+esc(x[1])+'</b><span>'+(e?(a?esc(T(a.titulo_pt,a.titulo_es).replace(/ — .*/,''))+' · '+NIV[a.nivel][lang==='es'?1:0]:T('Sem aviso','Sin aviso')):'…')+'</span>';box.appendChild(el)});
+    var u=document.getElementById('vAt');if(u&&ZONAS.actualizado)u.textContent=T('Atualizado às ','Actualizado a las ')+hhmm(ZONAS.actualizado)+T(' · Fonte: INMET',' · Fuente: INMET');
+    var m=document.getElementById('mNota');if(m)m.textContent=av.length?T('Toque numa área para ver o aviso oficial.','Tocá una zona para ver el aviso oficial.'):T('Nenhum aviso oficial em vigor no Sul agora.','Ningún aviso oficial vigente en el Sur ahora.');
     safe(mapaZonas);
   }
   function cargar(){
     if(!WEB||!document.getElementById('vN'))return;
-    getJ('datos/zonas.json').then(function(j){ZONAS=j;pintarVivo()}).catch(function(){var t=document.getElementById('vTxt');if(t)t.textContent=L('Não foi possível carregar os avisos agora.','No se pudieron cargar los avisos ahora.')});
+    getJ('datos/zonas.json').then(function(j){ZONAS=j;pintarVivo()}).catch(function(){var t=document.getElementById('vTxt');if(t)t.textContent=T('Não foi possível carregar os avisos agora.','No se pudieron cargar los avisos ahora.')});
     CIDS.forEach(function(x){getJ('datos/'+x[0]+'.json').then(function(j){EST[x[0]]=j;pintarVivo()}).catch(function(){})});
   }
 
@@ -56,7 +56,7 @@
   var MAPA=null;
   function mapaZonas(){if(!MAPA||!ZONAS||!window.L)return;if(MAPA.capa)MAPA.m.removeLayer(MAPA.capa);var g=L.featureGroup();
     (ZONAS.avisos||[]).slice().sort(function(a,b){return(ORD[a.nivel]||0)-(ORD[b.nivel]||0)}).forEach(function(a){var c=COL[a.nivel]||COL.amarillo;
-      (a.poligonos||[]).forEach(function(p){L.polygon(p,{color:c,weight:2,fillColor:c,fillOpacity:.22}).bindPopup('<b>'+esc(L(a.titulo_pt,a.titulo_es))+'</b><br>'+L('Até as ','Hasta las ')+hhmm(a.hasta)+(a.descripcion?'<br><small>'+esc(a.descripcion.slice(0,180))+(a.descripcion.length>180?'…':'')+'</small>':'')+'<br><a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+L('Ver no INMET','Ver en INMET')+'</a>').addTo(g)})});
+      (a.poligonos||[]).forEach(function(p){L.polygon(p,{color:c,weight:2,fillColor:c,fillOpacity:.22}).bindPopup('<b>'+esc(T(a.titulo_pt,a.titulo_es))+'</b><br>'+T('Até as ','Hasta las ')+hhmm(a.hasta)+(a.descripcion?'<br><small>'+esc(a.descripcion.slice(0,180))+(a.descripcion.length>180?'…':'')+'</small>':'')+'<br><a href="'+esc(a.url)+'" target="_blank" rel="noopener">'+T('Ver no INMET','Ver en INMET')+'</a>').addTo(g)})});
     g.addTo(MAPA.m);MAPA.capa=g}
   function mapaIniciar(){if(MAPA||!WEB)return;MAPA={};
     var c=document.createElement('link');c.rel='stylesheet';c.href='/lib/leaflet/leaflet.css';document.head.appendChild(c);
