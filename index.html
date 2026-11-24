@@ -314,6 +314,17 @@
   .prc i{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:2px 7px}
   .prc.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}.prc.on i{background:rgba(0,0,0,.22);color:#fff}
   [data-plan="gratis"] .prc{opacity:.6}
+
+  /* ---------- cielo segun el estado real + rendimiento en celular ---------- */
+  [data-cielo="claro"] .clouds,[data-cielo="calma"] .clouds{opacity:.28}
+  [data-cielo="nublado"] .clouds{opacity:.8}
+  .clouds{transition:opacity 1.5s}
+  .js [data-rv]{opacity:1!important;transform:none!important}
+  @media (max-width:560px){
+    .gl,.tab,.cities a,.rdo,.wxb,.hr,.rki,.ryi{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    .gl{background:rgba(22,33,45,.92)}[data-theme="light"] .gl{background:rgba(255,255,255,.94)}
+    .c2{display:none}.c1{animation-duration:120s}
+  }
 </style>
 </head>
 <body>
@@ -326,6 +337,12 @@
   [data-theme="light"] #bTheme::before{transform:translateX(30px)}
   [data-theme="night"] #bTheme .ic-moon,[data-theme="light"] #bTheme .ic-sun{color:var(--amber-ink)}
   #bTheme .lbl-theme{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  @media (max-width:560px){
+    .brand{white-space:nowrap;font-size:19px;flex:none}.brand svg{width:26px;height:26px}
+    .pl{font-size:8.500px;padding:2px 6px;margin-left:6px}
+    .top .wrap{gap:8px}.seg{flex:none}.seg button{padding:6px 9px;font-size:12.5px}
+  }
+  @media (max-width:400px){.seg button{font-size:0;padding:7px 11px}.seg button::after{content:attr(data-set);font-size:12.500px;text-transform:uppercase;font-weight:700}}
 </style><symbol id="i-granizo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><circle class="f" cx="22" cy="46" r="3.500"/><circle class="f" cx="34" cy="50" r="3.500"/><circle class="f" cx="44" cy="45" r="3.500"/><circle class="f" cx="27" cy="57" r="3.500"/><circle class="f" cx="41" cy="57" r="3.500"/></g></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><path d="M22 43l-3 8M32 43l-3 8M42 43l-3 8M26 54l-2 6M36 54l-2 6"/></g></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h30a7 7 0 1 0-7-7M8 35h42a7 7 0 1 1-7 7M8 46h20a6 6 0 1 1-6 6"/></g></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path class="f" d="M37 5 16 34h13l-6 25 25-33H35l7-21z"/></g></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
 <div class="hero" id="hero">
   <!-- nubes: textura generada con ruido, sin imágenes externas -->
@@ -716,9 +733,11 @@
     safe(pintarAhora);safe(pintarWx);
   }
   var RADIO_ON=false,PREC=null;
+  /* Escena del cielo: sale del estado real. Hasta tener datos, calma (sin lluvia, sin rayos, sin sonido de lluvia). */
+  var ESC={lluvia:0,granizo:false,rayos:false};
   /* ---- estado en vivo ----
      Lee datos/<ciudad>.json, que escriben los agentes con los avisos oficiales vigentes.
-     Si el archivo no existe o tiene mas de 45 minutos, no se afirma nada: se manda a la fuente oficial. */
+     Si el archivo no existe o tiene mas de 90 minutos, no se afirma nada: se manda a la fuente oficial. */
   /* Los agentes corren en GitHub y dejan ahi los datos; la pagina los lee directo, sin volver a publicar el sitio. */
   var DATOS_URL=(location.hostname==='localhost')?'/datos/':'https://raw.githubusercontent.com/DeikDigital/avisosul/main/datos/';
   var DATOS=null,DATOS_ERR=false;
@@ -728,7 +747,7 @@
     var li=document.getElementById('nowList'),up=document.getElementById('nowUp'),dot=document.getElementById('nowDot'),of=document.getElementById('nowOf');
     of.innerHTML=C.oficial.map(function(o){return'<a href="'+o[1]+'" target="_blank" rel="noopener">'+(l==='es'?'Ver en ':'Ver no ')+esc(o[0])+'</a>'}).join('');
     li.innerHTML='';up.textContent='';dot.className='dot off';
-    var viejo=DATOS&&(Date.now()-new Date(DATOS.actualizado).getTime()>45*60000);
+    var viejo=DATOS&&(Date.now()-new Date(DATOS.actualizado).getTime()>90*60000);
     if(!DATOS||viejo||isNaN(new Date(DATOS.actualizado))){
       st.textContent=DATOS_ERR||viejo?(l==='es'?'Estado en vivo no disponible en este momento. Consultá la fuente oficial.':'Estado ao vivo indisponível neste momento. Consulte a fonte oficial.'):(l==='es'?'Consultando avisos oficiales…':'Consultando avisos oficiais…');return}
     var a=(DATOS.avisos||[]).filter(function(x){return!x.hasta||new Date(x.hasta)>new Date()});
@@ -763,7 +782,7 @@
   }
   var _pw=pintarWx;pintarWx=function(){_pw();safe(pintarHoras)};
   function cargarWx(){if(!WEB||!window.fetch)return;
-    fetch(DATOS_URL+cid+'_tiempo.json?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(PREC)return;WX=j;safe(pintarWx)}).catch(function(){if(PREC)return;WX=null;safe(pintarWx)})}
+    fetch(DATOS_URL+cid+'_tiempo.json?'+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(PREC)return;WX=j;safe(pintarWx);if(Date.now()-new Date(j.actualizado).getTime()>40*60000)wxDirecto()}).catch(function(){if(PREC)return;WX=null;safe(pintarWx);wxDirecto()})}
   /* ---- proximas horas (viene en el mismo archivo de condiciones, campo 'horas') ---- */
   function pintarHoras(){var e=document.getElementById('hrs');if(!e)return;
     var ok=WX&&WX.horas&&WX.horas.length&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);e.className='hrs'+(ok?' on':'');if(!ok)return;
@@ -801,7 +820,7 @@
     if(h.length){var pm=0,gm=0,tmx=-99,tmn=99,ry=false;for(i=0;i<h.length;i++){pm=Math.max(pm,h[i].prob||0);gm=Math.max(gm,h[i].racha||0);tmx=Math.max(tmx,h[i].temp);tmn=Math.min(tmn,h[i].temp);if(h[i].ico==='⛈️')ry=true}
       up('chuva',pm>=80?2:pm>=50?1:0);up('vendaval',gm>=75?3:gm>=55?2:gm>=40?1:0);up('calor',tmx>=38?3:tmx>=35?2:tmx>=32?1:0);
       up('frio',tmn<=0?3:tmn<=3?2:tmn<=7?1:0);up('geada',tmn<=0?2:tmn<=3?1:0);if(ry)up('raios',2)}
-    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<45*60000))?DATOS.avisos:[];
+    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<90*60000))?DATOS.avisos:[];
     for(i=0;i<av.length;i++){if(av[i].desde&&new Date(av[i].desde)>new Date(Date.now()+(h.length>1?12:0)*3600000))continue;
       var t=((av[i].titulo_pt||'')+' '+(av[i].titulo_es||'')).toLowerCase(),n=av[i].nivel==='rojo'?3:av[i].nivel==='naranja'?2:1;
       if(/tempest|tormenta/.test(t)){up('chuva',n);up('vendaval',n);up('raios',n);up('granizo',n)}
@@ -899,7 +918,7 @@
   function rdUI(){var r=rdGet(),bar=document.getElementById('rdo'),a=document.getElementById('rdAudio');if(!bar)return;
     bar.className='rdo'+(r?' on':'');document.body.className=r?'conradio':'';if(!r)return;
     document.getElementById('rdName').textContent=r.name;document.getElementById('rdPlay').textContent=a.paused?'▶':'❚❚'}
-  function rdBajarLluvia(){if(ac&&rainGain&&sndOn){var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.linearRampToValueAtTime(RADIO_ON?.004:.014,n+.6)}}
+  function rdBajarLluvia(){if(ac&&rainGain&&sndOn){var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.linearRampToValueAtTime((RADIO_ON?.004:.014)*ESC.lluvia,n+.6)}}
   safe(function(){var f=document.getElementById('rdForm'),inp=document.getElementById('rdIn'),ops=document.getElementById('rdOps'),a=document.getElementById('rdAudio');if(!f)return;
     function elegir(name,url){LS('radio',JSON.stringify({name:name,url:url}));ops.innerHTML='';a.src=url;a.play().catch(function(){});rdUI()}
     f.addEventListener('submit',function(ev){ev.preventDefault();var q=inp.value.trim();if(!q)return;
@@ -959,7 +978,7 @@
       }).catch(function(){out.innerHTML='<div class="sgc gl"><div class="sb">'+L2('No se pudo leer el registro. Probá de nuevo en un momento.','Não foi possível ler o registro. Tente de novo em instantes.')+'</div></div>'})})});
   /* ---- avisarle a alguien: comparte el estado real de la ciudad (aviso vigente o condiciones), nunca el ejemplo ---- */
   function textoAviso(){var l=root.getAttribute('data-lang')==='es'?'es':'pt',t,u='https://avisosul.com/'+cid+'/';
-    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<45*60000))?DATOS.avisos.filter(function(x){return!x.hasta||new Date(x.hasta)>new Date()}):null;
+    var av=(DATOS&&DATOS.avisos&&(Date.now()-new Date(DATOS.actualizado).getTime()<90*60000))?DATOS.avisos.filter(function(x){return!x.hasta||new Date(x.hasta)>new Date()}):null;
     if(av&&av.length){var x=av[0];t='⚠️ '+C.nombre+': '+(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es))+' ('+(DATOS.fuente||'')+(x.hasta?L2(', hasta las ',', até as ')+hhmm(x.hasta):'')+').'}
     else if(av)t=C.nombre+': '+L2('sin avisos oficiales vigentes en este momento.','sem avisos oficiais em vigor neste momento.');
     else t=L2('Mirá cómo está el tiempo en ','Veja como está o tempo em ')+C.nombre+'.';
@@ -969,9 +988,9 @@
     if(navigator.share)navigator.share({text:t}).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener')}
   safe(function(){var a=document.getElementById('tabShare'),b=document.getElementById('bShare');if(a)a.addEventListener('click',compartirAviso);if(b)b.addEventListener('click',compartirAviso)});
   /* ---- mi ubicacion precisa (premium): condiciones y proximas horas del punto exacto, por GPS. Los avisos oficiales siguen siendo los de la ciudad. ---- */
-  function precCargar(){if(!PREC)return;
+  function precCargar(){if(!PREC)return;var eraPrec=PREC!==C.geo;
     fetch('https://api.open-meteo.com/v1/forecast?latitude='+PREC[0]+'&longitude='+PREC[1]+'&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,precipitation_probability,precipitation,wind_gusts_10m,weather_code&forecast_hours=13&timezone=auto').then(function(r){return r.json()}).then(function(j){
-      if(!PREC)return;var c=j.current,h=j.hourly,w=wmo(c.weather_code),w1=wmo(h.weather_code[1]);
+      if(eraPrec&&!PREC)return;var c=j.current,h=j.hourly,w=wmo(c.weather_code),w1=wmo(h.weather_code[1]);
       WX={actualizado:new Date().toISOString(),fuente:'Open-Meteo',temp:Math.round(c.temperature_2m),humedad:Math.round(c.relative_humidity_2m),viento_kmh:Math.round(c.wind_speed_10m),
         ahora:{pt:w[1],es:w[2],ico:w[3]},prox:{pt:w1[1],es:w1[2],ico:w1[3],mm:h.precipitation[1],temp:Math.round(h.temperature_2m[1])},
         horas:h.time.slice(0,12).map(function(t,i){return{h:t.slice(11,13)+'h',temp:Math.round(h.temperature_2m[i]),prob:h.precipitation_probability[i],racha:Math.round(h.wind_gusts_10m[i]),ico:wmo(h.weather_code[i])[3]}})};
@@ -987,7 +1006,14 @@
     b.addEventListener('click',function(){if(PREC){PREC=null;LS('prec','');precUI();safe(pintar);safe(cargarWx);return}precPedir(false)});
     if(LS('prec')==='on'&&navigator.permissions&&navigator.permissions.query)navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')precPedir(true)}).catch(function(){});
     setInterval(function(){if(PREC)precPedir(true)},10*60000)});
-  var _pw3=pintarWx;pintarWx=function(){_pw3();safe(precUI)};
+  function escena(){var ok=WX&&WX.ahora&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000),ic=ok?WX.ahora.ico:'',n={lluvia:0,granizo:false,rayos:false};
+    if(ic==='⛈️'){n.lluvia=1;n.rayos=true}else if(ic==='🌧️')n.lluvia=.8;else if(ic==='🌦️')n.lluvia=.35;
+    var av=(DATOS&&DATOS.avisos)||[];if(n.lluvia>0)for(var i=0;i<av.length;i++)if(/granizo/i.test((av[i].titulo_es||'')+(av[i].titulo_pt||'')))n.granizo=true;
+    root.setAttribute('data-cielo',!ok?'calma':n.lluvia?'lluvia':/☀️|🌤️|🌙/.test(ic)?'claro':'nublado');
+    var cambio=n.lluvia!==ESC.lluvia||n.granizo!==ESC.granizo||n.rayos!==ESC.rayos;ESC=n;
+    if(cambio){start();if(ac&&rainGain&&sndOn){var t=ac.currentTime;rainGain.gain.cancelScheduledValues(t);rainGain.gain.linearRampToValueAtTime((RADIO_ON?.004:.014)*ESC.lluvia,t+1.2)}}}
+  function wxDirecto(){if(PREC||!WEB)return;var g=C.geo;PREC=g;precCargar();PREC=null}
+  var _pw3=pintarWx;pintarWx=function(){_pw3();safe(precUI);safe(escena)};
   function txtFijos(){
     safe(dashAplicar);safe(encuesta);
     var ri=document.getElementById('rdIn');if(ri)ri.placeholder=L2('Nombre de la radio o ciudad','Nome da rádio ou cidade');
@@ -1060,9 +1086,9 @@
   var W=0,H=0,drops=[],hail=[],bolt=null,raf=0,last=0,nextBolt=0,visible=true,fxOn=true;
   function nd(any){return{x:Math.random()*(W+140)-20,y:any?Math.random()*H:-24,l:11+Math.random()*17,v:560+Math.random()*420,a:.16+Math.random()*.30}}
   function nh(any){return{x:Math.random()*W,y:any?Math.random()*H:-10,r:1.3+Math.random()*1.7,v:430+Math.random()*260,vy:0,b:0}}
-  function size(){if(!ctx)return;var d=Math.min(window.devicePixelRatio||1,2),r=cv.getBoundingClientRect();
+  function size(){if(!ctx)return;var movil=window.innerWidth<=560,d=Math.min(window.devicePixelRatio||1,movil?1:2),r=cv.getBoundingClientRect();
     W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);
-    var n=Math.max(70,Math.min(Math.round(W*H/4600),280)),i;drops=[];hail=[];
+    var n=Math.max(50,Math.min(Math.round(W*H/4600),movil?110:280)),i;drops=[];hail=[];
     for(i=0;i<n;i++)drops.push(nd(true));
     for(i=0;i<Math.round(n/11);i++)hail.push(nh(true))}
   function makeBolt(t){
@@ -1079,23 +1105,25 @@
     var dt=Math.min((t-last)/1000,.05),i,d,h;last=t;
     ctx.clearRect(0,0,W,H);
     ctx.lineCap='round';ctx.lineWidth=1.15;
-    for(i=0;i<drops.length;i++){d=drops[i];d.y+=d.v*dt;d.x-=d.v*.2*dt;
+    var nd_=Math.round(drops.length*ESC.lluvia);
+    for(i=0;i<nd_;i++){d=drops[i];d.y+=d.v*dt;d.x-=d.v*.2*dt;
       ctx.strokeStyle='rgba(214,228,242,'+d.a+')';ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.x+d.l*.2,d.y-d.l);ctx.stroke();
       if(d.y>H+24||d.x<-30)drops[i]=nd(false)}
     ctx.fillStyle='rgba(255,255,255,.92)';
-    for(i=0;i<hail.length;i++){h=hail[i];
+    for(i=0;i<(ESC.granizo?hail.length:0);i++){h=hail[i];
       if(!h.b){h.y+=h.v*dt;h.x-=40*dt;if(h.y>=H-14){h.y=H-14;h.b=1;h.vy=-(110+Math.random()*130)}}
       else{h.vy+=900*dt;h.y+=h.vy*dt;h.x+=34*dt;if(h.y>H-8&&h.vy>0)hail[i]=h=nh(false)}
       ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,6.283);ctx.fill()}
-    if(t>nextBolt)makeBolt(t);
+    if(ESC.rayos&&t>nextBolt)makeBolt(t);
     if(bolt){var k=1-(t-bolt.t)/460;
       if(k<=0)bolt=null;
       else{ctx.strokeStyle='rgba(255,249,224,'+k+')';ctx.shadowColor='rgba(255,236,170,.95)';ctx.shadowBlur=16;ctx.lineJoin='round';
         for(i=0;i<bolt.paths.length;i++){var p=bolt.paths[i];ctx.lineWidth=i?1.2:2.2;ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);
           for(var j=1;j<p.length;j++)ctx.lineTo(p[j][0],p[j][1]);ctx.stroke()}
         ctx.shadowBlur=0}}
+    if(!nd_&&!ESC.granizo&&!ESC.rayos&&!bolt){raf=0;return}   /* cielo en calma: no se gasta bateria animando */
     raf=requestAnimationFrame(frame)}
-  function start(){if(raf||!ctx||!fxOn||!visible||document.hidden)return;last=performance.now();
+  function start(){if(raf||!ctx||!fxOn||!visible||document.hidden)return;if(!ESC.lluvia&&!ESC.granizo&&!ESC.rayos){if(ctx)ctx.clearRect(0,0,W,H);return}last=performance.now();
     if(!nextBolt||nextBolt<last)nextBolt=last+1600+Math.random()*2600;raf=requestAnimationFrame(frame)}
   function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
   function setFx(on){fxOn=on;root.setAttribute('data-fx',on?'on':'off');LS('fx',on?'on':'off');
@@ -1117,7 +1145,7 @@
     sndOn=on;LS('snd',on?'on':'off');if(b)b.setAttribute('aria-pressed',on?'true':'false');
     if(!ac)return;
     var n=ac.currentTime;rainGain.gain.cancelScheduledValues(n);rainGain.gain.setValueAtTime(rainGain.gain.value,n);
-    if(on){if(ac.resume)ac.resume();rainGain.gain.linearRampToValueAtTime(RADIO_ON?.004:.014,n+.9)}
+    if(on){if(ac.resume)ac.resume();rainGain.gain.linearRampToValueAtTime((RADIO_ON?.004:.014)*ESC.lluvia,n+.9)}
     else rainGain.gain.linearRampToValueAtTime(0,n+.35)}
   function thunder(){
     if(!sndOn||!ac)return;
