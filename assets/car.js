@@ -19,7 +19,8 @@
   var WMO = { 0: ['☀️', 'Despejado', 'Céu limpo'], 1: ['🌤️', 'Poco nublado', 'Pouco nublado'], 2: ['⛅', 'Parcial', 'Parcial'], 3: ['☁️', 'Nublado', 'Nublado'], 45: ['🌫️', 'Niebla', 'Neblina'], 48: ['🌫️', 'Niebla', 'Neblina'], 51: ['🌦️', 'Llovizna', 'Garoa'], 53: ['🌦️', 'Llovizna', 'Garoa'], 55: ['🌧️', 'Llovizna', 'Garoa'], 61: ['🌧️', 'Lluvia', 'Chuva'], 63: ['🌧️', 'Lluvia', 'Chuva'], 65: ['🌧️', 'Lluvia fuerte', 'Chuva forte'], 80: ['🌦️', 'Chaparrón', 'Pancada'], 81: ['🌧️', 'Chaparrón', 'Pancada'], 82: ['⛈️', 'Chaparrón fuerte', 'Pancada forte'], 95: ['⛈️', 'Tormenta', 'Tempestade'], 96: ['⛈️', 'Tormenta con granizo', 'Tempestade com granizo'], 99: ['⛈️', 'Tormenta con granizo', 'Tempestade com granizo'] };
 
   var CSS = '#car{position:fixed;inset:0;z-index:9000;background:#0b1118;color:#fff;font:15px/1.3 "IBM Plex Sans",system-ui,sans-serif}' +
-    '#carMap{position:absolute;inset:0}' +
+    '#carMap{position:absolute;inset:0;z-index:0;isolation:isolate}' +
+    '#car .top,#car .av,#car .side,#car .bot{z-index:1100}#car .cf{z-index:1050}#car .dlg{z-index:1200}' +
     '#car .cf{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 3px rgba(255,178,56,.55),inset 0 0 60px rgba(0,0,0,.55);border-radius:0}' +
     '#car .gls{background:rgba(14,24,38,.72);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.16);border-radius:18px;pointer-events:auto}' +
     '#car .top{position:absolute;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;display:flex;gap:8px;align-items:stretch}' +
