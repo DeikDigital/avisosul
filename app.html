@@ -374,6 +374,7 @@
   .pmx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;background:none;color:inherit;font-size:28px;cursor:pointer}
   .pmb{text-align:left;margin:8px 0 6px;padding-left:20px;font-size:14.5px}.pmb li{margin:4px 0}
   .pmg{font-size:13px;opacity:.8;margin:0 0 12px}
+  .pmvid{display:flex;align-items:center;gap:14px;margin:0 0 12px}.pmvid video{width:96px;aspect-ratio:9/16;border-radius:12px;object-fit:cover;background:#16263b;flex:none;border:1px solid rgba(255,255,255,.15)}.pmvid p{margin:0;font-weight:800;font-size:15px;line-height:1.3}
   .pmpais{margin:0 0 10px;text-align:center}.pmpais>span{display:block;font-size:13px;font-weight:600;opacity:.85;margin-bottom:6px}.pmpais div{display:inline-flex;gap:6px;flex-wrap:wrap;justify-content:center}.pmpais button{font:inherit;font-size:14px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;cursor:pointer}.pmpais button[aria-checked="true"]{background:#f5b301;border-color:#f5b301;color:#142235}.pmpais small{display:block;font-size:11.5px;opacity:.7;margin-top:5px}
   .pmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
   .pmp button{font:inherit;color:inherit;display:flex;flex-direction:column;gap:2px;align-items:center;padding:10px 4px;border-radius:8px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.04);cursor:pointer}
@@ -1110,6 +1111,7 @@
   <div class="onbc gl pmoc">
     <button type="button" class="pmx" id="pmoX" aria-label="Fechar / Cerrar">×</button>
     <h2 id="pmoT"><span class="pt">Passe para o Premium</span><span class="es">Pasate a Premium</span></h2>
+    <div class="pmvid"><video id="pmoV" muted loop playsinline preload="none" poster="/media/promo/poster.jpg" aria-label="Video: personas que usan Premium"></video><p><span class="pt">Aja a tempo. Sua família, tranquila.</span><span class="es">Actuá a tiempo. Tu familia, tranquila.</span></p></div>
     <ul class="pmb">
       <li><span class="pt">Compartilhar alertas com a família e os amigos pelo WhatsApp, com foto e vídeo</span><span class="es">Compartir alertas con tu familia y amigos por WhatsApp, con foto y video</span></li>
       <li><span class="pt">Alertas no seu WhatsApp</span><span class="es">Alertas en tu WhatsApp</span></li>
@@ -1972,6 +1974,8 @@
     var a=document.getElementById('lgAqui');if(a)a.addEventListener('click',function(){var f=document.getElementById('lgForm');if(f)f.hidden=false;var g=document.getElementById('lgGps');if(g)g.click()});
     var w=document.getElementById('lgWa');if(w)w.addEventListener('click',function(){location.hash='#ajustes';setTimeout(function(){var x=document.getElementById('waBox');if(x){x.scrollIntoView({behavior:'smooth',block:'center'});var t=x.querySelector('input[type=tel]');if(t)t.focus()}},350)})});
   safe(function(){var o=document.getElementById('pmo');if(!o)return;var st=document.getElementById('pmoSt'),plan='temporada';
+    var pv=document.getElementById('pmoV');if(pv&&'MutationObserver' in window)new MutationObserver(function(){if(o.hidden){try{pv.pause()}catch(e){}return}
+      var src='/media/promo/web_'+(root.getAttribute('data-lang')==='es'?'es':'pt')+'.mp4?v=1';if(pv.getAttribute('src')!==src){pv.src=src}pv.muted=true;var pr=pv.play();if(pr&&pr.catch)pr.catch(function(){})}).observe(o,{attributes:true,attributeFilter:['hidden']});
     function cerrar(){o.hidden=true;if(location.hash==='#premium')history.replaceState(null,'',location.pathname+location.search)}
     document.getElementById('pmoX').addEventListener('click',cerrar);
     o.querySelectorAll('#pmPais [data-pp]').forEach(function(b){b.addEventListener('click',function(){PAGOP=b.dataset.pp;LS('pagoPais',PAGOP);root.setAttribute('data-pago',PAGOP);st.textContent='';pagoBoton()})});pagoBoton();o.addEventListener('click',function(e){if(e.target===o)cerrar()});

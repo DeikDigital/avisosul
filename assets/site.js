@@ -20,8 +20,9 @@
     document.querySelectorAll('[data-es-aria]').forEach(function(e){if(e.dataset.ptAria===undefined)e.dataset.ptAria=e.getAttribute('aria-label')||'';e.setAttribute('aria-label',lang==='es'?e.dataset.esAria:e.dataset.ptAria)});
     document.querySelectorAll('.idi button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===lang?'true':'false')});
     if(document.body.dataset.titEs){if(!document.body.dataset.titPt)document.body.dataset.titPt=document.title;document.title=lang==='es'?document.body.dataset.titEs:document.body.dataset.titPt}
-    safe(pintarVivo);
+    safe(pintarVivo);safe(videosIdioma);
   }
+  function videosIdioma(){document.querySelectorAll('video.pv').forEach(function(v){var src=v.dataset['src'+(lang==='es'?'Es':'Pt')];if(!src||v.dataset.cur===src)return;v.dataset.cur=src;v.src=src;v.muted=true;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){})})}
   document.querySelectorAll('.idi button').forEach(function(b){b.addEventListener('click',function(){lang=b.dataset.l;LS('lang',lang);LS('langM','1');aplicarIdioma()})});
 
   /* ---- datos en vivo ---- */
