@@ -536,6 +536,7 @@
   @media (max-width:345px){.brand .bn{display:none}}
   @media (max-width:560px){.tools .cq,.tools .prc,.tools .car{flex:1 1 auto;justify-content:center;margin:0!important}}
   [data-car="1"] .tools .car{opacity:1}[data-car="1"] .tools .car .pr{background:none!important;padding:0!important}.tools .tg svg,.tools .tg .crw{flex:none}
+  @media (max-width:600px){input,select,textarea{font-size:16px!important}}
   .osmb{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.6)}[data-theme="light"] .osmb{filter:none}
   .lgh{font-size:22px;letter-spacing:.01em}
   .lgpb .lgw{width:24px;height:24px;margin:0;flex:none}
@@ -1818,7 +1819,7 @@
   function carMarca(){if(!LS('carBeta')&&root.getAttribute('data-plan')!=='premium')return;root.setAttribute('data-car','1');var i=document.querySelector('#bCar .pr'),c=document.querySelector('#bCq .crw');if(i&&c)i.innerHTML=c.outerHTML}carMarca();
   function carAbrir(){if(root.getAttribute('data-plan')!=='premium'){bloqueo();return}if(false){var t=document.getElementById('bCar');if(t){t.classList.remove('nop');void t.offsetWidth;t.classList.add('nop')}return}
     if(root.getAttribute('data-plan')!=='premium'){bloqueo();return}
-    var go=function(){if(window.__carAbrir){window.__carAbrir();return}var j=document.createElement('script');j.src='/assets/car.js?v=4';j.onload=function(){window.__carAbrir()};document.head.appendChild(j)};
+    var go=function(){if(window.__carAbrir){window.__carAbrir();return}var j=document.createElement('script');j.src='/assets/car.js?v=5';j.onload=function(){window.__carAbrir()};document.head.appendChild(j)};
     if(window.L){go();return}var c=document.createElement('link');c.rel='stylesheet';c.href='/lib/leaflet/leaflet.css';document.head.appendChild(c);
     var l=document.createElement('script');l.src='/lib/leaflet/leaflet.js';l.onload=go;document.head.appendChild(l)}
   safe(function(){var b=document.getElementById('bCar');if(b)b.addEventListener('click',carAbrir);if(/[?&]modo=car\b/.test(location.search))setTimeout(carAbrir,800)});

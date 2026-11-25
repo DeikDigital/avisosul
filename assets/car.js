@@ -39,10 +39,10 @@
     '#car .est{margin-top:8px;display:grid;gap:6px;max-height:30vh;overflow:auto}#car .est div{display:flex;align-items:center;gap:8px;font-size:14px}#car .est span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#car .est small{opacity:.75}' +
     '#car .est .fv{background:transparent;color:#ffc61a;font-size:18px;padding:0 4px}#car .est .fv.no{color:rgba(255,255,255,.4)}' +
     '#car .nt{font-size:12px;opacity:.7;margin-top:6px}' +
-    '#car .dlg{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:5}#car .dlg[hidden]{display:none}' +
-    '#car .dlg form{width:100%;max-width:480px;margin:10px;padding:18px;display:grid;gap:10px}#car .dlg h3{margin:0;font-size:19px}' +
-    '#car .dlg label{display:grid;gap:4px;font-size:13px;font-weight:700}#car .dlg input,#car .dlg select{font:inherit;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:#fff}' +
-    '#car .dlg .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}#car .dlg .ok{font:inherit;font-weight:800;padding:12px;border:0;border-radius:12px;background:#f5b301;color:#2e2000;cursor:pointer}#car .dlg .cn{font:inherit;padding:10px;border:0;background:transparent;color:#fff;opacity:.8;cursor:pointer}' +
+    '#car .dlg{position:absolute;inset:0;background:rgba(4,8,14,.88);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:max(14px,env(safe-area-inset-top)) 0 40px}#car .dlg[hidden]{display:none}#car.dlgon .top,#car.dlgon .av,#car.dlgon .side,#car.dlgon .bot{visibility:hidden}' +
+    '#car .dlg form{width:calc(100% - 20px);max-width:480px;margin:0 10px;box-sizing:border-box;padding:18px;display:grid;gap:10px}#car .dlg h3{margin:0;font-size:19px}' +
+    '#car .dlg label{display:grid;gap:4px;font-size:13px;font-weight:700}#car .dlg input,#car .dlg select{font:inherit;font-size:16px;width:100%;box-sizing:border-box;min-width:0;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:#fff}' +
+    '#car .dlg .r2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}#car .dlg input[type=range]{padding:0;border:0;background:none}#car .dlg .ok{font:inherit;font-weight:800;padding:12px;border:0;border-radius:12px;background:#f5b301;color:#2e2000;cursor:pointer}#car .dlg .cn{font:inherit;padding:10px;border:0;background:transparent;color:#fff;opacity:.8;cursor:pointer}' +
     '#car .pin{font-size:22px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}#car .pin.f{font-size:26px}' +
     '#car .yo{width:22px;height:22px;border-radius:50%;background:#f5b301;border:3px solid #fff;box-shadow:0 0 0 6px rgba(245,179,1,.3)}' +
     '#car .leaflet-control-attribution{font-size:9px;background:rgba(0,0,0,.5);color:#ccc}#car .leaflet-control-attribution a{color:#ddd}';
@@ -62,8 +62,8 @@
       '<div class="dlg" id="cDlg" hidden><form class="gls" id="cForm"><h3>🚗 ' + L2('Mi auto', 'Meu carro') + '</h3>' +
       '<label>' + L2('Modelo', 'Modelo') + '<input name="mod" maxlength="40" placeholder="' + L2('Ej.: Fiat Cronos 1.3', 'Ex.: Fiat Argo 1.0') + '"></label>' +
       '<label>' + L2('Combustible', 'Combustível') + '<select name="tipo"><option value="nafta">' + L2('Nafta', 'Gasolina') + '</option><option value="diesel">Diésel</option><option value="gnc">' + L2('GNC', 'GNV') + '</option><option value="etanol">' + L2('Etanol', 'Etanol') + '</option><option value="ev">' + L2('Eléctrico', 'Elétrico') + '</option></select></label>' +
-      '<div class="r2"><label id="cCapL">' + L2('Tanque (litros)', 'Tanque (litros)') + '<input name="cap" type="number" min="1" max="300" step="0.1" required></label>' +
-      '<label id="cConL">' + L2('Consumo (L/100 km)', 'Consumo (L/100 km)') + '<input name="cons" type="number" min="1" max="60" step="0.1" required></label></div>' +
+      '<div class="r2"><label id="cCapL">' + L2('Tanque (litros)', 'Tanque (litros)') + '<input name="cap" type="number" inputmode="decimal" min="1" max="300" step="0.1" placeholder="50" required></label>' +
+      '<label id="cConL">' + L2('Consumo (L/100 km)', 'Consumo (L/100 km)') + '<input name="cons" type="number" inputmode="decimal" min="1" max="60" step="0.1" placeholder="8" required></label></div>' +
       '<label><span>' + L2('Nivel actual', 'Nível atual') + ': <span id="cPctV">50</span> %</span><input name="pct" type="range" min="0" max="100" value="50"></label>' +
       '<button class="ok">' + L2('Guardar', 'Salvar') + '</button><button type="button" class="cn" id="cCn">' + L2('Cancelar', 'Cancelar') + '</button>' +
       '<div class="nt">' + L2('La autonomía es una estimación con estos datos y los km que marca el GPS. Corregí el nivel cuando cargues.', 'A autonomia é uma estimativa com esses dados e os km do GPS. Corrija o nível quando abastecer.') + '</div></form></div>';
@@ -88,7 +88,7 @@
     $('cX').onclick = cerrar;
     $('cCen').onclick = function () { CAR.map.setView(CAR.pos || A.ref(), Math.max(CAR.map.getZoom(), 14)) };
     $('cAuto').onclick = $('cCfg').onclick = dlg;
-    $('cCn').onclick = function () { $('cDlg').hidden = true };
+    $('cCn').onclick = function () { $('cDlg').hidden = true; CAR.el.classList.remove('dlgon') };
     $('cEst').onclick = function () { estaciones(CAR.pos || A.ref(), true) };
     $('cPark').onclick = function () {
       var p = LS('carPark') ? JSON.parse(LS('carPark')) : null;
@@ -100,7 +100,7 @@
     f.pct.oninput = function () { $('cPctV').textContent = f.pct.value };
     f.onsubmit = function (e) {
       e.preventDefault(); var c = { mod: f.mod.value.trim(), tipo: f.tipo.value, cap: +f.cap.value, cons: +f.cons.value, pct: +f.pct.value };
-      var antes = cfg(); guardarCfg(c); $('cDlg').hidden = true; pintarAuto();
+      var antes = cfg(); guardarCfg(c); $('cDlg').hidden = true; CAR.el.classList.remove('dlgon'); if (document.activeElement) document.activeElement.blur(); pintarAuto();
       if (!antes || ev(antes) !== ev(c)) estaciones(CAR.pos || A.ref(), true);
     };
   }
@@ -110,7 +110,7 @@
   function dlg() {
     var c = cfg() || { mod: '', tipo: 'nafta', cap: '', cons: '', pct: 50 }, f = document.getElementById('cForm');
     f.mod.value = c.mod || ''; f.tipo.value = c.tipo || 'nafta'; f.cap.value = c.cap || ''; f.cons.value = c.cons || ''; f.pct.value = c.pct == null ? 50 : Math.round(c.pct);
-    document.getElementById('cPctV').textContent = f.pct.value; f.tipo.onchange(); document.getElementById('cDlg').hidden = false;
+    document.getElementById('cPctV').textContent = f.pct.value; f.tipo.onchange(); document.getElementById('cDlg').hidden = false; CAR.el.classList.add('dlgon');
   }
 
   function pintarAuto() {
