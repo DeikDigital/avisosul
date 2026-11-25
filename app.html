@@ -1215,7 +1215,12 @@
   var CANAL_GEN={whatsapp:'https://whatsapp.com/channel/',telegram:'https://t.me/avisosul',espera:''};
   /* ---- marca por pais: Argentina ve Alerta Sur (Mercado Pago), Brasil ve Aviso Sul (Hotmart) ---- */
   var PRECID=(function(){var q=/[?&]c=([a-z]+)\b/.exec(location.search)||/^\/([a-z]+)(\/|$)/.exec(location.pathname),id=q?q[1]:LS('c');for(var i=0;i<LISTA.length;i++)if(LISTA[i][0]===id)return LISTA[i];return null})();
-  var PAISM=PRECID?PRECID[2]:'br',MARCA=PAISM==='ar'?'Alerta Sur':'Aviso Sul',PAGO=PAISM==='ar'?'Mercado Pago':'Hotmart';
+  /* La marca y los pagos siguen al pais desde donde se usa la app (zona horaria del celular y, si no alcanza, la IP), no a la ciudad elegida. */
+  var PAISUSO=(function(){var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+    if(/^America\/(Argentina\/|Buenos_Aires|Cordoba|Mendoza|Catamarca|Jujuy|Rosario)/.test(tz))return 'ar';
+    if(/^America\/(Sao_Paulo|Araguaina|Bahia|Belem|Boa_Vista|Campo_Grande|Cuiaba|Fortaleza|Maceio|Manaus|Noronha|Porto_Velho|Recife|Rio_Branco|Santarem|Eirunepe)$/.test(tz))return 'br';
+    var ip=LS('paisIP');return ip==='ar'||ip==='br'?ip:null})();
+  var PAISM=PAISUSO||(PRECID?PRECID[2]:'br'),MARCA=PAISM==='ar'?'Alerta Sur':'Aviso Sul',PAGO=PAISM==='ar'?'Mercado Pago':'Hotmart';
   root.setAttribute('data-pais',PAISM);
   function marcaTxt(t){return MARCA==='Aviso Sul'||typeof t!=='string'?t:t.replace(/Aviso Sul/g,MARCA)}
   var PAIS={
@@ -1380,7 +1385,7 @@
   safe(nwsPintar);
   /* ---- ciudad e idioma segun desde donde se usa (ubicacion aproximada por IP, sin pedir permiso) ---- */
   safe(function(){if(!WEB||LS('geoip'))return;LS('geoip','1');
-    var ok=function(lat,lon,pais){if(!LS('langM')&&!/[?&]lang=/.test(location.search)&&(pais==='BR'||pais==='AR'||pais==='UY'||pais==='PY')){var l2=pais==='BR'?'pt':'es';if(root.getAttribute('data-lang')!==l2)setLang(l2)}
+    var ok=function(lat,lon,pais){var pp=pais==='AR'||pais==='UY'||pais==='PY'?'ar':pais==='BR'?'br':null;if(pp){var antes=LS('paisIP');LS('paisIP',pp);if(!PAISUSO&&pp!==PAISM&&antes!==pp){location.reload();return}}if(!LS('langM')&&!/[?&]lang=/.test(location.search)&&(pais==='BR'||pais==='AR'||pais==='UY'||pais==='PY')){var l2=pais==='BR'?'pt':'es';if(root.getAttribute('data-lang')!==l2)setLang(l2)}
       if(LS('cM')||!isFinite(lat))return;var best=null,bd=1e9;for(var id in CIUDAD){if(OCULTAS[id])continue;var g=CIUDAD[id].geo,d=Math.pow(g[0]-lat,2)+Math.pow((g[1]-lon)*Math.cos(lat*Math.PI/180),2);if(d<bd){bd=d;best=id}}
       if(best&&Math.sqrt(bd)*111<600&&best!==cid){LS('c',best);location.replace('/'+best+'/'+location.search+location.hash)}};
     fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){ok(+j.latitude,+j.longitude,String(j.country_code||'').toUpperCase())})
