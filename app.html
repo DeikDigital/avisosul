@@ -568,11 +568,14 @@
   /* cuando paso */
   .vzw{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}.vzw button{font:inherit;font-size:14px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--strong);cursor:pointer}.vzw button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
   /* ajustes de avisos */
+  .hrin{display:flex;flex-direction:column;gap:6px}.hrr{display:flex;gap:8px}.hrc{display:block;color:var(--amber);flex:none}.hrc circle{fill:var(--card);stroke:var(--amber);stroke-width:2}
+  .wx .mm{margin-top:2px}
+  .lgtmp{display:flex;gap:10px;align-items:flex-start;margin:8px 0}.lgtmp b{display:block;font-size:14.5px}.lgtmp small{display:block;font-size:12.5px;color:var(--muted)}.lgtmp input[type=date]{margin-top:6px;font:inherit;font-size:16px;padding:6px 8px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--strong)}.lgx{font-weight:600;color:var(--amber);font-size:12px}
   .avq{display:grid;gap:10px}.avq .fila{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.avq .fila:first-child{border-top:0}
   .avq .fila b{display:block;font-size:15px;color:var(--strong)}.avq .fila small{display:block;font-size:12.5px;color:var(--muted)}
   .avseg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}.avseg button{font:inherit;font-size:13px;font-weight:600;padding:8px 10px;border:0;background:transparent;color:var(--muted);cursor:pointer}.avseg button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink)}
   .fens{display:flex;gap:6px;flex-wrap:wrap}.fens label{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
-  .hrs{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}.hrs select{font:inherit;font-size:16px;padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--strong)}
+  .avhr{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}.avhr select{font:inherit;font-size:16px;padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--strong)}
   .sw{position:relative;width:46px;height:26px;flex:none}.sw input{opacity:0;width:0;height:0}.sw span{position:absolute;inset:0;border-radius:6px;background:rgba(255,255,255,.18);transition:.2s;cursor:pointer}.sw span::before{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:4px;background:#fff;transition:.2s}.sw input:checked+span{background:#3ddc84}.sw input:checked+span::before{transform:translateX(20px)}
   .osmb{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.6)}[data-theme="light"] .osmb{filter:none}
   .lgh{font-size:22px;letter-spacing:.01em}
@@ -715,7 +718,7 @@
       <p class="fecha" id="bigDate"></p>
       <div class="wx" id="wx">
         <div class="wxb"><div class="lb"><span id="wxClock"></span> · <span class="pt">agora</span><span class="es">ahora</span></div>
-          <div class="big"><i id="wxIco"></i><span id="wxTemp"></span></div><div class="ds" id="wxDs"></div><div class="mt" id="wxMt"></div></div>
+          <div class="big"><i id="wxIco"></i><span id="wxTemp"></span></div><div class="ds" id="wxDs"></div><div class="mt" id="wxMt"></div><div class="mt mm" id="wxMm"></div></div>
         <div class="wxb"><div class="lb"><span class="pt">Próxima hora</span><span class="es">Próxima hora</span></div>
           <div class="big"><i id="wxIco2"></i><span id="wxTemp2"></span></div><div class="ds" id="wxDs2"></div><div class="mt" id="wxMt2"></div></div>
       </div>
@@ -775,6 +778,7 @@
     </div>
     <div class="lgf" id="lgForm" hidden>
       <input type="text" id="lgName" maxlength="30" autocomplete="off" aria-label="Nombre">
+      <div class="lgtmp"><label class="sw"><input type="checkbox" id="lgTmp"><span></span></label><div><b><span class="pt">Só por uns dias</span><span class="es">Solo por unos días</span></b><small><span class="pt">Para uma viagem ou o fim de semana: avisa até a data que você escolher e depois se apaga sozinho.</span><span class="es">Para un viaje o el finde: avisa hasta la fecha que elijas y después se borra solo.</span></small><input type="date" id="lgHasta" hidden aria-label="Hasta"></div></div>
       <div class="lgb">
         <button type="button" id="lgGps">📍 <span class="pt">Onde estou agora</span><span class="es">Donde estoy ahora</span></button>
         <button type="button" id="lgMap">🗺️ <span class="pt">Tocar no mapa</span><span class="es">Tocar en el mapa</span></button>
@@ -1018,7 +1022,7 @@
         <div class="fila" style="display:block"><b><span class="pt">O que avisamos</span><span class="es">Qué te avisamos</span></b>
           <div class="fens" id="avFen" style="margin-top:8px"><label><input type="checkbox" value="granizo"> <span class="pt">Granizo</span><span class="es">Granizo</span></label><label><input type="checkbox" value="chuva"> <span class="pt">Chuva e alagamento</span><span class="es">Lluvia e inundación</span></label><label><input type="checkbox" value="vento"> <span class="pt">Vento forte</span><span class="es">Viento fuerte</span></label><label><input type="checkbox" value="raios"> <span class="pt">Tempestade elétrica</span><span class="es">Tormenta eléctrica</span></label></div></div>
         <div class="fila"><div><b><span class="pt">De noite</span><span class="es">De noche</span></b><small id="avNocheT"></small>
-          <div class="hrs" id="avHrs" style="margin-top:6px"><span class="pt">Silêncio das</span><span class="es">Silencio de</span><select id="avDesde" aria-label="Desde"></select><span class="pt">às</span><span class="es">a</span><select id="avHasta" aria-label="Hasta"></select></div></div>
+          <div class="avhr" id="avHrs" style="margin-top:6px"><span class="pt">Silêncio das</span><span class="es">Silencio de</span><select id="avDesde" aria-label="Desde"></select><span class="pt">às</span><span class="es">a</span><select id="avHasta" aria-label="Hasta"></select></div></div>
           <label class="sw"><input type="checkbox" id="avNoche"><span></span></label></div>
         <div class="fila"><div><b><span class="pt">Aparência</span><span class="es">Apariencia</span></b><small><span class="pt">Automático segue a hora do dia</span><span class="es">Automático sigue la hora del día</span></small></div>
           <div class="avseg" id="avTema"><button type="button" data-v="auto"><span class="pt">Auto</span><span class="es">Auto</span></button><button type="button" data-v="light"><span class="pt">Claro</span><span class="es">Claro</span></button><button type="button" data-v="night"><span class="pt">Escuro</span><span class="es">Oscuro</span></button></div></div>
@@ -1310,6 +1314,9 @@
     function set(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
     set('wxIco',WX.ahora.ico||'');set('wxTemp',WX.temp+'°');set('wxDs',WX.ahora[l]||'');
     set('wxMt',(l==='es'?'Viento ':'Vento ')+WX.viento_kmh+' km/h · '+(l==='es'?'humedad ':'umidade ')+WX.humedad+'%');
+    var hs=(WX.horas||[]).map(function(h){return +h.temp}).filter(function(x){return !isNaN(x)}).concat([+WX.temp]);
+    var ta=+WX.temp,rh=+WX.humedad||0,ws=(+WX.viento_kmh||0)/3.6,ev=rh/100*6.105*Math.exp(17.27*ta/(237.7+ta)),st=Math.round(ta+0.33*ev-0.7*ws-4);
+    set('wxMm',(l==='es'?'Máx ':'Máx ')+Math.max.apply(null,hs)+'° · '+(l==='es'?'Mín ':'Mín ')+Math.min.apply(null,hs)+'° '+(l==='es'?'(próx. 12 h)':'(próx. 12 h)')+(rh?' · '+(l==='es'?'Sensación ':'Sensação ')+st+'°':''));
     set('wxIco2',WX.prox.ico||'');set('wxTemp2',WX.prox.temp+'°');set('wxDs2',WX.prox[l]||'');
     set('wxMt2',WX.prox.mm>0?(l==='es'?'Lluvia estimada ':'Chuva estimada ')+String(WX.prox.mm).replace('.',',')+' mm':(l==='es'?'Sin lluvia prevista':'Sem chuva prevista'));
     reloj();
@@ -1320,7 +1327,10 @@
   /* ---- proximas horas (viene en el mismo archivo de condiciones, campo 'horas') ---- */
   function pintarHoras(){var e=document.getElementById('hrs');if(!e)return;
     var ok=WX&&WX.horas&&WX.horas.length&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);e.className='hrs'+(ok?' on':'');if(!ok)return;
-    e.innerHTML=WX.horas.map(function(h){return'<div class="hr">'+esc(h.h)+'<i>'+esc(h.ico||'')+'</i><b>'+esc(h.temp)+'°</b><span class="pp">'+(h.prob==null?'':esc(h.prob)+'%')+'</span><div class="gs">'+(h.racha==null?'':esc(h.racha)+' km/h')+'</div></div>'}).join('')}
+    var it=WX.horas.map(function(h){return'<div class="hr">'+esc(h.h)+'<i>'+esc(h.ico||'')+'</i><b>'+esc(h.temp)+'°</b><span class="pp">'+(h.prob==null?'':esc(h.prob)+'%')+'</span><div class="gs">'+(h.racha==null?'':esc(h.racha)+' km/h')+'</div></div>'}).join('');
+    var ts=WX.horas.map(function(h){return +h.temp}),mx=Math.max.apply(null,ts),mn=Math.min.apply(null,ts),W=ts.length*72-8,H=46,pt=ts.map(function(t,i){return[i*72+32,mx===mn?H/2:6+(mx-t)/(mx-mn)*(H-12)]});
+    var cv='<svg class="hrc" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><polyline points="'+pt.map(function(q){return q[0]+','+q[1].toFixed(1)}).join(' ')+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'+pt.map(function(q){return'<circle cx="'+q[0]+'" cy="'+q[1].toFixed(1)+'" r="4"/>'}).join('')+'</svg>';
+    e.innerHTML='<div class="hrin"><div class="hrr">'+it+'</div>'+cv+'</div>'}
   /* ---- radar: mapa base de OpenStreetMap + capa de RainViewer. Se carga recien cuando la seccion entra en pantalla. ---- */
   var RADAR=null;
   function radarNota(t){var e=document.getElementById('radarNote');if(e)e.textContent=t}
@@ -1554,6 +1564,8 @@
     waPintar();waEstado();document.addEventListener('visibilitychange',function(){if(!document.hidden)safe(waEstado)})});
   /* ---- mis lugares: se guardan en el telefono; el aviso se evalua con el contorno oficial ---- */
   var LUG=[],LUGPICK=null;try{LUG=JSON.parse(LS('lugares')||'[]')||[]}catch(e){LUG=[]}
+  (function(){var n=LUG.length;LUG=LUG.filter(function(u){return !u.exp||u.exp>Date.now()});if(LUG.length!==n)LS('lugares',JSON.stringify(LUG))})();
+  safe(function(){var tp=document.getElementById('lgTmp'),hd=document.getElementById('lgHasta');if(!tp)return;tp.addEventListener('change',function(){hd.hidden=!tp.checked;if(tp.checked&&!hd.value){var d=new Date(Date.now()+3*864e5);hd.value=d.toISOString().slice(0,10)}hd.min=new Date().toISOString().slice(0,10)})});
   function lugGuardar(){LS('lugares',JSON.stringify(LUG))}
   function dentro(g,p){var y=g[0],x=g[1],ok=false;for(var i=0,j=p.length-1;i<p.length;j=i++){var yi=p[i][0],xi=p[i][1],yj=p[j][0],xj=p[j][1];
     if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))ok=!ok}return ok}
@@ -1570,7 +1582,7 @@
       dy.innerHTML='<div class="lgt"><b>📍 '+L2('Donde estás ahora','Onde você está agora')+'</b><span>'+(y0?esc(l==='es'?y0.titulo_es:y0.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(y0.hasta):(ZONAS?L2('Sin avisos oficiales','Sem avisos oficiais'):L2('Consultando…','Consultando…')))+'</span></div>';
       if(!LUG.length)box.innerHTML='';box.appendChild(dy)}
     LUG.forEach(function(u,i){var av=lugAvisos(u.g),a=av[0],d=document.createElement('div');d.className='lgc '+(a?a.nivel:'ok');
-      d.innerHTML='<div class="lgt"><b>'+esc(u.n)+'</b><span>'+(a?esc(l==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta)+(av.length>1?' · +'+(av.length-1):''):(ZONAS?L2('Sin avisos oficiales','Sem avisos oficiais'):L2('Consultando…','Consultando…')))+'</span></div>'+
+      d.innerHTML='<div class="lgt"><b>'+esc(u.n)+(u.exp?' <small class="lgx">'+L2('hasta ','até ')+new Date(u.exp).toLocaleDateString(L2('es-AR','pt-BR'),{day:'2-digit',month:'2-digit'})+'</small>':'')+'</b><span>'+(a?esc(l==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta)+(av.length>1?' · +'+(av.length-1):''):(ZONAS?L2('Sin avisos oficiales','Sem avisos oficiais'):L2('Consultando…','Consultando…')))+'</span></div>'+
         '<button type="button" data-v="'+i+'">'+L2('Ver','Ver')+'</button><button type="button" class="x" data-q="'+i+'" aria-label="'+L2('Quitar','Remover')+'">×</button>';
       box.appendChild(d)});
     box.querySelectorAll('[data-v]').forEach(function(b){b.addEventListener('click',function(){var u=LUG[+b.getAttribute('data-v')];document.getElementById('radar').scrollIntoView({behavior:'smooth'});
@@ -1586,7 +1598,7 @@
       if(avisoPasa(a))safe(function(){notificar(MARCA+' · '+u.n,(root.getAttribute('data-lang')==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta))})})});
     LS('lugvis',JSON.stringify(vis))}
   function lugAgregar(g){var n=(document.getElementById('lgName').value||'').trim()||L2('Mi lugar','Meu lugar');
-    var u={id:String(Date.now()),n:n,g:[Math.round(g[0]*1e4)/1e4,Math.round(g[1]*1e4)/1e4]};LUG.push(u);lugGuardar();
+    var u={id:String(Date.now()),n:n,g:[Math.round(g[0]*1e4)/1e4,Math.round(g[1]*1e4)/1e4]};var tp=document.getElementById('lgTmp'),hd=document.getElementById('lgHasta');if(tp&&tp.checked&&hd.value){u.exp=new Date(hd.value+'T23:59:59').getTime()}LUG.push(u);lugGuardar();if(tp){tp.checked=false;hd.hidden=true}
     var vis={};try{vis=JSON.parse(LS('lugvis')||'{}')||{}}catch(e){}lugAvisos(u.g).forEach(function(a){vis[u.id+'|'+a.id]=1});LS('lugvis',JSON.stringify(vis));
     LUGPICK=null;document.getElementById('lgForm').hidden=true;document.getElementById('lgName').value='';lugPintar();
     document.getElementById('lugares').scrollIntoView({behavior:'smooth'})}
