@@ -40,3 +40,24 @@ function entrada() {
     return is_array($j) ? $j : [];
 }
 function salir($arr, $codigo = 200) { http_response_code($codigo); echo json_encode($arr, JSON_UNESCAPED_UNICODE); exit; }
+
+/* Envío de mails por el buzón contato@avisosul.com (SMTP de Hostinger con usuario y contraseña, firmado por el dominio:
+   no cae en spam). La contraseña la carga Deik en /admin/ (datos_privados/smtp.json). Sin ella, usa mail() del servidor. */
+function enviar_mail($para, $asunto, $texto, $nombre = 'Aviso Sul') {
+    $f = dir_privado() . '/smtp.json'; $c = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : [];
+    $de = 'contato@avisosul.com'; $sub = '=?UTF-8?B?' . base64_encode($asunto) . '?=';
+    $nom = '=?UTF-8?B?' . base64_encode($nombre) . '?=';
+    if (empty($c['pass'])) return @mail($para, $sub, $texto, "From: $nom <$de>\r\nContent-Type: text/plain; charset=UTF-8");
+    $s = @stream_socket_client('ssl://smtp.hostinger.com:465', $en, $es, 15);
+    if (!$s) return @mail($para, $sub, $texto, "From: $nom <$de>\r\nContent-Type: text/plain; charset=UTF-8");
+    stream_set_timeout($s, 15);
+    $lee = function () use ($s) { $r = ''; while (($l = fgets($s, 515)) !== false) { $r .= $l; if (isset($l[3]) && $l[3] === ' ') break; } return $r; };
+    $cmd = function ($x, $ok) use ($s, $lee) { fwrite($s, $x . "\r\n"); $r = $lee(); return strpos($r, (string)$ok) === 0; };
+    $id = bin2hex(random_bytes(8)) . '@avisosul.com';
+    $msg = "From: $nom <$de>\r\nTo: <$para>\r\nSubject: $sub\r\nDate: " . date('r') . "\r\nMessage-ID: <$id>\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($texto));
+    $ok = strpos($lee(), '220') === 0 && $cmd('EHLO avisosul.com', 250) && $cmd('AUTH LOGIN', 334) && $cmd(base64_encode($de), 334)
+        && $cmd(base64_encode($c['pass']), 235) && $cmd("MAIL FROM:<$de>", 250) && $cmd("RCPT TO:<$para>", 250) && $cmd('DATA', 354)
+        && $cmd($msg . "\r\n.", 250);
+    @fwrite($s, "QUIT\r\n"); fclose($s);
+    return $ok ?: @mail($para, $sub, $texto, "From: $nom <$de>\r\nContent-Type: text/plain; charset=UTF-8");
+}

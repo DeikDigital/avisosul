@@ -37,6 +37,7 @@ if ($acao === 'estado') {
         'mp' => ['access_token' => cola($mp['access_token'] ?? ''), 'webhook_secret' => cola($mp['webhook_secret'] ?? ''), 'cuenta' => $mp['cuenta'] ?? null],
         'google' => (leer('google.json')['client_id'] ?? GOOGLE_CLIENT_ID),
         'precios' => precios_cfg(), 'precios_hoy' => precios_para(''),
+        'smtp' => !empty(leer('smtp.json')['pass']),
         'pixel' => (leer('meta.json')['pixel'] ?? ''), 'embudo' => array_slice(leer('embudo.json'), -14, null, true),
         'ofertas_sin_plan' => array_values(array_unique(array_map('trim', $sin))),
         'eventos_hotmart' => array_map(fn($x) => ['t' => $x['t'], 'ev' => $x['ev'], 'off' => $x['off'], 'prod' => $x['prod'], 'email' => $x['email'] ? substr($x['email'], 0, 3) . '…' : ''], $ev),
@@ -115,6 +116,12 @@ if ($acao === 'precios') {
     if (!$c['br_ofertas']) $c['br_ofertas'] = (object)[];
     escribir('precios.json', $c); escribir('hotmart.json', $hm);
     salir(['ok' => true, 'precios_hoy' => precios_para('')]);
+}
+if ($acao === 'smtp') {   // contraseña del buzón contato@avisosul.com (la escribe Deik; nunca se devuelve)
+    $pw = (string)($e['pass'] ?? '');
+    if ($pw !== '') { if (strlen($pw) > 200) salir(['ok' => false], 400); escribir('smtp.json', ['pass' => $pw]); }
+    $ok = enviar_mail($admin, 'Prueba de envío · Aviso Sul', "Si ves este mail en la bandeja de entrada (no en spam), el envío por contato@avisosul.com funciona.\n\nhttps://avisosul.com");
+    salir(['ok' => $ok]);
 }
 if ($acao === 'pixel') {
     $px = preg_replace('/\D/', '', (string)($e['pixel'] ?? ''));

@@ -67,7 +67,7 @@ if ($acao === 'codigo') {
     if (!$r) salir(['ok' => false, 'error' => 'limite'], 429);
     $asunto = 'Seu código do Aviso Sul / Tu código de Aviso Sul: ' . $cod;
     $txt = "Seu código para entrar no Aviso Sul é: $cod\nTu código para entrar en Aviso Sul es: $cod\n\nVale por 15 minutos. Se não foi você, ignore este e-mail.\nSi no fuiste vos, ignorá este mail.\n\nhttps://avisosul.com";
-    $ok = @mail($em, '=?UTF-8?B?' . base64_encode($asunto) . '?=', $txt, "From: Aviso Sul <contato@avisosul.com>\r\nContent-Type: text/plain; charset=UTF-8");
+    $ok = enviar_mail($em, $asunto, $txt);
     salir(['ok' => (bool)$ok, 'error' => $ok ? null : 'envio']);
 }
 if ($acao === 'email') {
