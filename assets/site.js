@@ -80,6 +80,7 @@
   /* con qué cuenta paga: Brasil (Hotmart, R$) o Argentina (Mercado Pago, $). Turistas y doble nacionalidad eligen. */
   var pq=/[?&]pago=(ar|br)\b/.exec(location.search);if(pq){LS('pagoPais',pq[1]);LS('pagoM','1')}
   var PAGOP=LS('pagoPais')==='ar'||LS('pagoPais')==='br'?LS('pagoPais'):(function(){var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}return /^America\/(Argentina\/|Buenos_Aires|Cordoba|Mendoza|Catamarca|Jujuy|Rosario)/.test(tz)?'ar':'br'})();
+  root.setAttribute('data-pago',PAGOP);
   var ARS={mensal:['$ 9.980','$ 4.990',' /mês',' /mes','Pagamento único por 1 mês. Não renova sozinho.','Pago único por 1 mes. No se renueva solo.'],
     temporada:['$ 29.980','$ 14.990','','',null,null],
     anual:['$ 59.980','$ 29.990',' /ano',' /año','Sai por $ 2.499 por mês. Pagamento único, não renova sozinho.','Sale $ 2.499 por mes. Pago único, no se renueva solo.']};
@@ -88,7 +89,7 @@
   var PLANES=[];document.querySelectorAll('.plan').forEach(function(pl){var b=pl.querySelector('[data-plano]'),pr=pl.querySelector('.preco'),q=pl.querySelector('.q');if(!b||!pr)return;
     PLANES.push({k:b.dataset.plano,pr:pr,q:q,prBr:pr.innerHTML,qPt:q?q.innerHTML:'',qEs:q?q.getAttribute('data-es'):''})});
   function promoFin(){if(Date.now()<=new Date('2026-12-25T23:59:59-03:00').getTime())return;document.querySelectorAll('.preco').forEach(function(p){var r=p.querySelector('.preg');if(!r)return;var sm=p.querySelector('small');p.textContent=r.textContent;if(sm)p.appendChild(sm)});document.querySelectorAll('.promo-t').forEach(function(x){x.remove()})}
-  function pintarPago(){
+  function pintarPago(){root.setAttribute('data-pago',PAGOP);
     document.querySelectorAll('.pagopais [data-pp]').forEach(function(b){b.setAttribute('aria-checked',b.dataset.pp===PAGOP?'true':'false')});
     PLANES.forEach(function(x){var a=ARS[x.k];if(!a)return;
       x.pr.innerHTML=PAGOP==='ar'?'<s class="preg">'+a[0]+'</s><span class="p50" data-es="-50% Navidad">-50% Natal</span><br>'+a[1]+(a[2]?'<small data-es="'+a[3]+'">'+a[2]+'</small>':''):x.prBr;

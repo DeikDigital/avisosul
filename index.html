@@ -50,7 +50,7 @@
       <p class="small" data-es="Lo básico es gratis para siempre. Sin registro. Abre en el navegador y se instala como app.">O básico é grátis para sempre. Sem cadastro. Abre no navegador e instala como app.</p>
     </div>
     <figure class="escena">
-      <picture><source srcset="/assets/escena-cuadro.webp" type="image/webp"><img src="/assets/escena-cuadro.jpg" alt="Logo de Aviso Sul: nube de tormenta con rayo y señal de peligro" width="1100" height="956"></picture>
+      <div class="logo3d" id="logo3d" title="Movelo con el cursor o con el dedo"><picture><source srcset="/assets/escena-cuadro.webp" type="image/webp"><img src="/assets/escena-cuadro.jpg" alt="Logo de Aviso Sul: nube de tormenta con rayo y señal de peligro" width="1100" height="956"></picture><span class="cerro" aria-hidden="true"></span></div>
       <aside class="vivo" aria-live="polite">
         <div class="t"><span class="punto"></span><span data-es="Ahora en el Sur">Agora no Sul</span></div>
         <div class="n" id="vN">–</div>
@@ -71,6 +71,156 @@
       <p data-es="Con un toque mandás el alerta con foto, video y el aviso oficial a quien te importa. Función Premium.">Com um toque você manda o alerta com foto, vídeo e o aviso oficial para quem importa. Função Premium.</p>
     </div>
     <a class="btn btn-sol" href="#planos" data-es="Ver Premium">Ver Premium</a>
+  </div>
+</section>
+
+<section class="sec historia" id="premium-uso" aria-labelledby="hisT">
+  <div class="wrap">
+    <div class="cab">
+      <span class="kick" data-es="Premium en acción">Premium em ação</span>
+      <h2 id="hisT" data-es="Tus vecinos ven el granizo. Vos avisás a tu familia.">Seus vizinhos veem o granizo. Você avisa a sua família.</h2>
+      <p class="lead" data-es="Estás en el trabajo y empiezan los reportes cerca de la casa de tu mamá. Con un toque le llega el alerta por WhatsApp.">Você está no trabalho e começam os relatos perto da casa da sua mãe. Com um toque o alerta chega pelo WhatsApp.</p>
+    </div>
+    <figure class="ilu">
+      <svg viewBox="0 0 960 470" role="img" aria-labelledby="iluT iluD">
+        <title id="iluT">Cómo se usa Aviso Sul Premium</title>
+        <desc id="iluD">Una persona en el trabajo mira en el celular que tres vecinos reportaron granizo. La app lo valida y ella toca Alertar familia. El mensaje viaja por WhatsApp hasta el celular de su mamá, que está en su casa en otra ciudad, y ella responde que ya guardó el auto.</desc>
+        <defs>
+          <linearGradient id="ilCielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d3150"/><stop offset="1" stop-color="#2b4a70"/></linearGradient>
+          <linearGradient id="ilCasa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4f6b"/><stop offset="1" stop-color="#22344b"/></linearGradient>
+          <clipPath id="ilPant"><rect x="318" y="58" width="196" height="352" rx="20"/></clipPath>
+          <filter id="ilSom" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#000" flood-opacity=".35"/></filter>
+        </defs>
+
+        <!-- fondos -->
+        <rect x="0" y="0" width="560" height="470" rx="18" fill="url(#ilCielo)"/>
+        <rect x="610" y="0" width="350" height="470" rx="18" fill="url(#ilCielo)"/>
+        <!-- oficina: ventana con lluvia -->
+        <rect x="28" y="40" width="150" height="120" rx="8" fill="#16263b" stroke="#41618a" stroke-width="3"/>
+        <g stroke="#7fb0e6" stroke-width="2" stroke-linecap="round" opacity=".6"><path d="M52 60l-8 18M92 58l-8 18M132 62l-8 18M72 100l-8 18M112 98l-8 18M152 102l-8 18M60 132l-6 14M140 134l-6 14"/></g>
+        <path d="M28 100h150M103 40v120" stroke="#41618a" stroke-width="3"/>
+
+        <!-- persona 1: en el trabajo, con el celular -->
+        <g class="p1">
+          <path d="M40 470c4-92 52-140 122-140s118 48 122 140z" fill="#2f8f83"/>
+          <path d="M132 318h60v28c0 14-60 14-60 0z" fill="#d79b72"/>
+          <circle cx="162" cy="262" r="56" fill="#e2a982"/>
+          <path d="M106 258c-4-46 26-74 60-74 38 0 62 26 58 66-10-20-30-34-58-34-24 0-46 14-60 42z" fill="#3a2a20"/>
+          <circle cx="108" cy="268" r="10" fill="#d79b72"/>
+          <circle cx="182" cy="262" r="5" fill="#2a1d14"/><circle cx="150" cy="262" r="5" fill="#2a1d14"/>
+          <path d="M152 292q14 8 28 0" stroke="#8a4b2e" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M238 470c0-40 10-78 30-104l44-10 8 30-36 22c-6 24-8 44-8 62z" fill="#2a7d72"/>
+          <rect x="268" y="290" width="40" height="70" rx="8" fill="#0f1724" stroke="#3a4a60" stroke-width="2"/>
+          <rect x="273" y="297" width="30" height="54" rx="4" fill="#24405f"/>
+          <path d="M296 352c10-2 18 6 16 16l-6 10-26-4z" fill="#e2a982"/>
+        </g>
+        <!-- lupa desde el celular chico al grande -->
+        <path d="M306 296 L318 120 M306 352 L318 390" stroke="#f5b301" stroke-width="2" stroke-dasharray="4 6" opacity=".55"/>
+
+        <!-- celular grande: lo que ve en Aviso Sul -->
+        <g filter="url(#ilSom)">
+          <rect x="306" y="44" width="220" height="380" rx="30" fill="#0c131c" stroke="#3a4a60" stroke-width="3"/>
+          <rect x="318" y="58" width="196" height="352" rx="20" fill="#13243a"/>
+        </g>
+        <g clip-path="url(#ilPant)">
+          <!-- mapa -->
+          <rect x="318" y="58" width="196" height="352" fill="#183150"/>
+          <g stroke="#23456b" stroke-width="2"><path d="M318 140h196M318 220h196M318 300h196M370 58v352M440 58v352M490 58v352"/><path d="M318 380 L514 250" stroke="#2c5684" stroke-width="7"/></g>
+          <circle cx="430" cy="235" r="72" fill="#ff8a1f" opacity=".16"/><circle cx="430" cy="235" r="72" fill="none" stroke="#ff8a1f" stroke-width="2" stroke-dasharray="5 5" opacity=".7"/>
+          <!-- casa de mamá en el mapa -->
+          <g transform="translate(452 258)"><path d="M-12 2 0-10 12 2v12h-24z" fill="#f5b301"/><rect x="-4" y="6" width="8" height="8" fill="#13243a"/></g>
+          <!-- reportes de granizo -->
+          <g class="pin"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.04;0.07;0.96;1"/>
+            <g transform="translate(398 200)"><circle r="15" fill="#eaf2fb"/><path d="M0-8 6 0 0 8-6 0z" fill="#5b8fc7"/></g></g>
+          <g class="pin"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.12;0.15;0.96;1"/>
+            <g transform="translate(462 214)"><circle r="15" fill="#eaf2fb"/><path d="M0-8 6 0 0 8-6 0z" fill="#5b8fc7"/></g></g>
+          <g class="pin"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.2;0.23;0.96;1"/>
+            <g transform="translate(420 268)"><circle r="15" fill="#eaf2fb"/><path d="M0-8 6 0 0 8-6 0z" fill="#5b8fc7"/></g></g>
+          <!-- barra de arriba -->
+          <rect x="318" y="58" width="196" height="58" fill="#0f1c2c" opacity=".92"/>
+          <text x="332" y="82" class="it it-b">Aviso Sul</text>
+          <text x="332" y="102" class="it it-s pt">Alerta dos vizinhos · 10 km</text>
+          <text x="332" y="102" class="it it-s es">Alerta de vecinos · 10 km</text>
+          <!-- aviso validado -->
+          <g><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.26;0.29;0.96;1"/>
+            <rect x="328" y="126" width="176" height="56" rx="10" fill="#ff8a1f"/>
+            <text x="340" y="149" class="it it-b2 pt">Granizo · 3 vizinhos</text>
+            <text x="340" y="149" class="it it-b2 es">Granizo · 3 vecinos</text>
+            <text x="340" y="169" class="it it-s2 pt">Validado: risco na zona</text>
+            <text x="340" y="169" class="it it-s2 es">Validado: riesgo en la zona</text></g>
+          <!-- botón alertar familia -->
+          <g><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.29;0.32;0.96;1"/>
+            <rect x="330" y="346" width="172" height="48" rx="12" fill="#1fae5b"/>
+            <text x="416" y="376" text-anchor="middle" class="it it-btn pt">Alertar família</text>
+            <text x="416" y="376" text-anchor="middle" class="it it-btn es">Alertar familia</text>
+            <circle cx="470" cy="370" r="6" fill="#fff" opacity="0">
+              <animate attributeName="r" dur="10s" repeatCount="indefinite" values="6;6;26;26" keyTimes="0;0.36;0.42;1"/>
+              <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;.55;0;0" keyTimes="0;0.36;0.37;0.42;1"/></circle></g>
+        </g>
+
+        <!-- el mensaje viaja -->
+        <path id="ilRuta" d="M506 360 C 600 420, 640 120, 760 170" fill="none" stroke="#25d366" stroke-width="2.5" stroke-dasharray="3 9" opacity=".7"/>
+        <g opacity="0">
+          <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.42;0.58;0.6;1"/>
+          <animateMotion dur="10s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;0.4;0.6;1" calcMode="linear"><mpath href="#ilRuta"/></animateMotion>
+          <g transform="translate(-20 -16)"><rect width="40" height="30" rx="9" fill="#25d366"/><path d="M8 30 4 38 16 30z" fill="#25d366"/><path d="M20 7v9M20 20v2" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></g>
+        </g>
+
+        <!-- casa de mamá, en otra ciudad -->
+        <path d="M640 250 785 150 930 250v220H640z" fill="url(#ilCasa)"/>
+        <path d="M624 258 785 140 946 258" fill="none" stroke="#c0532b" stroke-width="14" stroke-linejoin="round"/>
+        <rect x="672" y="282" width="226" height="188" rx="6" fill="#ffd89a" opacity=".18"/>
+        <!-- granizo afuera -->
+        <g fill="#dbe6f1" opacity=".9"><path d="M660 40l5 7-5 7-5-7zM720 70l5 7-5 7-5-7zM880 50l5 7-5 7-5-7zM910 100l5 7-5 7-5-7zM640 120l5 7-5 7-5-7zM850 110l4 6-4 6-4-6z">
+          <animateTransform attributeName="transform" type="translate" values="0 -20;0 40" dur="1.6s" repeatCount="indefinite"/></path></g>
+        <!-- persona 2: mamá -->
+        <g class="p2">
+          <path d="M690 470c4-70 40-106 92-106s88 36 92 106z" fill="#8a5aa8"/>
+          <path d="M760 352h44v22c0 12-44 12-44 0z" fill="#c98a63"/>
+          <circle cx="782" cy="312" r="46" fill="#d69a73"/>
+          <path d="M734 318c-6-42 20-66 48-66 32 0 54 24 50 62-6-16-20-30-50-30-22 0-38 12-48 34z" fill="#cfd4dc"/>
+          <circle cx="826" cy="268" r="14" fill="#cfd4dc"/>
+          <circle cx="768" cy="312" r="4" fill="#2a1d14"/><circle cx="796" cy="312" r="4" fill="#2a1d14"/>
+          <path d="M770 334q12 6 24 0" stroke="#7d4128" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <!-- su celular -->
+          <g class="vibra">
+            <animateTransform attributeName="transform" type="rotate" dur="10s" repeatCount="indefinite" values="0 852 404;0 852 404;-6 852 404;6 852 404;-4 852 404;0 852 404;0 852 404" keyTimes="0;0.6;0.62;0.64;0.66;0.68;1"/>
+            <rect x="830" y="370" width="44" height="78" rx="9" fill="#0f1724" stroke="#3a4a60" stroke-width="2"/>
+            <rect x="835" y="377" width="34" height="62" rx="4" fill="#24405f"/>
+            <path d="M826 448c-10 0-14-10-10-18l12-12 14 14z" fill="#d69a73"/>
+          </g>
+        </g>
+        <!-- mensaje que recibe -->
+        <g opacity="0"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.62;0.65;0.96;1"/>
+          <g filter="url(#ilSom)"><rect x="626" y="18" width="318" height="96" rx="14" fill="#e7fbe9"/><path d="M890 114l10 16 4-16z" fill="#e7fbe9"/></g>
+          <text x="644" y="46" class="it it-m1 pt">⚠️ Granizo perto da sua casa</text>
+          <text x="644" y="46" class="it it-m1 es">⚠️ Granizo cerca de tu casa</text>
+          <text x="644" y="70" class="it it-m2 pt">3 vizinhos relataram perto daí.</text>
+          <text x="644" y="70" class="it it-m2 es">3 vecinos lo reportaron en tu zona.</text>
+          <text x="644" y="94" class="it it-m2 pt">Guarde o carro e fique longe das janelas.</text>
+          <text x="644" y="94" class="it it-m2 es">Guardá el auto y alejate de las ventanas.</text></g>
+        <!-- responde -->
+        <g opacity="0"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.76;0.79;0.96;1"/>
+          <rect x="664" y="196" width="196" height="40" rx="12" fill="#25d366"/>
+          <text x="680" y="222" class="it it-r pt">Obrigada! Já guardei 🚗</text>
+          <text x="680" y="222" class="it it-r es">¡Gracias! Ya lo guardé 🚗</text></g>
+
+        <!-- etiquetas -->
+        <g class="it-et"><rect x="20" y="420" width="150" height="34" rx="17" fill="#0c131c" opacity=".85"/>
+          <text x="95" y="442" text-anchor="middle" class="it it-e pt">Você · no trabalho</text><text x="95" y="442" text-anchor="middle" class="it it-e es">Vos · en el trabajo</text></g>
+        <g class="it-et"><rect x="626" y="420" width="190" height="34" rx="17" fill="#0c131c" opacity=".85"/>
+          <text x="721" y="442" text-anchor="middle" class="it it-e pt">Mãe · em casa, a 40 km</text><text x="721" y="442" text-anchor="middle" class="it it-e es">Mamá · en su casa, a 40 km</text></g>
+      </svg>
+    </figure>
+    <script>(function(){if(!window.matchMedia||!matchMedia('(max-width:700px)').matches)return;var f=document.querySelector('.historia .ilu'),v=f&&f.querySelector('svg');if(!v)return;
+      var b=v.cloneNode(true);v.setAttribute('viewBox','0 0 560 470');b.setAttribute('viewBox','600 0 360 470');b.setAttribute('aria-hidden','true');b.removeAttribute('aria-labelledby');
+      b.querySelectorAll('[id]').forEach(function(e){e.removeAttribute('id')});f.appendChild(b);f.classList.add('doble')})();</script>
+    <ol class="pasos3">
+      <li><b data-es="Tus vecinos reportan">Seus vizinhos relatam</b><span data-es="Quien ve granizo lo marca en la app. Reportar es gratis para todos.">Quem vê granizo marca no app. Relatar é grátis para todos.</span></li>
+      <li><b data-es="Aviso Sul lo valida">O Aviso Sul valida</b><span data-es="Con 3 reportes iguales en 5 minutos y riesgo en la zona, el alerta queda validado.">Com 3 relatos iguais em 5 minutos e risco na região, o alerta fica validado.</span></li>
+      <li><b data-es="Avisás a tu familia">Você avisa a família</b><span data-es="Con Premium, un toque en «Alertar familia» manda el alerta por WhatsApp, con foto, video y el aviso oficial.">Com o Premium, um toque em «Alertar família» manda o alerta pelo WhatsApp, com foto, vídeo e o aviso oficial.</span></li>
+    </ol>
+    <p style="text-align:center;margin-top:18px"><a class="btn btn-sol" href="#planos" data-es="Quiero Premium">Quero o Premium</a></p>
   </div>
 </section>
 
@@ -240,7 +390,7 @@
       <details><summary data-es="¿Tengo que instalar algo?">Preciso instalar alguma coisa?</summary><p data-es="No. Abre en el navegador del celular. Si querés, lo agregás a la pantalla de inicio y queda como una app.">Não. Abre no navegador do celular. Se quiser, você adiciona na tela inicial e ele fica como um app. <a href="/instalar/">Veja como</a>.</p></details>
       <details><summary data-es="¿Qué hago si viene granizo?">O que eu faço se vier granizo?</summary><p data-es="Entrá a un lugar techado y alejate de las ventanas. Si estás manejando, frená en un lugar seguro, lejos de árboles, y quedate dentro del auto. Después, sacá fotos de los daños para el seguro.">Entre num lugar coberto e fique longe das janelas. Se estiver dirigindo, pare num lugar seguro, longe de árvores, e fique dentro do carro. Depois, fotografe os estragos para o seguro.</p></details>
       <details><summary data-es="¿Es gratis?">É grátis?</summary><p data-es="Los avisos oficiales, el mapa, el riesgo de 12 horas, el radar y un lugar son gratis para siempre. Premium agrega más lugares y herramientas.">Os avisos oficiais, o mapa, o risco de 12 horas, o radar e um lugar são grátis para sempre. O Premium soma mais lugares e ferramentas.</p></details>
-      <details><summary data-es="¿Cómo cancelo?">Como eu cancelo?</summary><p data-es="El pase de temporada no se renueva. El mensual y el anual se cancelan cuando quieras, y tenés 7 días para arrepentirte de la compra y pedir el reembolso.">O passe da temporada não renova. O mensal e o anual você cancela quando quiser, e tem 7 dias para se arrepender da compra e pedir o reembolso.</p></details>
+      <details><summary data-es="¿Cómo cancelo?">Como eu cancelo?</summary><p class="pg-br" data-es="El pase de temporada no se renueva. El mensual y el anual se cancelan cuando quieras, y tenés 7 días para arrepentirte de la compra y pedir el reembolso.">O passe da temporada não renova. O mensal e o anual você cancela quando quiser, e tem 7 dias para se arrepender da compra e pedir o reembolso.</p><p class="pg-ar" data-es="Con Mercado Pago (Argentina) cada plan es un pago único: no hay nada que cancelar y no se renueva solo. Tenés 10 días corridos para arrepentirte y pedir la devolución (botón de arrepentimiento, en Planes).">Com Mercado Pago (Argentina) cada plano é um pagamento único: não há nada para cancelar e não renova sozinho. Você tem 10 dias corridos para se arrepender e pedir o reembolso (botão de arrependimento, em Planos).</p></details>
     </div>
   </div>
 </section>
@@ -276,8 +426,8 @@
     <div>
       <h4 data-es="Ayuda">Ajuda</h4>
       <a href="/privacidade/" data-es="Privacidad">Privacidade</a>
-      <a href="/planos/#cancelar" data-es="Cancelar la suscripción">Cancelar assinatura</a>
-      <a href="/planos/#arrependimento" data-es="Arrepentimiento de compra">Direito de arrependimento</a>
+      <a href="/planos/#cancelar" data-es="Cancelación">Cancelamento</a>
+      <a href="/planos/#arrependimento" data-es="Botón de arrepentimiento">Botão de arrependimento</a>
       <a href="/planos/#patrocinio" data-es="Anunciá en Aviso Sul">Anuncie no Aviso Sul</a>
       <a href="mailto:contato@avisosul.com">contato@avisosul.com</a>
       <a href="https://portal.inmet.gov.br/" target="_blank" rel="noopener" data-es="Fuente: INMET">Fonte: INMET</a>
@@ -288,5 +438,6 @@
 
 <div class="barra"><a class="btn btn-sol" href="/app/" data-es="Abrir Aviso Sul gratis">Abrir o Aviso Sul grátis</a></div>
 <script src="/assets/site.js?v=6"></script>
+<script>window.addEventListener("load",function(){try{var c=document.createElement("canvas");if(!(c.getContext("webgl2")||c.getContext("webgl")))return}catch(e){return}var s=document.createElement("script");s.type="module";s.src="/assets/logo3d.js?v=2";document.body.appendChild(s)})</script>
 </body>
 </html>
