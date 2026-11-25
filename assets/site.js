@@ -20,9 +20,10 @@
     document.querySelectorAll('[data-es-aria]').forEach(function(e){if(e.dataset.ptAria===undefined)e.dataset.ptAria=e.getAttribute('aria-label')||'';e.setAttribute('aria-label',lang==='es'?e.dataset.esAria:e.dataset.ptAria)});
     document.querySelectorAll('.idi button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===lang?'true':'false')});
     if(document.body.dataset.titEs){if(!document.body.dataset.titPt)document.body.dataset.titPt=document.title;document.title=lang==='es'?document.body.dataset.titEs:document.body.dataset.titPt}
-    safe(pintarVivo);safe(videosIdioma);
+    safe(pintarVivo);safe(videosIdioma);safe(marcaPais);
   }
-  function videosIdioma(){document.querySelectorAll('video.pv').forEach(function(v){var src=v.dataset['src'+(lang==='es'?'Es':'Pt')];if(!src||v.dataset.cur===src)return;v.dataset.cur=src;v.src=src;v.muted=true;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){})})}
+  function marcaPais(){if(root.getAttribute('data-pais')!=='ar')return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;while(n=w.nextNode()){if(n.nodeValue.indexOf('Aviso Sul')>-1&&!/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName))n.nodeValue=n.nodeValue.replace(/Aviso Sul/g,'Alerta Sur')}}
+  function videosIdioma(){document.querySelectorAll('video.pv').forEach(function(v){var src=root.getAttribute('data-pais')==='ar'&&v.dataset.srcAr?v.dataset.srcAr:v.dataset['src'+(lang==='es'?'Es':'Pt')];if(!src||v.dataset.cur===src)return;v.dataset.cur=src;v.src=src;v.muted=true;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){})})}
   document.querySelectorAll('.idi button').forEach(function(b){b.addEventListener('click',function(){lang=b.dataset.l;LS('lang',lang);LS('langM','1');aplicarIdioma()})});
 
   /* ---- datos en vivo ---- */
@@ -104,7 +105,7 @@
     pls.parentNode.insertBefore(d,pls);
     d.querySelectorAll('[data-pp]').forEach(function(b){b.addEventListener('click',function(){PAGOP=b.dataset.pp;LS('pagoPais',PAGOP);LS('pagoM','1');pintarPago()})});
     pintarPago();
-    if(WEB&&!LS('pagoM'))fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){var c=String(j.country_code||'').toUpperCase(),pp=c==='AR'?'ar':c==='BR'?'br':null;if(pp)root.setAttribute('data-pais',pp);if(pp&&pp!==PAGOP&&!LS('pagoM')){PAGOP=pp;pintarPago()}}).catch(function(){})});
+    if(WEB&&!LS('pagoM'))fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){var c=String(j.country_code||'').toUpperCase(),pp=c==='AR'?'ar':c==='BR'?'br':null;if(pp&&pp!==root.getAttribute('data-pais')){root.setAttribute('data-pais',pp);safe(aplicarIdioma)}if(pp&&pp!==PAGOP&&!LS('pagoM')){PAGOP=pp;pintarPago()}}).catch(function(){})});
   if(!PLANES.length)promoFin();
   /* "Quero": cuenta el interes por cada plan y abre la app con el plan y la cuenta de pago elegidos */
   document.querySelectorAll('[data-plano]').forEach(function(b){b.addEventListener('click',function(){

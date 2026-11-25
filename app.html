@@ -534,7 +534,7 @@
   .tools .car{opacity:.75;height:38px;padding:0 9px;font-size:13px;gap:5px;white-space:nowrap}.tools .car i{font-style:normal;font-size:9px;font-weight:800;padding:1px 6px;border-radius:999px;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000}
   @keyframes nop{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}.tools .car.nop{animation:nop .4s}
   @media (max-width:480px){.tools .car,.tools .prc,.tools .cq{padding:0 7px!important;gap:3px!important;font-size:11.5px!important;letter-spacing:-.01em}.tools .car i{padding:1px 4px;font-size:8.5px}.tools .cq i,.tools .prc i{background:none!important;padding:0!important}.tools .cq svg:first-child,.tools .prc svg:first-child{width:13px!important;height:13px!important}.tools .wrap{gap:4px!important}}
-  .top .wrap{min-width:0}.top .brand{min-width:0;flex:1 1 auto;overflow:hidden}.brand .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .top .wrap{min-width:0}.top .brand{min-width:0;flex:1 1 auto;overflow:hidden}.brand .bn em{font-style:normal;color:#ffbe2e}.brand .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
   .top #bLang,.top #bTheme,.top #bCfg{flex:none}.top .hsp{flex:0 0 0}
   @media (max-width:345px){.brand .bn{display:none}}
   @media (max-width:560px){.tools .cq,.tools .prc,.tools .car{flex:1 1 auto;justify-content:center;margin:0!important}}
@@ -686,7 +686,7 @@
   <header class="top">
     <div class="wrap">
       <div class="brand">
-        <img src="/assets/logo-nube-96.png" alt="" width="34" height="34">
+        <img src="/assets/logo-nube-96.png?v=2" alt="" width="34" height="34">
         <span class="bn">Aviso Sul</span><span class="pl" title="Premium" aria-label="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></span>
       </div>
       <span class="hsp"></span>
@@ -1069,7 +1069,7 @@
 
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbT">
   <div class="onbc gl">
-    <img src="/icon-192.png" alt="" width="96" height="96" style="display:block;margin:0 auto 10px;border-radius:10px">
+    <img src="/icon-192.png?v=2" alt="" width="96" height="96" style="display:block;margin:0 auto 10px;border-radius:10px">
     <h2 id="onbT"><span class="pt">Ative o Aviso Sul</span><span class="es">Activá Aviso Sul</span></h2>
     <ul>
       <li><b>🔔 <span class="pt">Notificações</span><span class="es">Notificaciones</span></b><span class="pt">Para avisar quando surgir um aviso oficial novo.</span><span class="es">Para avisarte cuando aparece un aviso oficial nuevo.</span></li>
@@ -1082,7 +1082,7 @@
 
 <div class="onb" id="cta" hidden role="dialog" aria-modal="true" aria-labelledby="ctaT">
   <div class="onbc gl ctac">
-    <img src="/assets/logo-nube.png" alt="" width="84" height="84" style="display:block;margin:0 auto 6px">
+    <img src="/assets/logo-nube.png?v=2" alt="" width="84" height="84" style="display:block;margin:0 auto 6px">
     <h2 id="ctaT"><span class="pt">Crie sua conta no Aviso Sul</span><span class="es">Creá tu cuenta en Aviso Sul</span></h2>
     <p class="ctap"><span class="pt">Assim seus lugares, sua cidade e seus ajustes ficam guardados e você os recupera em qualquer celular.</span><span class="es">Así tus lugares, tu ciudad y tus ajustes quedan guardados y los recuperás en cualquier celular.</span></p>
     <div id="ctaG" class="ctag"></div>
@@ -1230,6 +1230,7 @@
     var ip=LS('paisIP');return ip==='ar'||ip==='br'?ip:null})();
   var PAISM=PAISUSO||(PRECID?PRECID[2]:'br'),MARCA=PAISM==='ar'?'Alerta Sur':'Aviso Sul',PAGO=PAISM==='ar'?'Mercado Pago':'Hotmart';
   root.setAttribute('data-pais',PAISM);
+  document.querySelectorAll('.brand .bn').forEach(function(e){var w=MARCA.split(' ');e.innerHTML=w[0]+' <em>'+w[1]+'</em>'});
   /* con qué cuenta paga (turistas y doble nacionalidad): ?pago=ar|br o la elección guardada; si no, el país de uso */
   var PAGOP=(function(){var q=/[?&]pago=(ar|br)\b/.exec(location.search);if(q)LS('pagoPais',q[1]);var v=LS('pagoPais');return v==='ar'||v==='br'?v:PAISM})();
   root.setAttribute('data-pago',PAGOP);
@@ -1794,7 +1795,7 @@
     var lines=[[r.nivel?'⚠':'✓',r.alerta],['📍',r.lugar],['🕒',r.hora]];if(r.temp)lines.push(['🌡',r.temp]);if(msg)lines.push(['💬','“'+msg.slice(0,90)+(msg.length>90?'…':'')+'”']);
     lines.forEach(function(L,i){ctx.fillStyle=i===0?(r.nivel?'#FFD86B':'#A8E0B4'):'#E9F1F8';ctx.font=f(i===0?36:30,i===0);var t=L[0]+'  '+L[1];
       while(ctx.measureText(t).width>w-80*k&&t.length>4)t=t.slice(0,-2);if(t!==L[0]+'  '+L[1])t+='…';ctx.fillText(t,px,ty);ty+=(i===0?54:46)*k})}
-  function armarReporte(foto,msg){return Promise.all([ubicPrecisa(),cargarImg('/assets/logo-nube.png'),document.fonts&&document.fonts.load?document.fonts.load('700 40px "IBM Plex Sans"').catch(function(){}):0]).then(function(v){
+  function armarReporte(foto,msg){return Promise.all([ubicPrecisa(),cargarImg('/assets/logo-nube.png?v=2'),document.fonts&&document.fonts.load?document.fonts.load('700 40px "IBM Plex Sans"').catch(function(){}):0]).then(function(v){
     var r=datosReporte(v[0]);return cargarImg('/assets/ic/'+(r.nivel?'alerta':'ok')+'.png').then(function(ico){
       var lin=4+(r.temp?1:0)+(msg?1:0),hb=Math.round((200+lin*48));
       if(foto){return cargarImg(URL.createObjectURL(foto)).then(function(im){var W=Math.min(1440,im?im.naturalWidth:1080),k=W/1080,H=im?Math.round(im.naturalHeight*W/im.naturalWidth):0,c=document.createElement('canvas');
