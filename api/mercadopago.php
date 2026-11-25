@@ -46,6 +46,25 @@ function ref_leer($ref) {
 }
 $PLANES = ['mensal' => ['dias' => 31, 'nombre' => 'Mensual'], 'anual' => ['dias' => 366, 'nombre' => 'Anual'], 'temporada' => ['hasta' => '03-31', 'nombre' => 'Pase de temporada']];
 $cfg = cfg_mp();
+function aplicar($email, $plan, $st, $refExt) {
+    global $PLANES; $pl = $PLANES[$plan]; $tx = 'mr' . substr(hash('sha256', $refExt), 0, 20);   // una marca por cobro, venga por order, payment o verificación
+    return con_archivo('premium.json', function ($p) use ($email, $plan, $pl, $st, $tx) {
+        $x = $p[$email] ?? ['hasta' => 0, 'tx' => []]; $ahora = time();
+        if ($st === 'approved') {
+            if (in_array($tx, $x['tx'] ?? [], true)) return [$p, 'ya contado'];
+            if (!empty($pl['hasta'])) { [$m, $d] = array_map('intval', explode('-', $pl['hasta'])); $y = (int)date('Y'); $lim = mktime(23, 59, 59, $m, $d, $y); if ($lim < $ahora) $lim = mktime(23, 59, 59, $m, $d, $y + 1); $x['hasta'] = max($x['hasta'] ?? 0, $lim); }
+            else $x['hasta'] = max($x['hasta'] ?? 0, $ahora) + ($pl['dias'] + 1) * 86400;
+            $x['plan'] = $plan; $x['estado'] = 'activa'; $x['fuente'] = 'mercadopago';
+            $x['tx'] = array_slice(array_merge($x['tx'] ?? [], [$tx]), -40);
+        } elseif (in_array($st, ['refunded', 'charged_back'], true) && in_array($tx, $x['tx'] ?? [], true)) {
+            if (($x['estado'] ?? '') === $st) return [$p, $st];
+            $x['hasta'] = min($x['hasta'] ?? 0, $ahora); $x['estado'] = $st;
+        } else {
+            return [$p, $st];
+        }
+        $x['act'] = $ahora; $p[$email] = $x; return [$p, $x['estado']];
+    });
+}
 
 /* ---------- webhook ---------- */
 if (isset($_GET['hook'])) {
@@ -82,29 +101,31 @@ if (isset($_GET['hook'])) {
         return [array_slice($l, -300), true];
     });
     if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !isset($PLANES[$plan])) salir(['ok' => true, 'nota' => 'sin referencia']);
-    $pl = $PLANES[$plan]; $tx = 'mr' . substr(hash('sha256', $refExt), 0, 20);   // una marca por cobro, venga por order o por payment
-    $res = con_archivo('premium.json', function ($p) use ($email, $plan, $pl, $st, $tx) {
-        $x = $p[$email] ?? ['hasta' => 0, 'tx' => []]; $ahora = time();
-        if ($st === 'approved') {
-            if (in_array($tx, $x['tx'] ?? [], true)) return [$p, 'ya contado'];
-            if (!empty($pl['hasta'])) { [$m, $d] = array_map('intval', explode('-', $pl['hasta'])); $y = (int)date('Y'); $lim = mktime(23, 59, 59, $m, $d, $y); if ($lim < $ahora) $lim = mktime(23, 59, 59, $m, $d, $y + 1); $x['hasta'] = max($x['hasta'] ?? 0, $lim); }
-            else $x['hasta'] = max($x['hasta'] ?? 0, $ahora) + ($pl['dias'] + 1) * 86400;
-            $x['plan'] = $plan; $x['estado'] = 'activa'; $x['fuente'] = 'mercadopago';
-            $x['tx'] = array_slice(array_merge($x['tx'] ?? [], [$tx]), -40);
-        } elseif (in_array($st, ['refunded', 'charged_back'], true) && in_array($tx, $x['tx'] ?? [], true)) {
-            if (($x['estado'] ?? '') === $st) return [$p, $st];
-            $x['hasta'] = min($x['hasta'] ?? 0, $ahora); $x['estado'] = $st;
-        } else {
-            return [$p, $st];
-        }
-        $x['act'] = $ahora; $p[$email] = $x; return [$p, $x['estado']];
-    });
+    $res = aplicar($email, $plan, $st, $refExt);
     salir(['ok' => true, 'estado' => $res]);
 }
 
 /* ---------- crear el cobro ---------- */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') salir(['ok' => false], 405);
 $e = entrada();
+if (($e['acao'] ?? '') === 'verificar') {   // respaldo del webhook: la app pregunta al volver del pago
+    if (empty($cfg['access_token'])) salir(['ok' => false, 'error' => 'sin_config'], 503);
+    $email = cuenta_email($e['token'] ?? ''); if (!$email) salir(['ok' => false, 'error' => 'sesion'], 401);
+    $refs = con_archivo('mp_refs.json', function ($m) use ($email) {
+        $r = []; foreach ($m as $k => $x) if (($x['e'] ?? '') === $email && ($x['t'] ?? 0) > time() - 3 * 86400) $r[$k] = $x['p'];
+        return [$m, array_slice($r, -5, null, true)];
+    });
+    $out = [];
+    foreach ($refs as $ref => $pl) {
+        [$code, $b] = mp_api('GET', '/v1/payments/search?sort=date_created&criteria=desc&external_reference=' . rawurlencode($ref), $cfg);
+        if ($code !== 200) continue;
+        foreach (($b['results'] ?? []) as $pg) {
+            $st = (string)($pg['status'] ?? '');
+            if (in_array($st, ['approved', 'refunded', 'charged_back'], true)) { $out[] = aplicar($email, $pl, $st, $ref); break; }
+        }
+    }
+    salir(['ok' => true, 'estados' => $out]);
+}
 if (($e['acao'] ?? '') !== 'checkout') salir(['ok' => false, 'error' => 'acao'], 400);
 if (empty($cfg['access_token'])) salir(['ok' => false, 'error' => 'sin_config'], 503);
 $plan = (string)($e['plan'] ?? ''); if (!isset($PLANES[$plan])) salir(['ok' => false, 'error' => 'plan'], 400);
