@@ -37,6 +37,7 @@ if ($acao === 'estado') {
         'mp' => ['access_token' => cola($mp['access_token'] ?? ''), 'webhook_secret' => cola($mp['webhook_secret'] ?? ''), 'cuenta' => $mp['cuenta'] ?? null],
         'google' => (leer('google.json')['client_id'] ?? GOOGLE_CLIENT_ID),
         'precios' => precios_cfg(), 'precios_hoy' => precios_para(''),
+        'pixel' => (leer('meta.json')['pixel'] ?? ''), 'embudo' => array_slice(leer('embudo.json'), -14, null, true),
         'ofertas_sin_plan' => array_values(array_unique(array_map('trim', $sin))),
         'eventos_hotmart' => array_map(fn($x) => ['t' => $x['t'], 'ev' => $x['ev'], 'off' => $x['off'], 'prod' => $x['prod'], 'email' => $x['email'] ? substr($x['email'], 0, 3) . '…' : ''], $ev),
         'eventos_mp' => array_map(fn($x) => ['t' => $x['t'], 'estado' => $x['estado'], 'plan' => $x['plan'], 'monto' => $x['monto']], $evm)]);
@@ -114,6 +115,12 @@ if ($acao === 'precios') {
     if (!$c['br_ofertas']) $c['br_ofertas'] = (object)[];
     escribir('precios.json', $c); escribir('hotmart.json', $hm);
     salir(['ok' => true, 'precios_hoy' => precios_para('')]);
+}
+if ($acao === 'pixel') {
+    $px = preg_replace('/\D/', '', (string)($e['pixel'] ?? ''));
+    if ($px !== '' && (strlen($px) < 10 || strlen($px) > 20)) salir(['ok' => false, 'error' => 'formato_pixel'], 400);
+    $m = leer('meta.json'); $m['pixel'] = $px ?: null; escribir('meta.json', $m);
+    salir(['ok' => true]);
 }
 if ($acao === 'google') {
     $cid = trim((string)($e['client_id'] ?? ''));

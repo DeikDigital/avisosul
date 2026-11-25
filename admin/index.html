@@ -59,6 +59,13 @@
       <button id="gPx">Guardar precios</button> <p id="pxSt" class="mut"></p>
     </section>
     <section class="card">
+      <h2>Medición de la campaña</h2>
+      <p class="mut">Píxel de Meta: lo crea Deik en Meta Business → Administrador de eventos. El ID es público (son solo números). Con el Píxel, Meta sabe quién se registró, inició el pago o compró, y optimiza los anuncios.</p>
+      <label for="pxId">ID del Píxel <span id="pxIdV" class="mut"></span></label><input id="pxId" inputmode="numeric" placeholder="1234567890123456">
+      <button id="gPix">Guardar Píxel</button> <p id="pixSt" class="mut"></p>
+      <h3 style="font-size:15px">Embudo de los últimos 14 días (dispositivos por día · AR / BR)</h3><div style="overflow-x:auto"><table id="tEmb"></table></div>
+    </section>
+    <section class="card">
       <h2>Notificaciones push</h2>
       <p class="mut">Los avisos oficiales llegan al celular aunque la app esté cerrada. Para probar: abrí la app en tu celular con tu cuenta (deikdigital@gmail.com), aceptá las notificaciones, cerrala y tocá el botón.</p>
       <button id="gPush">Enviarme una notificación de prueba</button> <p id="pushSt" class="mut"></p>
@@ -119,6 +126,9 @@
     $('eHm').textContent=hOk?'configurado':'pendiente';$('eHm').className='est '+(hOk?'si':'no');
     $('eMp').textContent=mOk?'configurado':'pendiente';$('eMp').className='est '+(mOk?'si':'no');
     if(j.precios)pxPintar(j.precios,j.precios_hoy);
+    $('pxIdV').textContent=j.pixel?'(guardado '+j.pixel+')':'(sin cargar)';
+    (function(E){var P=['visita','registro','premium_ver','pago_inicio','compra','push_ok'],N={visita:'Visitas',registro:'Registros',premium_ver:'Vieron Premium',pago_inicio:'Iniciaron pago',compra:'Compras',push_ok:'Activaron avisos'},d=Object.keys(E||{}).sort().reverse();
+      $('tEmb').innerHTML=d.length?'<tr><td>Día</td>'+P.map(function(k){return '<td>'+N[k]+'</td>'}).join('')+'</tr>'+d.map(function(x){return '<tr><td>'+x.slice(5).split('-').reverse().join('/')+'</td>'+P.map(function(k){var v=(E[x][k]||{});return '<td>'+(v.ar||0)+' / '+(v.br||0)+'</td>'}).join('')+'</tr>'}).join(''):'<tr><td>Todavía sin datos.</td></tr>'})(j.embudo);
     var gOk=!!j.google;$('eGo').textContent=gOk?'activo':'pendiente';$('eGo').className='est '+(gOk?'si':'no');$('gCidV').textContent=gOk?'(guardado '+j.google+')':'';
     $('hHotV').textContent=h.hottok?'(guardado '+h.hottok+')':'';$('mAtV').textContent=m.access_token?'(guardado '+m.access_token+(m.cuenta?' · '+m.cuenta:'')+')':'';$('mWsV').textContent=m.webhook_secret?'(guardada '+m.webhook_secret+')':'';
     var c=h.checkout||{};$('hM').value=c.mensal||'';$('hT').value=c.temporada||'';$('hA').value=c.anual||'';
@@ -142,6 +152,7 @@
       $('gSt').innerHTML=j.ok?'<span class="ok">Guardado. La app ya muestra el botón de Google.</span>':'<span class="err">'+(j.error==='formato_google'?'Ese no parece un Client ID de Google (termina en .apps.googleusercontent.com).':'No se pudo guardar.')+'</span>';if(j.ok){$('gCid').value='';estado()}})};
   $('gPush').onclick=function(){$('pushSt').textContent='Enviando…';api('/api/push.php',{acao:'prueba',token:tok}).then(function(j){
     $('pushSt').innerHTML=j.ok?(j.dispositivos?'<span class="ok">Enviada a '+j.enviadas+' de '+j.dispositivos+' dispositivos tuyos.</span>':'<span class="err">Todavía no hay ningún dispositivo tuyo suscripto: abrí la app con tu cuenta y aceptá las notificaciones.</span>'):'<span class="err">No se pudo enviar.</span>'})};
+  $('gPix').onclick=function(){$('pixSt').textContent='Guardando…';api('/api/admin.php',{acao:'pixel',token:tok,pixel:$('pxId').value.trim()}).then(function(j){$('pixSt').innerHTML=j.ok?'<span class="ok">Guardado. La web y la app ya cargan el Píxel.</span>':'<span class="err">'+(j.error==='formato_pixel'?'El ID del Píxel son solo números (15 o 16 dígitos).':'No se pudo guardar.')+'</span>';if(j.ok){$('pxId').value='';estado()}})};
   /* ---- precios ---- */
   var PLS=['mensal','temporada','anual'],PN={mensal:'Mensual',temporada:'Temporada',anual:'Anual'};
   function pxEsc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}

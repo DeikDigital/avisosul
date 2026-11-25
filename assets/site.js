@@ -102,6 +102,7 @@ try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!loc
     document.querySelectorAll('.promo-t').forEach(function(e){var d=P&&P.mensal?P.mensal.desc:0;if(!c||!d){e.hidden=true;return}e.hidden=false;
       var f=c.hasta?c.hasta.split('-').reverse().join('/'):'',ic=PREC.relampago?'⚡ ':'🔥 ',pt=ic+'<b>'+c.pt+': '+d+'% de desconto'+(f?' até '+f:'')+'.</b>',es=ic+'<b>'+c.es+': '+d+' % de descuento'+(f?' hasta el '+f:'')+'.</b>';
       e.innerHTML=pt;e.dataset.pt=pt;e.setAttribute('data-es',es)})}
+  if(/^\/planos/.test(location.pathname))setTimeout(function(){window.medir&&window.medir('premium_ver','ViewContent',{content_name:'Premium'})},1500);
   if(document.querySelector('.plan .preco'))fetch('/api/precios.php?c='+encodeURIComponent(LS('c')||'')).then(function(r){return r.json()}).then(function(j){PREC=j;pintarPago()}).catch(function(){});
   function pintarPago(){root.setAttribute('data-pago',PAGOP);
     document.querySelectorAll('.pagopais [data-pp]').forEach(function(b){b.setAttribute('aria-checked',b.dataset.pp===PAGOP?'true':'false')});
