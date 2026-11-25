@@ -79,8 +79,11 @@ def main():
             if x.get("estado") != "ativo":
                 continue
             x["enviados"] = [i for i in x.get("enviados", []) if i in vigentes]   # olvida los avisos que ya vencieron
+            puntos = [(x["lat"], x["lon"], x.get("cidade") or "")] + [(p["lat"], p["lon"], p.get("nome", "")) for p in (x.get("extras") or {}).values()]
             for a in avisos:
-                if a["id"] in x["enviados"] or not toca(x["lat"], x["lon"], a) or enviados >= MAX_POR_CORRIDA:
+                if a["id"] in x["enviados"] or enviados >= MAX_POR_CORRIDA:
+                    continue
+                if not any(toca(la, lo, a) for la, lo, _ in puntos):
                     continue
                 es = x.get("lang") == "es"
                 hasta = datetime.fromisoformat(a["hasta"]).strftime("%d/%m %H:%M")

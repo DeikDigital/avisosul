@@ -52,6 +52,19 @@ if ($acao === 'inscrever') {
     if ($r['ok']) $r['numero'] = $numero;   // null mientras el servicio no este encendido
     salir($r, $r['ok'] ? 200 : 429);
 }
+if ($acao === 'lugar') {   /* avisar también por otro lugar consultado (Premium): on=true lo suma, on=false lo saca */
+    $cod = (string)($e['codigo'] ?? ''); $lat = round((float)($e['lat'] ?? 0), 3); $lon = round((float)($e['lon'] ?? 0), 3);
+    $nome = mb_substr(strip_tags((string)($e['nome'] ?? '')), 0, 60); $on = !empty($e['on']);
+    if ($lat < -60 || $lat > 15 || $lon < -90 || $lon > -30) salir(['ok' => false, 'error' => 'local'], 400);
+    $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $cod, $lat, $lon, $nome, $on) {
+        if (!isset($d[$tel]) || !hash_equals($d[$tel]['codigo'], $cod)) return [$d, ['ok' => false, 'error' => 'tel']];
+        $k = $lat . ',' . $lon; $ex = $d[$tel]['extras'] ?? [];
+        if ($on) { if (count($ex) >= 10 && !isset($ex[$k])) return [$d, ['ok' => false, 'error' => 'limite']]; $ex[$k] = ['lat' => $lat, 'lon' => $lon, 'nome' => $nome]; }
+        else unset($ex[$k]);
+        $d[$tel]['extras'] = $ex; return [$d, ['ok' => true, 'on' => $on, 'estado' => $d[$tel]['estado']]];
+    });
+    salir($r);
+}
 if ($acao === 'cancelar') {
     $cod = (string)($e['codigo'] ?? '');
     $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $cod) {
