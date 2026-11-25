@@ -225,3 +225,9 @@ a{color:var(--sol2)}
 .destaque p{margin:0;color:#CFDCE8}
 .destaque .btn{flex:none;margin-left:auto}
 @media (max-width:760px){.destaque .wrap{flex-wrap:wrap}.destaque .btn{margin-left:0;width:100%}.destaque img{width:56px;height:56px}}
+
+/* botones de instalacion (no son las tiendas: llevan a la app web y a agregar el icono) */
+.bdg{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 14px}.bdg.c{justify-content:center;margin-top:14px}
+.badge{display:inline-flex;align-items:center;gap:10px;padding:8px 16px 8px 12px;border-radius:12px;background:#0b1118;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);min-width:160px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.badge svg{width:28px;height:28px;flex:none}.badge span{display:grid;line-height:1.1}.badge small{font-size:11px;opacity:.85}.badge b{font-size:19px;letter-spacing:.01em}
+.badge:hover{border-color:#f5b301}

@@ -526,6 +526,9 @@
   .lgpb .lk{background:#2e2000!important;color:#ffc61a!important;display:inline-flex;align-items:center;gap:4px}
   .prb,.pra{font-style:normal}[data-pais="ar"] .prb,[data-pais="br"] .pra,html:not([data-pais="ar"]) .pra{display:none!important}[data-pais="ar"] .pra{display:inline!important}
   .pmpg{font-size:13px;color:var(--muted);margin:8px 0 10px;text-align:center}
+  .insl{margin:8px 0;padding-left:20px;display:grid;gap:6px}.insn{font-size:14px;color:var(--muted)}
+  #insS{z-index:79}#insS li b{display:inline;color:#fff}#insS [hidden]{display:none!important}#insS h2{font-size:21px}#insS .btn{margin-top:8px}
+  .tools .car{height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .car i{font-style:normal;font-size:9px;font-weight:800;padding:1px 6px;border-radius:999px;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000}
   .lgh{font-size:22px;letter-spacing:.01em}
   .lgpb .lgw{width:24px;height:24px;margin:0;flex:none}
   .lgacc{display:grid;gap:8px;margin-top:12px}
@@ -648,6 +651,7 @@
       <label class="selc"><span class="sr pt">Cidade</span><span class="sr es">Ciudad</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/></svg><select id="selCity"></select></label>
       <button type="button" class="tg cq" id="bCq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="pt">Outro lugar</span><span class="es">Otro lugar</span><i title="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></i></button>
       <button type="button" class="tg prc" id="bPrec" title="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span class="pt">Localização precisa</span><span class="es">Ubicación precisa</span><i title="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></i></button>
+      <button type="button" class="tg car" id="bCar" title="Premium"><span aria-hidden="true">🚗</span><span class="pt">Modo Car</span><span class="es">Modo Car</span><i title="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></i></button>
       <span class="tag rgn" data-k="tag"></span>
       
     </div>
@@ -982,7 +986,12 @@
 </section>
 
 <!-- PENDIENTE: segundo bloque de Google AdSense -->
-<div class="wrap"><div class="ad" data-ad="2"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span><a class="adl" href="mailto:patrocinio@avisosul.com?subject=Anunciar%20no%20Aviso%20Sul"><span class="pt">Solicitar preço e condições por e-mail</span><span class="es">Solicitar precio y condiciones por mail</span></a></div></div>
+<div class="wrap"><div class="onb" id="insS" hidden role="dialog" aria-modal="true" aria-labelledby="insT"><div class="onbc gl" style="text-align:left">
+  <h2 id="insT"></h2><div id="insB"></div>
+  <button type="button" class="btn btn-sol" id="insGo" hidden></button>
+  <button type="button" class="btn btn-lin" id="insNo"><span class="pt">Fechar</span><span class="es">Cerrar</span></button>
+</div></div>
+<div class="ad" data-ad="2"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span><a class="adl" href="mailto:patrocinio@avisosul.com?subject=Anunciar%20no%20Aviso%20Sul"><span class="pt">Solicitar preço e condições por e-mail</span><span class="es">Solicitar precio y condiciones por mail</span></a></div></div>
 
 
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbT">
@@ -1795,6 +1804,13 @@
   /* ---- funciones premium: en el plan gratis muestran un aviso en lugar de abrirse ---- */
   function esPremium(){return root.getAttribute('data-plan')==='premium'}
   function bloqueo(){var o=document.getElementById('pmo');if(o)o.hidden=false}
+  /* ---- Modo Car (Premium): se carga aparte, recien al abrirlo ---- */
+  window.__AS={LS:LS,L2:L2,esc:esc,hhmm:hhmm,ref:function(){return refPunto()},avisos:function(g){return lugAvisos(g)}};
+  function carAbrir(){if(root.getAttribute('data-plan')!=='premium'){bloqueo();return}
+    var go=function(){if(window.__carAbrir){window.__carAbrir();return}var j=document.createElement('script');j.src='/assets/car.js?v=2';j.onload=function(){window.__carAbrir()};document.head.appendChild(j)};
+    if(window.L){go();return}var c=document.createElement('link');c.rel='stylesheet';c.href='/lib/leaflet/leaflet.css';document.head.appendChild(c);
+    var l=document.createElement('script');l.src='/lib/leaflet/leaflet.js';l.onload=go;document.head.appendChild(l)}
+  safe(function(){var b=document.getElementById('bCar');if(b)b.addEventListener('click',carAbrir);if(/[?&]modo=car\b/.test(location.search))setTimeout(carAbrir,800)});
   safe(function(){var esP=function(){return root.getAttribute('data-plan')==='premium'};
     ['lgAqui','lgNew','lgWa'].forEach(function(id){var b=document.getElementById(id);if(b)b.addEventListener('click',function(e){if(!esP()){e.stopImmediatePropagation();e.preventDefault();bloqueo()}},true)});
     var a=document.getElementById('lgAqui');if(a)a.addEventListener('click',function(){var f=document.getElementById('lgForm');if(f)f.hidden=false;var g=document.getElementById('lgGps');if(g)g.click()});
@@ -1862,6 +1878,18 @@
     window.addEventListener('appinstalled',function(){b.hidden=true});
   });
 
+  /* ---- ?instalar=android|iphone: viene de los botones de la web y las redes. Cuenta + icono en la pantalla de inicio ---- */
+  safe(function(){var m=/[?&]instalar=(android|iphone)\b/.exec(location.search);if(!m)return;
+    var o=document.getElementById('insS'),t=document.getElementById('insT'),b=document.getElementById('insB'),go=document.getElementById('insGo'),ios=m[1]==='iphone';
+    var yaApp=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;if(yaApp)return;
+    t.textContent=L2(ios?'Instalá '+MARCA+' en tu iPhone':'Instalá '+MARCA+' en tu Android',ios?'Instale o '+MARCA+' no seu iPhone':'Instale o '+MARCA+' no seu Android');
+    b.innerHTML=ios?'<ol class="insl"><li>'+L2('Abrí esta página en <b>Safari</b>.','Abra esta página no <b>Safari</b>.')+'</li><li>'+L2('Tocá <b>Compartir</b> (el cuadrado con la flecha ⬆️).','Toque em <b>Compartilhar</b> (o quadrado com a seta ⬆️).')+'</li><li>'+L2('Elegí <b>Agregar a inicio</b> y tocá <b>Agregar</b>.','Escolha <b>Adicionar à Tela de Início</b> e toque em <b>Adicionar</b>.')+'</li></ol><p class="insn">'+L2('Listo: queda el ícono en tu pantalla y las alertas llegan como en cualquier app.','Pronto: o ícone fica na sua tela e os alertas chegam como em qualquer app.')+'</p>'
+      :'<p>'+L2('Un toque y queda el ícono en tu pantalla de inicio, sin ocupar memoria.','Um toque e o ícone fica na sua tela de início, sem ocupar memória.')+'</p><ol class="insl" id="insMan"><li>'+L2('Si no aparece el botón, tocá el menú <b>⋮</b> de Chrome.','Se o botão não aparecer, toque no menu <b>⋮</b> do Chrome.')+'</li><li>'+L2('Elegí <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.','Escolha <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.')+'</li></ol>';
+    go.textContent=L2('Agregar a la pantalla de inicio','Adicionar à tela de início');
+    var ev=null;window.addEventListener('beforeinstallprompt',function(e){if(ios)return;e.preventDefault();ev=e;go.hidden=false});
+    go.addEventListener('click',function(){if(!ev)return;ev.prompt();ev.userChoice.then(function(){o.hidden=true});ev=null});
+    document.getElementById('insNo').addEventListener('click',function(){o.hidden=true});
+    o.hidden=false});
   /* ---- aparición de secciones ---- */
   safe(function(){
     var els=document.querySelectorAll('[data-rv]');
