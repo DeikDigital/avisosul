@@ -1,26 +1,34 @@
 <?php
-/* Alerta de vecinos: reportes de granizo, alagamento, vendaval y rayos.
-   GET  ?lat=&lon=&r=30|100|300  -> reportes de las ultimas 72 h dentro del radio
-   POST {"acao":"novo","tipo":"granizo","tam":"noz","lat":..,"lon":..}
-   POST {"acao":"confirmar","id":"..."}
-   La ubicacion se redondea a ~1 km y no se guarda quien reporto (solo un hash diario para frenar repeticiones). */
+/* Alerta de vecinos: reportes de granizo, alagamento, vendaval, rayos u otro fenómeno, con texto y foto o video opcionales.
+   GET  ?lat=&lon=&r=30|100|300  -> reportes de las últimas 72 h dentro del radio
+   POST multipart (acao=novo, tipo, tam, texto, lat, lon, media=archivo opcional)   o JSON {"acao":"novo",...}
+   POST JSON {"acao":"confirmar","id":"..."}
+   Se guarda la hora exacta y la ubicación con 3 decimales (~100 m). No se guarda quién reportó (solo un hash diario para frenar repeticiones).
+   Las fotos y videos quedan fuera de public_html y se borran junto con el reporte. */
 require __DIR__ . '/_comun.php';
 const HORAS = 72;
-const TIPOS = ['granizo', 'alagamento', 'vendaval', 'raios'];
+const TIPOS = ['granizo', 'alagamento', 'vendaval', 'raios', 'outro'];
 const TAMS = ['ervilha', 'gude', 'noz', 'ovo'];
+const MEDIA_MAX = 25 * 1024 * 1024;
+const MIMES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'video/mp4' => 'mp4', 'video/webm' => 'webm', 'video/quicktime' => 'mov'];
 
 function km($a1, $o1, $a2, $o2) {
     $r = 6371; $d1 = deg2rad($a2 - $a1); $d2 = deg2rad($o2 - $o1);
     $x = sin($d1 / 2) ** 2 + cos(deg2rad($a1)) * cos(deg2rad($a2)) * sin($d2 / 2) ** 2;
     return 2 * $r * asin(min(1, sqrt($x)));
 }
+function dir_media() { $d = dir_privado() . '/media'; if (!is_dir($d)) @mkdir($d, 0750, true); return $d; }
 function limpiar($d) {
-    $lim = time() - HORAS * 3600;
-    $d['rep'] = array_values(array_filter($d['rep'] ?? [], fn($x) => $x['t'] >= $lim));
+    $lim = time() - HORAS * 3600; $quedan = [];
+    foreach ($d['rep'] ?? [] as $x) {
+        if ($x['t'] >= $lim) { $quedan[] = $x; continue; }
+        if (!empty($x['m'])) @unlink(dir_media() . '/' . $x['m']);
+    }
+    $d['rep'] = $quedan;
     $d['ult'] = array_filter($d['ult'] ?? [], fn($t) => $t >= time() - 3600);
     return $d;
 }
-function coord($v, $min, $max) { return is_numeric($v) && $v >= $min && $v <= $max ? round((float)$v, 2) : null; }
+function coord($v, $min, $max, $dec = 3) { return is_numeric($v) && $v >= $min && $v <= $max ? round((float)$v, $dec) : null; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $lat = coord($_GET['lat'] ?? null, -60, 15); $lon = coord($_GET['lon'] ?? null, -90, -30);
@@ -32,8 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($d['rep'] as $x) {
             $k = km($lat, $lon, $x['lat'], $x['lon']);
             if ($k > $r) continue;
-            $out[] = ['id' => $x['id'], 'tipo' => $x['tipo'], 'tam' => $x['tam'] ?? null, 'km' => round($k),
-                      'min' => (int)floor((time() - $x['t']) / 60), 'conf' => count($x['c'] ?? []),
+            $out[] = ['id' => $x['id'], 'tipo' => $x['tipo'], 'tam' => $x['tam'] ?? null, 'texto' => $x['tx'] ?? '', 'km' => round($k, 1),
+                      'min' => (int)floor((time() - $x['t']) / 60), 'ts' => $x['t'], 'conf' => count($x['c'] ?? []),
+                      'media' => empty($x['m']) ? null : (preg_match('/\.(mp4|webm|mov)$/', $x['m']) ? 'video' : 'foto'),
                       'meu' => $x['v'] === $yo || in_array($yo, $x['c'] ?? []), 'lat' => $x['lat'], 'lon' => $x['lon']];
         }
         usort($out, fn($a, $b) => $a['min'] <=> $b['min']);
@@ -43,19 +52,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $in = entrada(); $yo = visitante();
+    $in = !empty($_POST) ? $_POST : entrada(); $yo = visitante();
     if (($in['acao'] ?? '') === 'novo') {
         $tipo = in_array($in['tipo'] ?? '', TIPOS) ? $in['tipo'] : null;
         $tam = $tipo === 'granizo' && in_array($in['tam'] ?? '', TAMS) ? $in['tam'] : null;
         $lat = coord($in['lat'] ?? null, -60, 15); $lon = coord($in['lon'] ?? null, -90, -30);
-        if (!$tipo || $lat === null || $lon === null || ($tipo === 'granizo' && !$tam)) salir(['ok' => false, 'error' => 'datos'], 400);
-        $res = con_archivo('vecinos.json', function ($d) use ($tipo, $tam, $lat, $lon, $yo) {
+        $tx = trim(mb_substr(strip_tags((string)($in['texto'] ?? '')), 0, 280));
+        if (!$tipo || $lat === null || $lon === null || ($tipo === 'granizo' && !$tam) || ($tipo === 'outro' && $tx === '')) salir(['ok' => false, 'error' => 'datos'], 400);
+        /* foto o video opcional: se valida el tipo real del archivo, no el que dice el navegador */
+        $media = null; $tmp = null;
+        if (!empty($_FILES['media']) && $_FILES['media']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $f = $_FILES['media'];
+            if ($f['error'] !== UPLOAD_ERR_OK || $f['size'] > MEDIA_MAX) salir(['ok' => false, 'error' => 'archivo'], 400);
+            $mime = (new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']);
+            if (!isset(MIMES[$mime])) salir(['ok' => false, 'error' => 'formato'], 400);
+            $tmp = $f['tmp_name']; $media = MIMES[$mime];
+        }
+        $res = con_archivo('vecinos.json', function ($d) use ($tipo, $tam, $lat, $lon, $tx, $yo, $media, $tmp) {
             $d = limpiar($d);
             if (isset($d['ult'][$yo]) && $d['ult'][$yo] > time() - 600) return [$d, ['ok' => false, 'error' => 'espera']];
+            $id = bin2hex(random_bytes(6)); $m = null;
+            if ($media && move_uploaded_file($tmp, dir_media() . "/$id.$media")) $m = "$id.$media";
             $d['ult'][$yo] = time();
-            $d['rep'][] = ['id' => bin2hex(random_bytes(6)), 'tipo' => $tipo, 'tam' => $tam, 'lat' => $lat, 'lon' => $lon, 't' => time(), 'v' => $yo, 'c' => []];
+            $d['rep'][] = ['id' => $id, 'tipo' => $tipo, 'tam' => $tam, 'tx' => $tx, 'm' => $m, 'lat' => $lat, 'lon' => $lon, 't' => time(), 'v' => $yo, 'c' => []];
             if (count($d['rep']) > 3000) $d['rep'] = array_slice($d['rep'], -3000);
-            return [$d, ['ok' => true]];
+            return [$d, ['ok' => true, 'id' => $id]];
         });
         salir($res, $res['ok'] ? 200 : 429);
     }

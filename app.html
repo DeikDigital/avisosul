@@ -340,7 +340,31 @@
   .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .tools .wrap{flex-wrap:nowrap!important;align-items:center;gap:6px!important}
   .tools .sp{flex:1}
-  .top .wrap{display:flex;align-items:center}.hcfg{margin-left:auto;width:38px;height:38px;padding:0!important;justify-content:center}.hcfg span{display:none}
+  .tab a.tprem{color:var(--amber)}[data-plan="premium"] .tab a.tprem span::after{content:" ✓"}
+  .pmoc{max-width:440px;position:relative;max-height:92vh;overflow:auto}
+  .pmx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;background:none;color:inherit;font-size:28px;cursor:pointer}
+  .pmb{text-align:left;margin:8px 0 6px;padding-left:20px;font-size:14.5px}.pmb li{margin:4px 0}
+  .pmg{font-size:13px;opacity:.8;margin:0 0 12px}
+  .pmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+  .pmp button{font:inherit;color:inherit;display:flex;flex-direction:column;gap:2px;align-items:center;padding:10px 4px;border-radius:14px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.04);cursor:pointer}
+  .pmp button[aria-checked="true"]{border-color:var(--amber);background:rgba(255,178,56,.14)}
+  .pmp b{font-size:14px}.pmp span{font-weight:800;font-size:15px}.pmp small{display:block;font-size:11px;font-weight:600;opacity:.75}.pmp i{font-style:normal;font-size:10px;font-weight:800;color:var(--amber)}
+  .pmst{font-size:13.5px;margin:8px 0 0;min-height:1px}
+  .pmcod{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.2);text-align:left}.pmcod label{font-size:13.5px;font-weight:700}
+  .pmcod div{display:flex;gap:6px;margin-top:6px}.pmcod input{flex:1;min-width:0;width:100%;font:inherit;font-size:16px;text-transform:uppercase;padding:9px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.25);color:inherit}
+  .pmcod button{font:inherit;font-weight:800;padding:9px 14px;border-radius:12px;border:0;background:var(--amber);color:var(--amber-ink);cursor:pointer}
+  .vz5{grid-template-columns:repeat(5,1fr)!important}@media (max-width:420px){.vz5{grid-template-columns:repeat(3,1fr)!important}}
+  .vzl{display:block;font-weight:800;margin:6px 0 6px;color:var(--strong)}.vzl small{font-weight:600;color:var(--muted)}
+  #vzTxt{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--strong);resize:vertical}
+  .vzm{display:flex;gap:8px;margin:10px 0}.vzm button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;font:inherit;font-weight:700;min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:transparent;color:var(--strong);cursor:pointer}.vzm svg{width:20px;height:20px}
+  .vzp{position:relative;margin:4px 0 10px}.vzp img,.vzp video{width:100%;max-height:260px;object-fit:cover;border-radius:12px;display:block}.vzp button{position:absolute;top:8px;right:8px;font:inherit;font-size:13px;font-weight:800;border:0;border-radius:999px;padding:6px 10px;background:rgba(0,0,0,.6);color:#fff;cursor:pointer}
+  .vzmeta{font-size:13px;color:var(--muted);margin:0 0 10px}
+  .vzc{flex-direction:column;align-items:stretch!important}.vzr1{display:flex;align-items:center;gap:10px}
+  .vztx{margin:8px 0 0;font-size:14.5px}.vzimg{display:block;margin-top:8px}.vzimg img,video.vzimg{width:100%;max-height:280px;object-fit:cover;border-radius:12px}
+  .top .wrap{display:flex;align-items:center;gap:6px}.hsp{flex:1}.hcfg{width:38px;height:38px;padding:0!important;justify-content:center;flex:none}.hcfg span{display:none}
+  .top #bLang,.top #bTheme{flex:none}
+  @media (max-width:420px){.brand{font-size:16px!important;gap:6px}.brand .pl{display:none}.top #bLang{width:62px}.top #bLang::before{width:28px}[data-lang="es"] .top #bLang::before{transform:translateX(28px)}.top #bLang svg{width:19px;height:14px}.top #bTheme{width:60px}}
+  .tools .rgn{margin:0;flex:1 1 auto;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .wa1{border-color:rgba(37,200,102,.55)!important}.wa1 h3 svg{color:#25C866}
   .ad-top{margin:8px 0 0;min-height:60px}
   .adl{display:inline-block;margin-top:4px;font-size:13.5px;font-weight:700;color:var(--amber);text-decoration:underline;text-underline-offset:3px}
@@ -357,7 +381,7 @@
   .tools .prc{margin:0;height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .prc svg{width:15px;height:15px}.tools .prc i{padding:1px 6px;font-size:9px}
   .tg.ico{width:38px;height:38px;padding:0!important;justify-content:center}
   .selc{flex:1 1 auto;max-width:none}
-  @media (max-width:560px){.tools .wrap{flex-wrap:wrap!important;row-gap:8px!important}.selc{flex:1 1 100%}.tools .sp{display:none}.tools .prc{font-size:12.5px;padding:0 9px;gap:4px}.tools .wrap{gap:5px!important}}
+  @media (max-width:560px){.tools .wrap{flex-wrap:wrap!important;row-gap:8px!important}.selc{flex:1 1 100%}.tools .rgn{flex:1 1 0;font-size:11px}.tools .sp{display:none}.tools .prc{font-size:12.5px;padding:0 9px;gap:4px}.tools .wrap{gap:5px!important}}
   @media (max-width:380px){.tools .prc{font-size:11.5px;padding:0 7px}.tools .prc svg{display:none}}
   #bLang{position:relative;width:70px;height:36px;padding:0 7px!important;display:inline-flex;align-items:center;justify-content:space-between;gap:0}
   #bLang::before{content:"";position:absolute;top:3px;left:3px;width:32px;height:28px;border-radius:999px;background:var(--amber);transition:transform .25s ease}
@@ -539,6 +563,13 @@
         <img src="/assets/logo-nube-96.png" alt="" width="34" height="34">
         Aviso Sul<span class="pl">Premium</span>
       </div>
+      <span class="hsp"></span>
+      <button type="button" class="tg" id="bLang" aria-label="Idioma: português / español"><svg class="fl-br" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#169B48"/><path d="M14 2.500 25.500 10 14 17.500 2.500 10z" fill="#FDD835"/><circle cx="14" cy="10" r="4.200" fill="#1A3E8C"/><path d="M10 9.200q4-1.600 8 .8" stroke="#fff" stroke-width=".9" fill="none"/></svg><svg class="fl-ar" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#74ACDF"/><rect y="6.700" width="28" height="6.600" fill="#fff"/><circle cx="14" cy="10" r="2.300" fill="#F6B40E"/></svg></button>
+      <button type="button" class="tg" id="bTheme">
+        <svg class="ic-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 14.500A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.500 1.500M17.500 17.500 19 19M19 5l-1.500 1.500M6.500 17.500 5 19"/></svg>
+        <span class="lbl-theme sr"></span>
+      </button>
       <a class="tg cfg hcfg" id="bCfg" href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
     </div>
   </header>
@@ -546,14 +577,8 @@
   <div class="tools">
     <div class="wrap">
       <label class="selc"><span class="sr pt">Cidade</span><span class="sr es">Ciudad</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/></svg><select id="selCity"></select></label>
+      <span class="tag rgn" data-k="tag"></span>
       <button type="button" class="tg prc" id="bPrec" title="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span class="pt">Localização precisa</span><span class="es">Ubicación precisa</span><i title="Premium">★</i></button>
-      <span class="sp"></span>
-      <button type="button" class="tg" id="bLang" aria-label="Idioma: português / español"><svg class="fl-br" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#169B48"/><path d="M14 2.500 25.500 10 14 17.500 2.500 10z" fill="#FDD835"/><circle cx="14" cy="10" r="4.200" fill="#1A3E8C"/><path d="M10 9.200q4-1.600 8 .8" stroke="#fff" stroke-width=".9" fill="none"/></svg><svg class="fl-ar" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#74ACDF"/><rect y="6.700" width="28" height="6.600" fill="#fff"/><circle cx="14" cy="10" r="2.300" fill="#F6B40E"/></svg></button>
-      <button type="button" class="tg" id="bTheme">
-        <svg class="ic-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 14.500A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z"/></svg>
-        <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.500 1.500M17.500 17.500 19 19M19 5l-1.500 1.500M6.500 17.500 5 19"/></svg>
-        <span class="lbl-theme sr"></span>
-      </button>
       
     </div>
   </div>
@@ -562,7 +587,6 @@
 
   <div class="hero-in">
     <div class="wrap">
-      <span class="tag" data-k="tag"></span>
       
       
       <div class="now gl" aria-live="polite">
@@ -651,11 +675,12 @@
     <button type="button" class="vzrep" id="vzRep"><span class="pt">Relatar o que está acontecendo</span><span class="es">Reportar lo que está pasando</span></button>
     <div class="vzf" id="vzForm" hidden>
       <p class="vzq"><span class="pt">O que está acontecendo onde você está?</span><span class="es">¿Qué está pasando donde estás?</span></p>
-      <div class="vzo" id="vzTipo">
+      <div class="vzo vz5" id="vzTipo">
         <button type="button" data-t="granizo"><svg aria-hidden="true"><use href="#i-granizo"/></svg><span class="pt">Granizo</span><span class="es">Granizo</span></button>
         <button type="button" data-t="alagamento"><svg aria-hidden="true"><use href="#i-chuva"/></svg><span class="pt">Alagamento</span><span class="es">Inundación</span></button>
         <button type="button" data-t="vendaval"><svg aria-hidden="true"><use href="#i-vendaval"/></svg><span class="pt">Vendaval</span><span class="es">Viento fuerte</span></button>
         <button type="button" data-t="raios"><svg aria-hidden="true"><use href="#i-raios"/></svg><span class="pt">Raios</span><span class="es">Rayos</span></button>
+        <button type="button" data-t="outro"><svg aria-hidden="true"><use href="#i-riesgo"/></svg><span class="pt">Outro</span><span class="es">Otro</span></button>
       </div>
       <div id="vzTamBox" hidden>
         <p class="vzq"><span class="pt">Tamanho da pedra</span><span class="es">Tamaño de la piedra</span></p>
@@ -666,11 +691,20 @@
           <button type="button" data-z="ovo"><b style="font-size:32px">●</b><span class="pt">Ovo</span><span class="es">Huevo</span><small>~5 cm</small></button>
         </div>
       </div>
+      <label class="vzl" for="vzTxt"><span class="pt">Conte o que você vê <small id="vzOpc">(opcional)</small></span><span class="es">Contá lo que ves <small id="vzOpc2">(opcional)</small></span></label>
+      <textarea id="vzTxt" rows="3" maxlength="280"></textarea>
+      <div class="vzm">
+        <button type="button" id="vzBFoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="pt">Foto</span><span class="es">Foto</span></button>
+        <button type="button" id="vzBVid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="5" width="15" height="14" rx="2"/><path d="M23 7l-7 5 7 5z"/></svg><span class="pt">Vídeo</span><span class="es">Video</span></button>
+        <input type="file" accept="image/*" capture="environment" id="vzFoto" hidden><input type="file" accept="video/*" capture="environment" id="vzVid" hidden>
+      </div>
+      <div class="vzp" id="vzPrev" hidden></div>
+      <p class="vzmeta" id="vzMeta"></p>
       <button type="button" class="btn btn-wa" id="vzSend" disabled><span class="pt">Enviar relato</span><span class="es">Enviar reporte</span></button>
       <small class="vzst" id="vzSt"></small>
     </div>
     <div id="vzList"></div>
-    <p class="vzn"><span class="pt">Os relatos somem depois de 3 dias. A localização é arredondada (cerca de 1 km) e não guardamos quem enviou. Com 2 confirmações, o relato fica marcado como confirmado.</span><span class="es">Los reportes se borran a los 3 días. La ubicación se redondea (cerca de 1 km) y no guardamos quién lo envió. Con 2 confirmaciones, el reporte queda marcado como confirmado.</span></p>
+    <p class="vzn"><span class="pt">Os relatos somem depois de 3 dias, com a foto ou o vídeo. Guardamos o dia, a hora e o ponto (com precisão de uns 100 m), mas não quem enviou. Com 2 confirmações, o relato fica marcado como confirmado.</span><span class="es">Los reportes se borran a los 3 días, con la foto o el video. Guardamos el día, la hora y el punto (con precisión de unos 100 m), pero no quién lo envió. Con 2 confirmaciones, el reporte queda marcado como confirmado.</span></p>
   </div>
 </section>
 <section class="alt" id="radar">
@@ -871,14 +905,29 @@
   </div>
 </div>
 
-<div class="onb" id="pmo" hidden role="dialog" aria-modal="true">
-  <div class="onbc gl">
-    <h2><span class="pt">Função Premium</span><span class="es">Función Premium</span></h2>
-    <p class="pt" style="color:#b9c6d3">Compartilhar alertas com a família e os amigos (WhatsApp, foto e vídeo), os alertas no WhatsApp e a localização precisa fazem parte do plano Premium. Relatar e confirmar no Alerta dos vizinhos é grátis.</p>
-    <p class="es" style="color:#b9c6d3">Compartir alertas con tu familia y amigos (WhatsApp, foto y video), las alertas por WhatsApp y la ubicación precisa son parte del plan Premium. Reportar y confirmar en Alerta de vecinos es gratis.</p>
-    <button type="button" class="btn btn-wa" id="pmoOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
+<div class="onb" id="pmo" hidden role="dialog" aria-modal="true" aria-labelledby="pmoT">
+  <div class="onbc gl pmoc">
+    <button type="button" class="pmx" id="pmoX" aria-label="Fechar / Cerrar">×</button>
+    <h2 id="pmoT"><span class="pt">Passe para o Premium</span><span class="es">Pasate a Premium</span></h2>
+    <ul class="pmb">
+      <li><span class="pt">Compartilhar alertas com a família e os amigos pelo WhatsApp, com foto e vídeo</span><span class="es">Compartir alertas con tu familia y amigos por WhatsApp, con foto y video</span></li>
+      <li><span class="pt">Alertas no seu WhatsApp</span><span class="es">Alertas en tu WhatsApp</span></li>
+      <li><span class="pt">Localização precisa e até 10 lugares</span><span class="es">Ubicación precisa y hasta 10 lugares</span></li>
+      <li><span class="pt">Sem publicidade</span><span class="es">Sin publicidad</span></li>
+    </ul>
+    <p class="pmg"><span class="pt">Continuam grátis: avisos oficiais, risco, previsão e o Alerta dos vizinhos (relatar e confirmar).</span><span class="es">Siguen gratis: avisos oficiales, riesgo, pronóstico y Alerta de vecinos (reportar y confirmar).</span></p>
+    <div class="pmp" role="radiogroup" aria-label="Plano">
+      <button type="button" role="radio" aria-checked="false" data-p="mensal"><b><span class="pt">Mensal</span><span class="es">Mensual</span></b><span>R$ 14,90<small><span class="pt">/mês</span><span class="es">/mes</span></small></span></button>
+      <button type="button" role="radio" aria-checked="true" data-p="temporada"><b><span class="pt">Temporada</span><span class="es">Temporada</span></b><span>R$ 44,90<small><span class="pt">até 31/03</span><span class="es">hasta 31/03</span></small></span><i><span class="pt">Ideal para o verão</span><span class="es">Ideal para el verano</span></i></button>
+      <button type="button" role="radio" aria-checked="false" data-p="anual"><b><span class="pt">Anual</span><span class="es">Anual</span></b><span>R$ 89,90<small><span class="pt">/ano</span><span class="es">/año</span></small></span></button>
+    </div>
+    <button type="button" class="btn btn-wa" id="pmoGo"><span class="pt">Quero este plano</span><span class="es">Quiero este plan</span></button>
+    <p class="pmst" id="pmoSt"></p>
+    <form class="pmcod" id="pmoCod"><label for="pmoIn"><span class="pt">Tem um código?</span><span class="es">¿Tenés un código?</span></label>
+      <div><input id="pmoIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="GRATIS24"><button type="submit"><span class="pt">Aplicar</span><span class="es">Aplicar</span></button></div></form>
   </div>
 </div>
+
 <div class="onb" id="trO" hidden role="dialog" aria-modal="true">
   <div class="onbc gl trc">
     <h2 id="trT"></h2>
@@ -917,6 +966,7 @@
   <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
   <a href="#vecinos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><circle cx="17" cy="9" r="2.700"/><path d="M16.500 14.200c2.800.2 5 2.100 5 5.300"/></svg><span class="pt">Alerta vizinhos</span><span class="es">Alerta vecinos</span></a>
   <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg><span class="pt">Compartilhar alerta</span><span class="es">Compartir alerta</span><i class="pmd" aria-hidden="true">★</i></button>
+  <a href="#premium" id="tabPrem" class="tprem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.500 4L12 5l4.500 7L21 8l-2 11H5z"/><path d="M5 19h14"/></svg><span class="pt">Premium</span><span class="es">Premium</span></a>
   <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
 </nav>
 
@@ -1118,42 +1168,63 @@
     var todos=(ZONAS.avisos||[]).filter(function(a){return av.indexOf(a)<0}),ab=document.getElementById('ofAllBox');ab.hidden=!todos.length;
     document.getElementById('ofAllSum').textContent=L2('Otros avisos vigentes en el sur','Outros avisos em vigor no Sul')+' ('+todos.length+')';
     var al=document.getElementById('ofAll');al.innerHTML='';todos.slice().reverse().forEach(function(a){al.appendChild(ofTarjeta(a,l))})}
-  /* ---- alerta de vecinos: reportes en /api/reportes.php (guardados en Hostinger, fuera de la carpeta publica) ---- */
-  var VZ={r:30,tipo:null,tam:null,lista:[]};
-  var VZT={granizo:['Granizo','Granizo'],alagamento:['Alagamento','Inundación'],vendaval:['Vendaval','Viento fuerte'],raios:['Raios','Rayos']};
+  /* ---- alerta de vecinos: reportes en /api/reportes.php (guardados en Hostinger, fuera de la carpeta publica). Reportar y confirmar es gratis. ---- */
+  var VZ={r:30,tipo:null,tam:null,lista:[],file:null};
+  var VZT={granizo:['Granizo','Granizo'],alagamento:['Alagamento','Inundación'],vendaval:['Vendaval','Viento fuerte'],raios:['Raios','Rayos'],outro:['Outro','Otro']};
+  var VZI={granizo:'granizo',alagamento:'chuva',vendaval:'vendaval',raios:'raios',outro:'riesgo'};
   var VZZ={ervilha:['ervilha','arveja','~0,5 cm'],gude:['bola de gude','bolita','~1,5 cm'],noz:['noz','nuez','~2,5 cm'],ovo:['ovo','huevo','~5 cm']};
-  function vzHace(m){return m<1?L2('recién','agora'):m<60?L2('hace ','há ')+m+' min':m<1440?L2('hace ','há ')+Math.floor(m/60)+' h':L2('hace ','há ')+Math.floor(m/1440)+L2(' d',' d')}
+  function vzHace(m){return m<1?L2('recién','agora'):m<60?L2('hace ','há ')+m+' min':m<1440?L2('hace ','há ')+Math.floor(m/60)+' h':L2('hace ','há ')+Math.floor(m/1440)+' d'}
+  function vzFecha(ts){var d=new Date(ts*1000),p=function(n){return(n<10?'0':'')+n};return p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes())}
   function vzPintar(){var box=document.getElementById('vzList');if(!box)return;var l=root.getAttribute('data-lang')==='es'?1:0;
     safe(function(){var n=document.getElementById('vzNow');if(!n)return;var rec=VZ.lista.filter(function(x){return x.km<=30&&x.min<=180}).sort(function(a,b){return (b.conf-a.conf)||(a.min-b.min)}).slice(0,3);
       if(!rec.length){n.hidden=true;return}n.hidden=false;
-      n.innerHTML='<b>'+L2('Reportes de vecinos · últimas 3 h','Relatos dos vizinhos · últimas 3 h')+'</b>'+rec.map(function(x){return '<div>'+(x.conf>=2?'✓ ':'• ')+esc(VZT[x.tipo][l]+(x.tam?' ('+VZZ[x.tam][l]+')':''))+' · '+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzHace(x.min)+(x.conf>=2?' · '+L2('confirmado','confirmado'):'')+'</div>'}).join('')});
+      n.innerHTML='<b>'+L2('Reportes de vecinos · últimas 3 h','Relatos dos vizinhos · últimas 3 h')+'</b>'+rec.map(function(x){return '<div>'+(x.conf>=2?'✓ ':'• ')+esc(VZT[x.tipo][l]+(x.tam?' ('+VZZ[x.tam][l]+')':''))+(x.texto?' — “'+esc(x.texto.slice(0,60))+(x.texto.length>60?'…':'')+'”':'')+' · '+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzFecha(x.ts)+(x.conf>=2?' · '+L2('confirmado','confirmado'):'')+'</div>'}).join('')});
     if(!VZ.lista.length){box.innerHTML='<p class="vzn">'+L2('Nadie reportó nada en este radio en los últimos 3 días.','Ninguém relatou nada neste raio nos últimos 3 dias.')+'</p>';return}
     box.innerHTML='';VZ.lista.forEach(function(x){var d=document.createElement('div');d.className='vzc'+(x.conf>=2?' ok':'');
-      var tit=VZT[x.tipo][l]+(x.tam?' · '+L2('tamaño ','tamanho ')+VZZ[x.tam][l]:''),sub=(x.tam?VZZ[x.tam][2]+' · ':'')+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzHace(x.min);
-      d.innerHTML='<i class="vzi"><svg aria-hidden="true"><use href="#i-'+(x.tipo==='alagamento'?'chuva':x.tipo)+'"/></svg></i><div class="vzt2"><b>'+esc(tit)+'</b><span>'+esc(sub)+'</span>'+
+      var tit=VZT[x.tipo][l]+(x.tam?' · '+L2('tamaño ','tamanho ')+VZZ[x.tam][l]:''),sub=(x.tam?VZZ[x.tam][2]+' · ':'')+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzFecha(x.ts)+' ('+vzHace(x.min)+')';
+      var med=x.media==='foto'?'<a class="vzimg" href="/api/media.php?id='+esc(x.id)+'" target="_blank" rel="noopener"><img src="/api/media.php?id='+esc(x.id)+'" alt="" loading="lazy"></a>':x.media==='video'?'<video class="vzimg" src="/api/media.php?id='+esc(x.id)+'" controls preload="none" playsinline></video>':'';
+      d.innerHTML='<div class="vzr1"><i class="vzi"><svg aria-hidden="true"><use href="#i-'+VZI[x.tipo]+'"/></svg></i><div class="vzt2"><b>'+esc(tit)+'</b><span>'+esc(sub)+'</span>'+
         (x.conf>=2?'<em>✓ '+L2('Confirmado','Confirmado')+' · '+x.conf+'</em>':x.conf?'<em class="p">'+x.conf+L2(' vecino lo confirma',' vizinho confirma')+'</em>':'')+'</div>'+
-        (x.meu?'':'<button type="button" data-c="'+esc(x.id)+'">'+L2('Yo también lo vi','Eu também vi')+'</button>');box.appendChild(d)});
+        (x.meu?'':'<button type="button" data-c="'+esc(x.id)+'">'+L2('Yo también lo vi','Eu também vi')+'</button>')+'</div>'+
+        (x.texto?'<p class="vztx">'+esc(x.texto)+'</p>':'')+med;box.appendChild(d)});
     box.querySelectorAll('[data-c]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
       fetch('/api/reportes.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'confirmar',id:b.getAttribute('data-c')})}).then(function(r){return r.json()}).then(function(){vzCargar()}).catch(function(){b.disabled=false})})})}
   function vzCargar(){if(!WEB)return;var g=refPunto();
-    fetch('/api/reportes.php?lat='+g[0].toFixed(2)+'&lon='+g[1].toFixed(2)+'&r='+VZ.r,{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j.ok){VZ.lista=j.reportes||[];vzPintar();safe(vzCapa)}}).catch(function(){var b=document.getElementById('vzList');if(b&&!VZ.lista.length)b.innerHTML='<p class="vzn">'+L2('No se pudieron cargar los reportes.','Não foi possível carregar os relatos.')+'</p>'})}
+    fetch('/api/reportes.php?lat='+g[0].toFixed(3)+'&lon='+g[1].toFixed(3)+'&r='+VZ.r,{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j.ok){VZ.lista=j.reportes||[];vzPintar();safe(vzCapa)}}).catch(function(){var b=document.getElementById('vzList');if(b&&!VZ.lista.length)b.innerHTML='<p class="vzn">'+L2('No se pudieron cargar los reportes.','Não foi possível carregar os relatos.')+'</p>'})}
   function vzCapa(){if(!RADAR||!RADAR.map||!window.L)return;if(RADAR.vz)RADAR.map.removeLayer(RADAR.vz);var g=L.featureGroup(),l=root.getAttribute('data-lang')==='es'?1:0;
-    VZ.lista.forEach(function(x){L.circleMarker([x.lat,x.lon],{radius:6,color:'#fff',weight:2,fillColor:x.conf>=2?'#c0392b':'#7a8794',fillOpacity:1}).bindTooltip(VZT[x.tipo][l]+(x.tam?' · '+VZZ[x.tam][l]:'')+' · '+vzHace(x.min)).addTo(g)});g.addTo(RADAR.map);RADAR.vz=g}
+    VZ.lista.forEach(function(x){L.circleMarker([x.lat,x.lon],{radius:6,color:'#fff',weight:2,fillColor:x.conf>=2?'#c0392b':'#7a8794',fillOpacity:1}).bindTooltip(VZT[x.tipo][l]+(x.tam?' · '+VZZ[x.tam][l]:'')+' · '+vzFecha(x.ts)).addTo(g)});g.addTo(RADAR.map);RADAR.vz=g}
+  /* achica la foto en el celular antes de subirla (lado mayor 1600 px, JPEG) */
+  function vzAchicar(file){return new Promise(function(ok){if(!/^image\//.test(file.type)||!window.createImageBitmap){ok(file);return}
+    createImageBitmap(file).then(function(bm){var k=Math.min(1,1600/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=Math.round(bm.width*k);c.height=Math.round(bm.height*k);
+      c.getContext('2d').drawImage(bm,0,0,c.width,c.height);c.toBlob(function(b){ok(b||file)},'image/jpeg',.82)}).catch(function(){ok(file)})})}
   safe(function(){var R=document.getElementById('vzR');if(!R)return;
     R.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){VZ.r=+b.dataset.r;R.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});vzCargar()})});
-    var f=document.getElementById('vzForm'),snd=document.getElementById('vzSend'),st=document.getElementById('vzSt');
-    function listo(){snd.disabled=!(VZ.tipo&&(VZ.tipo!=='granizo'||VZ.tam))}
-    document.getElementById('vzRep').addEventListener('click',function(){f.hidden=!f.hidden;st.textContent=''});
+    var f=document.getElementById('vzForm'),snd=document.getElementById('vzSend'),st=document.getElementById('vzSt'),tx=document.getElementById('vzTxt'),meta=document.getElementById('vzMeta'),prev=document.getElementById('vzPrev');
+    function listo(){snd.disabled=!(VZ.tipo&&(VZ.tipo!=='granizo'||VZ.tam)&&(VZ.tipo!=='outro'||tx.value.trim().length>2))}
+    function pintarMeta(){var d=new Date(),p=function(n){return(n<10?'0':'')+n};meta.textContent='📍 '+L2('Se envía con tu ubicación precisa','Vai com a sua localização precisa')+' · 🕒 '+p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes())}
+    document.getElementById('vzRep').addEventListener('click',function(){f.hidden=!f.hidden;st.textContent='';pintarMeta()});
+    setInterval(function(){if(!f.hidden)pintarMeta()},30000);
+    tx.addEventListener('input',listo);
     document.querySelectorAll('#vzTipo button').forEach(function(b){b.addEventListener('click',function(){VZ.tipo=b.dataset.t;document.querySelectorAll('#vzTipo button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
-      document.getElementById('vzTamBox').hidden=VZ.tipo!=='granizo';listo()})});
+      document.getElementById('vzTamBox').hidden=VZ.tipo!=='granizo';var o=VZ.tipo==='outro';document.getElementById('vzOpc').textContent=o?'(obrigatório)':'(opcional)';document.getElementById('vzOpc2').textContent=o?'(obligatorio)':'(opcional)';listo()})});
     document.querySelectorAll('#vzTam button').forEach(function(b){b.addEventListener('click',function(){VZ.tam=b.dataset.z;document.querySelectorAll('#vzTam button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});listo()})});
+    function elegir(inp){inp.addEventListener('change',function(){var fl=inp.files&&inp.files[0];if(!fl)return;
+      if(fl.size>25*1024*1024){st.textContent=L2('El archivo es muy pesado (máximo 25 MB).','O arquivo é pesado demais (máximo 25 MB).');return}
+      VZ.file=fl;prev.hidden=false;var u=URL.createObjectURL(fl);
+      prev.innerHTML=(/^video\//.test(fl.type)?'<video src="'+u+'" muted playsinline controls></video>':'<img src="'+u+'" alt="">')+'<button type="button" id="vzQuitar">'+L2('Quitar','Remover')+'</button>';
+      document.getElementById('vzQuitar').addEventListener('click',function(){VZ.file=null;prev.hidden=true;prev.innerHTML='';inp.value=''})})}
+    elegir(document.getElementById('vzFoto'));elegir(document.getElementById('vzVid'));
+    document.getElementById('vzBFoto').addEventListener('click',function(){document.getElementById('vzFoto').click()});
+    document.getElementById('vzBVid').addEventListener('click',function(){document.getElementById('vzVid').click()});
     snd.addEventListener('click',function(){if(!navigator.geolocation){st.textContent=L2('Para reportar hace falta la ubicación del celular.','Para relatar é preciso a localização do celular.');return}
-      snd.disabled=true;st.textContent=L2('Buscando tu ubicación…','Buscando sua localização…');
+      snd.disabled=true;st.textContent=L2('Buscando tu ubicación precisa…','Buscando sua localização precisa…');
       navigator.geolocation.getCurrentPosition(function(p){
-        fetch('/api/reportes.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'novo',tipo:VZ.tipo,tam:VZ.tipo==='granizo'?VZ.tam:null,lat:p.coords.latitude,lon:p.coords.longitude})})
-          .then(function(r){return r.json()}).then(function(j){if(j.ok){st.textContent=L2('¡Gracias! Tu reporte ya está en el mapa de los vecinos.','Obrigado! Seu relato já está no mapa dos vizinhos.');f.hidden=true;VZ.tipo=VZ.tam=null;
+        var fd=new FormData();fd.append('acao','novo');fd.append('tipo',VZ.tipo);if(VZ.tipo==='granizo')fd.append('tam',VZ.tam);fd.append('texto',tx.value.trim());
+        fd.append('lat',p.coords.latitude);fd.append('lon',p.coords.longitude);
+        (VZ.file?vzAchicar(VZ.file):Promise.resolve(null)).then(function(m){if(m)fd.append('media',m,(VZ.file.name||'media'));st.textContent=m?L2('Subiendo…','Enviando…'):st.textContent;
+          return fetch('/api/reportes.php',{method:'POST',body:fd})}).then(function(r){return r.json()}).then(function(j){if(j.ok){st.textContent=L2('¡Gracias! Tu reporte ya está en el mapa de los vecinos.','Obrigado! Seu relato já está no mapa dos vizinhos.');f.hidden=true;VZ.tipo=VZ.tam=VZ.file=null;tx.value='';prev.hidden=true;prev.innerHTML='';
               document.querySelectorAll('#vzForm [aria-pressed]').forEach(function(x){x.setAttribute('aria-pressed','false')});document.getElementById('vzTamBox').hidden=true;vzCargar()}
-            else{st.textContent=j.error==='espera'?L2('Ya enviaste un reporte hace poco. Probá en unos minutos.','Você já enviou um relato há pouco. Tente em alguns minutos.'):L2('No se pudo enviar. Probá de nuevo.','Não foi possível enviar. Tente de novo.');snd.disabled=false}})
+            else{st.textContent=j.error==='espera'?L2('Ya enviaste un reporte hace poco. Probá en unos minutos.','Você já enviou um relato há pouco. Tente em alguns minutos.'):j.error==='formato'||j.error==='archivo'?L2('Ese archivo no se puede subir. Probá con una foto o un video más corto.','Esse arquivo não pode ser enviado. Tente uma foto ou um vídeo mais curto.'):L2('No se pudo enviar. Probá de nuevo.','Não foi possível enviar. Tente de novo.');snd.disabled=false}})
           .catch(function(){st.textContent=L2('No se pudo enviar. Revisá la conexión.','Não foi possível enviar. Confira a conexão.');snd.disabled=false})},
         function(){st.textContent=L2('Para reportar hace falta permitir la ubicación.','Para relatar é preciso permitir a localização.');snd.disabled=false},{enableHighAccuracy:true,timeout:15000})});
     vzCargar();setInterval(function(){safe(vzCargar)},3*60000)});
@@ -1335,6 +1406,8 @@
   var TR={on:false,dias:0,fin:false};
   /* plan: gratis por defecto. ?plan=premium deja Premium en este dispositivo (pruebas de Deik); ?plan=gratis lo vuelve atras. */
   safe(function(){var q=/[?&]plan=(gratis|premium)\b/.exec(location.search);if(q)LS('plan',q[1]);
+    var hasta=+LS('planHasta');if(hasta&&Date.now()>hasta){LS('plan','gratis');LS('planHasta','')}
+    setInterval(function(){var h=+LS('planHasta');if(h&&Date.now()>h){LS('plan','gratis');LS('planHasta','');root.setAttribute('data-plan','gratis');safe(trTxt)}},60000);
     root.setAttribute('data-plan',LS('plan')==='premium'?'premium':'gratis');root.setAttribute('data-trial','0')});
   function trTxt(){var p=document.querySelector('.pl');if(p)p.textContent=esPremium()?'Premium':L2('Gratis','Grátis');
     var t=document.getElementById('trT'),x=document.getElementById('trX');if(!t)return;
@@ -1426,7 +1499,22 @@
   /* ---- funciones premium: en el plan gratis muestran un aviso en lugar de abrirse ---- */
   function esPremium(){return root.getAttribute('data-plan')==='premium'}
   function bloqueo(){var o=document.getElementById('pmo');if(o)o.hidden=false}
-  safe(function(){var b=document.getElementById('pmoOk');if(b)b.addEventListener('click',function(){document.getElementById('pmo').hidden=true})});
+  safe(function(){var o=document.getElementById('pmo');if(!o)return;var st=document.getElementById('pmoSt'),plan='temporada';
+    function cerrar(){o.hidden=true;if(location.hash==='#premium')history.replaceState(null,'',location.pathname+location.search)}
+    document.getElementById('pmoX').addEventListener('click',cerrar);o.addEventListener('click',function(e){if(e.target===o)cerrar()});
+    o.querySelectorAll('.pmp button').forEach(function(b){b.addEventListener('click',function(){plan=b.dataset.p;o.querySelectorAll('.pmp button').forEach(function(x){x.setAttribute('aria-checked',x===b?'true':'false')})})});
+    document.getElementById('pmoGo').addEventListener('click',function(){
+      fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:plan})}).catch(function(){});
+      LS('planElegido',plan);st.textContent=L2('¡Anotado! El pago con Pix, tarjeta y boleto se habilita en estos días y te avisamos. Si tenés un código, cargalo abajo.','Anotado! O pagamento com Pix, cartão e boleto será liberado nos próximos dias e a gente avisa. Se você tem um código, coloque abaixo.')});
+    document.getElementById('pmoCod').addEventListener('submit',function(e){e.preventDefault();var c=document.getElementById('pmoIn').value.trim();if(!c)return;st.textContent=L2('Revisando el código…','Conferindo o código…');
+      fetch('/api/codigo.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:c})}).then(function(r){return r.json()}).then(function(j){
+        if(!j.ok){st.textContent=j.error==='vencido'?L2('Ese código ya venció.','Esse código já venceu.'):L2('Código no válido.','Código inválido.');return}
+        if(LS('cod-'+c.toUpperCase())){st.textContent=L2('Este código ya se usó en este celular.','Este código já foi usado neste celular.');return}
+        LS('cod-'+c.toUpperCase(),'1');LS('plan','premium');LS('planHasta',String(Date.now()+j.horas*3600000));root.setAttribute('data-plan','premium');safe(trTxt);safe(precUI);
+        st.textContent=L2('¡Listo! Tenés Premium gratis por ','Pronto! Você tem Premium grátis por ')+j.horas+L2(' horas.',' horas.')})
+        .catch(function(){st.textContent=L2('No se pudo revisar el código. Revisá la conexión.','Não foi possível conferir o código. Confira a conexão.')})});
+    function abrirSiHash(){if(location.hash==='#premium'){o.hidden=false}}addEventListener('hashchange',abrirSiHash);abrirSiHash();
+    document.getElementById('tabPrem').addEventListener('click',function(e){e.preventDefault();o.hidden=false})});
 
 
 
