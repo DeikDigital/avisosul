@@ -269,7 +269,7 @@ html[lang="es"] .historia .pt,html:not([lang="es"]) .historia .es{display:none}
 @media (max-width:760px){.promov .wrap{grid-template-columns:1fr}.promov .pvfone{max-width:280px;margin:0 auto}}
 /* video en la portada */
 .hero .escena{align-self:start;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"v l" "v c";gap:14px 18px;align-items:center}
-.hero .escena .pvhero{grid-area:v;position:relative;width:min(250px,calc((100vh - 190px) * 9 / 16));min-width:170px}
+.hero .escena .pvhero{grid-area:v;align-self:start;position:relative;width:min(250px,calc((100vh - 190px) * 9 / 16));min-width:170px}
 .hero .escena .logo3d{grid-area:l;aspect-ratio:1/1}
 .hero .escena .vivo{grid-area:c;margin:0!important}
 .pvcta{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);background:var(--sol);color:#2a1d00;font-weight:800;font-size:14px;padding:8px 14px;border-radius:999px;text-decoration:none;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.35)}
