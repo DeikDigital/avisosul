@@ -47,6 +47,13 @@
     '#car .rt{margin:0 0 8px;padding:0 0 8px;border-bottom:1px solid rgba(255,255,255,.15)}#car .rt b{font-size:16px}#car .rt .rs{font-size:13px;opacity:.85;margin:2px 0 6px}#car .rt .rs.mal{color:#ffb238;opacity:1;font-weight:700}' +
     '#car .rt .rb{display:flex;gap:6px;flex-wrap:wrap}#car .rt .rb button,#car .rt .rb a{font:inherit;font-size:13px;font-weight:800;border:0;border-radius:10px;padding:7px 10px;cursor:pointer;text-decoration:none;background:rgba(255,255,255,.12);color:#fff}#car .rt .rb .go{background:#3ddc84;color:#05351c}' +
     '#car .est a.gg{background:rgba(255,255,255,.14);color:#fff}' +
+    '#car .gui{position:absolute;top:calc(max(10px,env(safe-area-inset-top)) + 70px);left:10px;right:70px;padding:10px 12px;display:flex;gap:10px;align-items:center;z-index:1101;background:rgba(10,60,35,.92)!important;border-color:#3ddc84!important}#car .gui[hidden]{display:none}' +
+    '#car .gui i{font-style:normal;font-size:34px;line-height:1}#car .gui b{display:block;font-size:22px}#car .gui span{font-size:14px;opacity:.9}' +
+    '#car.navon .av{top:calc(max(10px,env(safe-area-inset-top)) + 150px)}#car.navon .side{top:calc(max(10px,env(safe-area-inset-top)) + 196px)}' +
+    '#car .stc{width:calc(100% - 20px);max-width:480px;margin:0 10px;padding:16px;position:relative;box-sizing:border-box}#car .stx{position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer}' +
+    '#car .stc h3{margin:0 44px 4px 0;font-size:20px}#car .stc .sd{font-size:14px;opacity:.85;margin:0 0 10px}#car .stc ul{margin:0 0 10px;padding:0;list-style:none;display:grid;gap:4px;font-size:14px}#car .stc iframe{width:100%;height:280px;border:0;border-radius:12px;background:#fff}' +
+    '#car .stc .sb{display:flex;gap:8px;margin-top:10px}#car .stc .sb button{flex:1;font:inherit;font-weight:800;padding:10px;border:0;border-radius:10px;cursor:pointer;background:#f5b301;color:#2e2000}#car .stc .sb button.s2{background:rgba(255,255,255,.14);color:#fff}' +
+    '#car .est .nm{background:none;border:0;padding:0;color:#fff;font:inherit;font-weight:700;text-align:left;cursor:pointer}' +
     '#car .pin{font-size:22px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}#car .pin.f{font-size:26px}' +
     '#car .yo{width:22px;height:22px;border-radius:50%;background:#f5b301;border:3px solid #fff;box-shadow:0 0 0 6px rgba(245,179,1,.3)}' +
     '#car .leaflet-control-attribution{font-size:9px;background:rgba(0,0,0,.5);color:#ccc}#car .leaflet-control-attribution a{color:#ddd}';
@@ -56,6 +63,7 @@
       '<div class="top"><div class="gls vel"><b id="cVel">–</b><small>km/h <span id="cRum"></span></small></div>' +
       '<div class="gls wx"><i id="cWi">⛅</i><div><b id="cWt">–°</b><small id="cWd">' + L2('Buscando el clima…', 'Buscando o tempo…') + '</small></div></div>' +
       '<button type="button" class="gls x" id="cX" aria-label="' + L2('Volver a Casa', 'Voltar para Casa') + '">🏠<small>' + L2('Casa', 'Casa') + '</small></button></div>' +
+      '<div class="gls gui" id="cGui" hidden></div>' +
       '<div class="gls av ok" id="cAv">' + L2('Buscando avisos oficiales…', 'Buscando avisos oficiais…') + '</div>' +
       '<div class="side"><button type="button" class="gls" id="cCen" title="' + L2('Centrar', 'Centralizar') + '">◎</button>' +
       '<button type="button" class="gls" id="cAuto" title="' + L2('Mi auto', 'Meu carro') + '">🚗</button>' +
@@ -64,6 +72,7 @@
       '<button type="button" class="gls" id="cEst" title="' + L2('Buscar estaciones', 'Buscar postos') + '">⛽</button></div>' +
       '<div class="gls bot"><div class="au"><span>🛢️</span><b id="cAut">– km</b><div class="bar"><i id="cBar" style="width:0"></i></div><button type="button" id="cCfg">' + L2('Mi auto', 'Meu carro') + '</button></div>' +
       '<div class="rt" id="cRt" hidden></div><div class="est" id="cList"></div><div class="nt" id="cNt">' + L2('Configurá antes de salir. No uses el celular mientras manejás.', 'Configure antes de sair. Não use o celular enquanto dirige.') + '</div></div>' +
+      '<div class="dlg" id="cSt" hidden><div class="gls stc"><button type="button" class="stx" id="cStX" aria-label="' + L2('Cerrar', 'Fechar') + '">✕</button><div id="cStB"></div></div></div>' +
       '<div class="dlg" id="cDst" hidden><form class="gls" id="cDstF"><h3>🧭 ' + L2('¿A dónde vas?', 'Para onde vai?') + '</h3>' +
       '<input name="q" type="search" autocomplete="off" placeholder="' + L2('Ciudad, dirección o lugar', 'Cidade, endereço ou lugar') + '">' +
       '<button class="ok">' + L2('Buscar', 'Buscar') + '</button><div class="dres" id="cDres"></div><button type="button" class="cn" id="cDstNo">' + L2('Cancelar', 'Cancelar') + '</button></form></div>' +
@@ -97,6 +106,8 @@
   function eventos() {
     var $ = function (id) { return document.getElementById(id) };
     $('cX').onclick = cerrar;
+    $('cStX').onclick = cerrarFicha; $('cSt').onclick = function (e) { if (e.target.id === 'cSt') cerrarFicha() };
+    fetch('/api/cuenta.php?cfg=1').then(function (r) { return r.json() }).then(function (j) { CAR.mk = j.maps || null }).catch(function () { });
     $('cCen').onclick = function () { CAR.map.setView(CAR.pos || A.ref(), Math.max(CAR.map.getZoom(), 14)) };
     $('cAuto').onclick = $('cCfg').onclick = dlg;
     $('cCn').onclick = function () { $('cDlg').hidden = true; CAR.el.classList.remove('dlgon') };
@@ -212,7 +223,7 @@
       .then(function (r) { return r.json() }).then(function (j) {
         CAR.est = (j.elements || []).map(function (x) {
           var t = x.tags || {}, p = x.center ? [x.center.lat, x.center.lon] : [x.lat, x.lon];
-          return { id: x.type[0] + x.id, n: t.brand || t.name || t.operator || L2('Estación', 'Posto'), nom: t.name && t.brand && t.name !== t.brand ? t.name : '', p: p };
+          return { id: x.type[0] + x.id, n: t.brand || t.name || t.operator || L2('Estación', 'Posto'), nom: t.name && t.brand && t.name !== t.brand ? t.name : '', p: p, t: t };
         });
         pintarEst(); CAR.cargando = 0;
       }).catch(function () { CAR.cargando = 0; CAR.est = CAR.est || []; pintarEst(); if (Object.keys(favs()).length) return; document.getElementById('cList').innerHTML = '<small>' + L2('No se pudieron buscar estaciones. Probá de nuevo con ⛽.', 'Não foi possível buscar postos. Tente de novo com ⛽.') + '</small>' });
@@ -220,14 +231,16 @@
 
   function pintarEst() {
     var F = favs(); CAR.capaEst.clearLayers();
-    var todas = CAR.est.slice(); for (var id in F) if (!todas.some(function (x) { return x.id === id })) todas.push({ id: id, n: F[id].n, nom: '', p: F[id].p });
+    var todas;
+    if (CAR.ruta && CAR.estR) { var aq = CAR.ruta.cum[CAR.ruta.idx]; todas = CAR.estR.filter(function (x) { return x.al >= aq - 0.3 }) }
+    else { todas = CAR.est.slice(); for (var id in F) if (!todas.some(function (x) { return x.id === id })) todas.push({ id: id, n: F[id].n, nom: '', p: F[id].p }) }
     todas.forEach(function (x) {
       var f = !!F[x.id];
       L.marker(x.p, { icon: L.divIcon({ className: '', html: '<div class="pin' + (f ? ' f' : '') + '">' + (f ? '⭐' : (ev(cfg()) ? '🔌' : '⛽')) + '</div>', iconSize: [26, 26], iconAnchor: [13, 13] }) })
-        .bindPopup('<b>' + esc(x.n) + '</b>' + (x.nom ? '<br>' + esc(x.nom) : '') + '<br><a href="' + irA(x.p) + '" target="_blank" rel="noopener">' + L2('Ir con Google Maps', 'Ir com o Google Maps') + ' ↗</a>')
+        .on('click', function () { ficha(x) })
         .addTo(CAR.capaEst);
     });
-    CAR.todas = todas; pintarLista();
+    CAR.todas = todas; CAR.porId = {}; todas.forEach(function (x) { CAR.porId[x.id] = x }); if (!(CAR.ruta && CAR.estR)) pintarLista();
   }
 
   function pintarLista() {
@@ -238,8 +251,9 @@
     if (!l.length) { box.innerHTML = '<small>' + L2('No hay estaciones cargadas en OpenStreetMap cerca de acá.', 'Não há postos cadastrados no OpenStreetMap perto daqui.') + '</small>'; return }
     box.innerHTML = l.map(function (o) {
       var lejos = a != null && o.d > a;
-      return '<div><button type="button" class="fv' + (o.f ? '' : ' no') + '" data-f="' + esc(o.x.id) + '" aria-label="' + L2('Favorita', 'Favorito') + '">' + (o.f ? '★' : '☆') + '</button><span><b>' + esc(o.x.n) + '</b> <small>' + o.d.toFixed(1) + ' km' + (lejos ? ' · ' + L2('fuera de tu autonomía', 'fora da sua autonomia') : '') + '</small></span><a class="gg" href="' + gInfo(o.x) + '" target="_blank" rel="noopener">Google</a><a href="' + irA(o.x.p) + '" target="_blank" rel="noopener">' + L2('Ir', 'Ir') + ' ↗</a></div>';
+      return '<div><button type="button" class="fv' + (o.f ? '' : ' no') + '" data-f="' + esc(o.x.id) + '" aria-label="' + L2('Favorita', 'Favorito') + '">' + (o.f ? '★' : '☆') + '</button><span><button type="button" class="nm" data-s="' + esc(o.x.id) + '">' + esc(o.x.n) + '</button> <small>' + o.d.toFixed(1) + ' km' + (lejos ? ' · ' + L2('fuera de tu autonomía', 'fora da sua autonomia') : '') + '</small></span><button type="button" class="gg" data-s="' + esc(o.x.id) + '">Info</button></div>';
     }).join('');
+    box.querySelectorAll('[data-s]').forEach(function (b) { b.onclick = function () { var x = CAR.porId && CAR.porId[b.getAttribute('data-s')]; if (x) ficha(x) } });
     box.querySelectorAll('[data-f]').forEach(function (b) {
       b.onclick = function () {
         var id = b.getAttribute('data-f'), F2 = favs(), x = CAR.todas.filter(function (y) { return y.id === id })[0];
@@ -258,24 +272,35 @@
   function gInfo(x) { return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(x.n + ' ' + x.p[0].toFixed(5) + ',' + x.p[1].toFixed(5)) }
 
   /* ---- ruta: destino (Nominatim), camino (OSRM), estaciones y avisos sobre el camino ---- */
+  var RUTEADORES = ['https://routing.openstreetmap.de/routed-car/route/v1/driving/', 'https://router.project-osrm.org/route/v1/driving/'];
+  function pedirRuta(o, d, k) {
+    return fetch(RUTEADORES[k] + o[1].toFixed(5) + ',' + o[0].toFixed(5) + ';' + d[1].toFixed(5) + ',' + d[0].toFixed(5) + '?overview=full&geometries=geojson&steps=true')
+      .then(function (r) { if (!r.ok) throw 0; return r.json() }).then(function (j) { if (!j.routes || !j.routes[0]) throw 0; return j.routes[0] })
+      .catch(function (e) { if (k + 1 < RUTEADORES.length) return pedirRuta(o, d, k + 1); throw e });
+  }
   function ruta(dest, nombre) {
     var o = CAR.pos || A.ref(), box = document.getElementById('cRt'); box.hidden = false; box.innerHTML = '<small>' + L2('Calculando el camino…', 'Calculando o caminho…') + '</small>';
-    fetch('https://router.project-osrm.org/route/v1/driving/' + o[1].toFixed(5) + ',' + o[0].toFixed(5) + ';' + dest[1].toFixed(5) + ',' + dest[0].toFixed(5) + '?overview=full&geometries=geojson')
-      .then(function (r) { return r.json() }).then(function (j) {
-        var r0 = j.routes && j.routes[0]; if (!r0) throw 0;
+    pedirRuta(o, dest, 0).then(function (r0) {
         var co = r0.geometry.coordinates.map(function (c) { return [c[1], c[0]] }), cum = [0];
         for (var i = 1; i < co.length; i++) cum.push(cum[i - 1] + km(co[i - 1], co[i]));
+        var pasos = [], ci = 0;
+        ((r0.legs && r0.legs[0] && r0.legs[0].steps) || []).forEach(function (st) {
+          var loc = [st.maneuver.location[1], st.maneuver.location[0]], bi = ci, bd = 1e9;
+          for (var q = ci; q < Math.min(co.length, ci + 3000); q++) { var d = km(loc, co[q]); if (d < bd) { bd = d; bi = q } if (d < 0.005) break }
+          ci = bi; pasos.push({ i: bi, t: st.maneuver.type, m: st.maneuver.modifier || '', x: st.maneuver.exit, n: st.name || st.ref || '' });
+        });
         quitarRuta(true);
-        CAR.ruta = { dest: dest, n: nombre, co: co, cum: cum, km: r0.distance / 1000, seg: r0.duration, idx: 0, av: [] };
+        CAR.ruta = { dest: dest, n: nombre, co: co, cum: cum, km: r0.distance / 1000, seg: r0.duration, idx: 0, av: [], pasos: pasos, dicho: {} };
         CAR.linea = L.polyline(co, { color: '#f5b301', weight: 6, opacity: .9 }).addTo(CAR.map);
         CAR.meta = L.marker(dest, { icon: L.divIcon({ className: '', html: '<div class="pin f">🏁</div>', iconSize: [28, 28], iconAnchor: [6, 26] }) }).addTo(CAR.map);
         CAR.map.fitBounds(CAR.linea.getBounds(), { paddingTopLeft: [20, 140], paddingBottomRight: [70, 220] });
         var vis = {}; for (var k = 0; k < co.length; k += Math.max(1, Math.round(co.length / 80))) A.avisos(co[k]).forEach(function (a) { if (!vis[a.id]) { vis[a.id] = 1; CAR.ruta.av.push(a) } });
         avisos(CAR.pos || A.ref()); tarjeta(); estRuta();
-      }).catch(function () { box.innerHTML = '<small>' + L2('No se pudo calcular el camino. Probá de nuevo.', 'Não foi possível calcular o caminho. Tente de novo.') + '</small>' });
+      }).catch(function () { box.innerHTML = '<small>' + L2('No se pudo calcular el camino (sin conexión o el servicio no respondió). Probá de nuevo con 🧭.', 'Não foi possível calcular o caminho (sem conexão ou o serviço não respondeu). Tente de novo com 🧭.') + '</small>' });
   }
   function quitarRuta(silencio) {
-    if (CAR.linea) CAR.map.removeLayer(CAR.linea); if (CAR.meta) CAR.map.removeLayer(CAR.meta); CAR.linea = CAR.meta = null; CAR.ruta = null; CAR.estR = null;
+    if (CAR.linea) CAR.map.removeLayer(CAR.linea); if (CAR.meta) CAR.map.removeLayer(CAR.meta); CAR.linea = CAR.meta = null; CAR.ruta = null; CAR.estR = null; CAR.sug = null;
+    CAR.nav = false; CAR.el.classList.remove('navon'); document.getElementById('cGui').hidden = true;
     if (!silencio) { document.getElementById('cRt').hidden = true; avisos(CAR.pos || A.ref()); estaciones(CAR.pos || A.ref(), true) }
   }
   function falta() { var R = CAR.ruta; return Math.max(0, R.km - R.cum[R.idx]) }
@@ -291,16 +316,48 @@
     box.hidden = false;
     box.innerHTML = '<b>🏁 ' + esc(R.n) + '</b><div class="rs">' + Math.round(f) + ' km · ' + dur + (CAR.nav ? ' · ' + L2('llegada ', 'chegada ') + ('0' + lleg.getHours()).slice(-2) + ':' + ('0' + lleg.getMinutes()).slice(-2) : '') + '</div>' +
       '<div class="rs' + (mal ? ' mal' : '') + '">' + st + (sug ? ' ' + L2('Sugerida: ', 'Sugerido: ') + esc(sug.n) + '.' : '') + '</div>' +
-      '<div class="rb"><button type="button" class="go" id="cIni">' + (CAR.nav ? L2('Detener', 'Parar') : L2('Iniciar', 'Iniciar')) + '</button><a href="' + gm + '" target="_blank" rel="noopener">Google Maps ↗</a><button type="button" id="cQuit">✕</button></div>';
-    document.getElementById('cIni').onclick = function () { CAR.nav = !CAR.nav; if (CAR.nav) { CAR.map.setView(CAR.pos || A.ref(), 15) } tarjeta() };
+      '<div class="rb"><button type="button" class="go" id="cIni">' + (CAR.nav ? L2('Detener', 'Parar') : L2('Iniciar', 'Iniciar')) + '</button><button type="button" id="cQuit">✕</button></div>';
+    document.getElementById('cIni').onclick = function () {
+      CAR.nav = !CAR.nav; CAR.el.classList.toggle('navon', CAR.nav);
+      if (CAR.nav) { CAR.ruta.dicho = {}; CAR.map.setView(CAR.pos || A.ref(), 17); hablar(L2('Vamos. ', 'Vamos. ') + Math.round(falta()) + ' km ' + L2('hasta ', 'até ') + CAR.ruta.n); guia(CAR.pos || A.ref()) } else document.getElementById('cGui').hidden = true;
+      tarjeta() };
     document.getElementById('cQuit').onclick = function () { CAR.nav = false; quitarRuta() };
   }
   function navPaso(g) {
     var R = CAR.ruta, best = R.idx, bd = 1e9, hasta = Math.min(R.co.length, R.idx + 400);
     for (var i = Math.max(0, R.idx - 20); i < hasta; i++) { var d = km(g, R.co[i]); if (d < bd) { bd = d; best = i } }
     if (bd < 1) R.idx = best;
-    if (CAR.nav) { CAR.map.panTo(g); if (falta() < 0.3) { CAR.nav = false; document.getElementById('cNt').textContent = L2('¡Llegaste!', 'Você chegou!') } }
-    tarjeta(); listaRuta();
+    if (CAR.nav) {
+      CAR.map.setView(g, Math.max(CAR.map.getZoom(), 16), { animate: true }); guia(g);
+      if (bd > 0.15 && !CAR.recalc) { CAR.recalc = 1; document.getElementById('cNt').textContent = L2('Te saliste del camino: recalculando…', 'Você saiu do caminho: recalculando…'); var n = R.n, de = R.dest; hablar(L2('Recalculando.', 'Recalculando.')); setTimeout(function () { CAR.recalc = 0 }, 20000); ruta(de, n); setTimeout(function () { if (CAR.ruta) { CAR.nav = true; CAR.el.classList.add('navon'); tarjeta() } }, 2500); return }
+      if (falta() < 0.05) { CAR.nav = false; CAR.el.classList.remove('navon'); document.getElementById('cGui').hidden = true; hablar(L2('Llegaste a destino.', 'Você chegou ao destino.')); document.getElementById('cNt').textContent = L2('¡Llegaste!', 'Você chegou!') }
+    }
+    tarjeta(); listaRuta(); pintarEst();
+  }
+  var FL = { left: '⬅️', right: '➡️', 'slight left': '↖️', 'slight right': '↗️', 'sharp left': '↙️', 'sharp right': '↘️', straight: '⬆️', uturn: '↩️' };
+  function frase(p) {
+    var es = L2(1, 0), m = p.m, lado = { left: es ? 'a la izquierda' : 'à esquerda', right: es ? 'a la derecha' : 'à direita', 'slight left': es ? 'levemente a la izquierda' : 'levemente à esquerda', 'slight right': es ? 'levemente a la derecha' : 'levemente à direita', 'sharp left': es ? 'cerrado a la izquierda' : 'fechado à esquerda', 'sharp right': es ? 'cerrado a la derecha' : 'fechado à direita', straight: es ? 'derecho' : 'em frente', uturn: es ? 'en U' : 'em U' }[m] || '';
+    var por = p.n ? (es ? ' por ' : ' pela ') + p.n : '';
+    if (p.t === 'arrive') return [ '🏁', es ? 'Llegás a destino' : 'Chegada ao destino' ];
+    if (p.t === 'roundabout' || p.t === 'rotary' || p.t === 'roundabout turn') return [ '🔄', (es ? 'En la rotonda, tomá la ' : 'Na rotatória, pegue a ') + (p.x || 1) + (es ? 'ª salida' : 'ª saída') + por ];
+    if (p.t === 'merge' || p.t === 'on ramp') return [ FL[m] || '⬆️', (es ? 'Incorporate' : 'Entre') + por ];
+    if (p.t === 'off ramp' || p.t === 'fork') return [ FL[m] || '⬆️', (es ? 'Tomá la salida ' : 'Pegue a saída ') + lado + por ];
+    if (m === 'straight' || p.t === 'new name' || p.t === 'continue') return [ '⬆️', (es ? 'Seguí derecho' : 'Siga em frente') + por ];
+    return [ FL[m] || '⬆️', (es ? 'Doblá ' : 'Vire ') + lado + por ];
+  }
+  function guia(g) {
+    var R = CAR.ruta, e = document.getElementById('cGui'); if (!R || !CAR.nav) { e.hidden = true; return }
+    var p = null; for (var i = 0; i < R.pasos.length; i++) if (R.pasos[i].i > R.idx + 1 && R.pasos[i].t !== 'depart') { p = R.pasos[i]; break }
+    if (!p) { e.hidden = true; return }
+    var d = Math.max(0, R.cum[p.i] - R.cum[R.idx]), f = frase(p), dt = d < 1 ? Math.round(d * 1000 / 10) * 10 + ' m' : d.toFixed(1) + ' km';
+    e.hidden = false; e.innerHTML = '<i>' + f[0] + '</i><div><b>' + dt + '</b><span>' + esc(f[1]) + '</span></div>';
+    var k = R.pasos.indexOf(p);
+    if (d < 0.25 && !R.dicho[k]) { R.dicho[k] = 1; hablar((d < 0.05 ? '' : L2('En ', 'Em ') + dt.replace('m', L2('metros', 'metros')) + ', ') + f[1]) }
+    else if (d < 1.2 && d > 0.8 && !R.dicho['l' + k]) { R.dicho['l' + k] = 1; hablar(L2('En un kilómetro, ', 'Em um quilômetro, ') + f[1]) }
+  }
+  function hablar(t) {
+    if (!('speechSynthesis' in window) || LS('carVoz') === 'no') return;
+    try { var u = new SpeechSynthesisUtterance(t); u.lang = L2('es-AR', 'pt-BR'); u.rate = 1; speechSynthesis.cancel(); speechSynthesis.speak(u) } catch (e) { }
   }
   function estRuta() {
     var R = CAR.ruta; if (!R) return; var c = cfg(), tag = ev(c) ? 'charging_station' : 'fuel', paso = Math.max(1, Math.ceil(R.co.length / 110)), pts = [];
@@ -309,7 +366,7 @@
     document.getElementById('cList').innerHTML = '<small>' + L2('Buscando estaciones en el camino…', 'Buscando postos no caminho…') + '</small>';
     fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
       .then(function (r) { return r.json() }).then(function (j) {
-        CAR.est = (j.elements || []).map(function (x) { var t = x.tags || {}, p = x.center ? [x.center.lat, x.center.lon] : [x.lat, x.lon]; return { id: x.type[0] + x.id, n: t.brand || t.name || t.operator || L2('Estación', 'Posto'), nom: t.name && t.brand && t.name !== t.brand ? t.name : '', p: p } });
+        CAR.est = (j.elements || []).map(function (x) { var t = x.tags || {}, p = x.center ? [x.center.lat, x.center.lon] : [x.lat, x.lon]; return { id: x.type[0] + x.id, n: t.brand || t.name || t.operator || L2('Estación', 'Posto'), nom: t.name && t.brand && t.name !== t.brand ? t.name : '', p: p, t: t } });
         CAR.estR = CAR.est.map(function (x) { var bi = 0, bd = 1e9; for (var i = 0; i < R.co.length; i += 2) { var d = km(x.p, R.co[i]); if (d < bd) { bd = d; bi = i } } x.al = R.cum[bi]; return x }).sort(function (a, b) { return a.al - b.al });
         pintarEst(); listaRuta();
       }).catch(function () { CAR.estR = []; document.getElementById('cList').innerHTML = '<small>' + L2('No se pudieron buscar estaciones en el camino. Tocá ⛽ para reintentar.', 'Não foi possível buscar postos no caminho. Toque ⛽ para tentar de novo.') + '</small>' });
@@ -319,14 +376,35 @@
     var aqui = R.cum[R.idx], a = autonomia(cfg()), F = favs(), ade = CAR.estR.filter(function (x) { return x.al >= aqui - 0.3 });
     var sug = null; if (a != null && a < falta() * 1.1) ade.forEach(function (x) { if (x.al - aqui <= a * 0.85) sug = x });
     var cambio = (sug && sug.id) !== (CAR.sug && CAR.sug.id); CAR.sug = sug; if (cambio) tarjeta();
-    if (!ade.length) { box.innerHTML = '<small>' + L2('No hay estaciones cargadas en OpenStreetMap sobre este camino.', 'Não há postos cadastrados no OpenStreetMap neste caminho.') + '</small>'; return }
-    var l = ade.slice(0, 6); if (sug && l.indexOf(sug) < 0) l.push(sug);
-    box.innerHTML = l.map(function (x) {
-      var d = x.al - aqui, f = !!F[x.id], lejos = a != null && d > a;
-      return '<div><button type="button" class="fv' + (f ? '' : ' no') + '" data-f="' + esc(x.id) + '">' + (f ? '★' : '☆') + '</button><span><b>' + (x === sug ? '⛽ ' : '') + esc(x.n) + '</b> <small>' + L2('a ', 'a ') + d.toFixed(0) + ' km' + (x === sug ? ' · ' + L2('cargá acá', 'abasteça aqui') : lejos ? ' · ' + L2('no llegás', 'não chega') : '') + '</small></span><a class="gg" href="' + gInfo(x) + '" target="_blank" rel="noopener">Google</a></div>';
-    }).join('');
-    box.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-f'), F2 = favs(), x = CAR.estR.filter(function (y) { return y.id === id })[0]; if (F2[id]) delete F2[id]; else if (x) F2[id] = { n: x.n, p: x.p }; guardarFavs(F2); pintarEst() } });
+    if (!ade.length) { box.innerHTML = '<small>' + L2('No hay más estaciones cargadas sobre tu camino.', 'Não há mais postos cadastrados no seu caminho.') + '</small>'; return }
+    var x = ade[0], d = x.al - aqui, f = !!F[x.id], lejos = a != null && d > a;
+    box.innerHTML = '<div><button type="button" class="fv' + (f ? '' : ' no') + '" data-f="' + esc(x.id) + '">' + (f ? '★' : '☆') + '</button><span><small>' + L2('Próxima: ', 'Próximo: ') + '</small><button type="button" class="nm" data-s="' + esc(x.id) + '">' + esc(x.n) + '</button> <small>' + L2('a ', 'a ') + d.toFixed(d < 10 ? 1 : 0) + ' km' + (x === sug ? ' · ' + L2('cargá acá', 'abasteça aqui') : lejos ? ' · ' + L2('no llegás', 'não chega') : '') + '</small></span><button type="button" class="gg" data-s="' + esc(x.id) + '">Info</button></div>' +
+      (sug && sug !== x ? '<small>⛽ ' + L2('Para cargar: ', 'Para abastecer: ') + esc(sug.n) + ' ' + L2('a ', 'a ') + (sug.al - aqui).toFixed(0) + ' km</small>' : '');
+    box.querySelectorAll('[data-s]').forEach(function (b) { b.onclick = function () { var y = CAR.porId && CAR.porId[b.getAttribute('data-s')] || x; ficha(y) } });
+    box.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-f'), F2 = favs(); if (F2[id]) delete F2[id]; else F2[id] = { n: x.n, p: x.p }; guardarFavs(F2); pintarEst(); listaRuta() } });
   }
-
+  /* ---- ficha de la estacion: datos de OpenStreetMap + mapa de Google embebido, sin salir de la app ---- */
+  function ficha(x) {
+    var t = x.t || {}, es = L2(1, 0), g = CAR.pos || A.ref(), d = km(g, x.p), li = [];
+    if (t['addr:street']) li.push('📍 ' + esc(t['addr:street'] + (t['addr:housenumber'] ? ' ' + t['addr:housenumber'] : '') + (t['addr:city'] ? ', ' + t['addr:city'] : '')));
+    if (t.opening_hours) li.push('🕒 ' + esc(t.opening_hours === '24/7' ? (es ? 'Abierta las 24 h' : 'Aberto 24 h') : t.opening_hours));
+    var comb = []; for (var k in t) if (/^fuel:/.test(k) && t[k] === 'yes') comb.push(k.slice(5).replace(/_/g, ' '));
+    if (comb.length) li.push('⛽ ' + esc(comb.join(', ')));
+    if (t.phone || t['contact:phone']) li.push('📞 <a href="tel:' + esc(t.phone || t['contact:phone']) + '">' + esc(t.phone || t['contact:phone']) + '</a>');
+    if (t.shop || t.amenity === 'charging_station' && t.socket) li.push('🛒 ' + esc(t.shop || ''));
+    var q = encodeURIComponent((x.nom || x.n) + ' ' + x.p[0].toFixed(5) + ',' + x.p[1].toFixed(5));
+    var src = CAR.mk ? 'https://www.google.com/maps/embed/v1/place?key=' + encodeURIComponent(CAR.mk) + '&q=' + q + '&zoom=17&language=' + L2('es', 'pt-BR')
+      : 'https://maps.google.com/maps?q=' + q + '&z=17&hl=' + L2('es', 'pt-BR') + '&output=embed';
+    var enR = CAR.ruta && x.al != null ? (x.al - CAR.ruta.cum[CAR.ruta.idx]) : null;
+    document.getElementById('cStB').innerHTML = '<h3>' + esc(x.n) + '</h3><p class="sd">' + (x.nom ? esc(x.nom) + ' · ' : '') + (enR != null ? L2('a ', 'a ') + enR.toFixed(1) + ' km ' + L2('por tu camino', 'pelo seu caminho') : d.toFixed(1) + ' km') + '</p>' +
+      (li.length ? '<ul>' + li.map(function (z) { return '<li>' + z + '</li>' }).join('') + '</ul>' : '') +
+      '<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Google Maps" src="' + src + '"></iframe>' +
+      '<div class="sb"><button type="button" id="cStFav" class="s2">' + (favs()[x.id] ? '★ ' + L2('Favorita', 'Favorito') : '☆ ' + L2('Marcar favorita', 'Marcar favorito')) + '</button>' +
+      (CAR.ruta ? '' : '<button type="button" id="cStIr">' + L2('Ir acá', 'Ir até aqui') + '</button>') + '</div>';
+    var o = document.getElementById('cSt'); o.hidden = false; CAR.el.classList.add('dlgon');
+    document.getElementById('cStFav').onclick = function () { var F2 = favs(); if (F2[x.id]) delete F2[x.id]; else F2[x.id] = { n: x.n, p: x.p }; guardarFavs(F2); this.textContent = F2[x.id] ? '★ ' + L2('Favorita', 'Favorito') : '☆ ' + L2('Marcar favorita', 'Marcar favorito'); pintarEst() };
+    var ir = document.getElementById('cStIr'); if (ir) ir.onclick = function () { cerrarFicha(); ruta(x.p, x.n) };
+  }
+  function cerrarFicha() { document.getElementById('cSt').hidden = true; document.getElementById('cStB').innerHTML = ''; CAR.el.classList.remove('dlgon') }
   window.__carAbrir = abrir;
 })();

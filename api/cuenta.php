@@ -31,7 +31,7 @@ function cuenta_de($tok) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($_GET['cfg'])) salir(['ok' => true, 'google' => cfg_google()]);
+    if (isset($_GET['cfg'])) { $gf = dir_privado() . '/google.json'; $gc = file_exists($gf) ? json_decode(file_get_contents($gf), true) : []; salir(['ok' => true, 'google' => cfg_google(), 'maps' => $gc['maps_key'] ?? null]); }
     $c = cuenta_de($_GET['token'] ?? '');
     if (!$c) salir(['ok' => false, 'error' => 'sesion'], 401);
     salir(['ok' => true, 'email' => $c[0], 'ajustes' => $c[1]['ajustes'] ?? (object)[]]);
