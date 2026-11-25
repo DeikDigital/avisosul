@@ -32,7 +32,7 @@ function coord($v, $min, $max, $dec = 3) { return is_numeric($v) && $v >= $min &
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $lat = coord($_GET['lat'] ?? null, -60, 15); $lon = coord($_GET['lon'] ?? null, -90, -30);
-    $r = in_array((int)($_GET['r'] ?? 30), [30, 100, 300]) ? (int)$_GET['r'] : 30;
+    $r = in_array((int)($_GET['r'] ?? 10), [10, 30, 100, 300]) ? (int)$_GET['r'] : 10;
     if ($lat === null || $lon === null) salir(['ok' => false, 'error' => 'coordenadas'], 400);
     $yo = visitante();
     $res = con_archivo('vecinos.json', function ($d) use ($lat, $lon, $r, $yo) {
@@ -45,6 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       'media' => empty($x['m']) ? null : (preg_match('/\.(mp4|webm|mov)$/', $x['m']) ? 'video' : 'foto'),
                       'meu' => $x['v'] === $yo || in_array($yo, $x['c'] ?? []), 'lat' => $x['lat'], 'lon' => $x['lon']];
         }
+        // coincidencia: reportes del mismo tipo a 10 km o menos y con 5 minutos o menos de diferencia (contando el propio)
+        foreach ($out as &$o) {
+            $n = 0;
+            foreach ($d['rep'] as $y) {
+                if ($y['tipo'] !== $o['tipo'] || abs($y['t'] - $o['ts']) > 300) continue;
+                if (km($o['lat'], $o['lon'], $y['lat'], $y['lon']) <= 10) $n++;
+            }
+            $o['coinc'] = $n;
+        }
+        unset($o);
         usort($out, fn($a, $b) => $a['min'] <=> $b['min']);
         return [$d, ['ok' => true, 'reportes' => array_slice($out, 0, 60), 'total' => count($d['rep'])]];
     });
