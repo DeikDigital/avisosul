@@ -17,6 +17,7 @@
   small,.mut{color:var(--mut);font-size:13px}.ok{color:var(--ok)}.err{color:var(--err)}
   ol{padding-left:20px;margin:6px 0}li{margin:4px 0}code{background:#0f1b2b;padding:1px 5px;border-radius:4px;font-size:13px;word-break:break-all}
   .est{display:inline-block;font-size:12px;font-weight:800;padding:2px 8px;border-radius:4px;margin-left:6px}.est.si{background:var(--ok);color:#05351c}.est.no{background:#5a2a2a;color:#ffd0cc}
+  .pz input,.pz select{width:auto;font-size:14px;padding:6px}.pz td{vertical-align:middle}.pz .n{width:90px}.pz .f{width:140px}.pz .t{width:170px}.pz .l{width:330px}.pz{overflow-x:auto}
   table{width:100%;border-collapse:collapse;font-size:13px}td{padding:4px 6px;border-top:1px solid var(--line)}
   [hidden]{display:none!important}
 </style>
@@ -38,6 +39,25 @@
   <div id="panel" hidden>
     <p class="mut">Sesión: <b id="quien"></b> · <a href="#" id="salir" style="color:var(--amber)">salir</a></p>
 
+    <section class="card" id="secPrecios">
+      <h2>Precios y ofertas</h2>
+      <p class="mut">Un solo lugar para todos los precios. Los máximos son los de lista; todo lo demás es un % de descuento entero. El "piso" es el descuento máximo: nunca se cobra menos. La oferta relámpago vale solo en la ciudad con aviso oficial vigente o con varios vecinos reportando cerca. En Brasil cada precio necesita su oferta en Hotmart: si un % no tiene oferta cargada, se usa la del precio mínimo.</p>
+      <div class="pz">
+      <h3 style="font-size:15px">Precios máximos</h3>
+      <table><tr><td></td><td>Mensual</td><td>Temporada</td><td>Anual</td></tr>
+        <tr><td>Argentina ($)</td><td><input class="n" id="pxAm"></td><td><input class="n" id="pxAt"></td><td><input class="n" id="pxAa"></td></tr>
+        <tr><td>Brasil (R$)</td><td><input class="n" id="pxBm"></td><td><input class="n" id="pxBt"></td><td><input class="n" id="pxBa"></td></tr></table>
+      <p>Descuento máximo (piso): <input class="n" id="pxPiso"> %</p>
+      <h3 style="font-size:15px">Oferta relámpago (solo donde hay temporal)</h3>
+      <p><label><input type="checkbox" id="pxRa" style="width:auto"> activa</label> · <input class="n" id="pxRd"> % · radio <input class="n" id="pxRr"> km · últimas <input class="n" id="pxRh"> h · mínimo <input class="n" id="pxRv"> vecinos</p>
+      <h3 style="font-size:15px">Campañas de temporada (valen para todos)</h3>
+      <table id="pxCamp"></table><button type="button" id="pxCampAdd">+ Campaña</button>
+      <h3 style="font-size:15px">Ofertas de Hotmart (Brasil) por % de descuento</h3>
+      <table id="pxOf"></table><button type="button" id="pxOfAdd">+ Oferta</button>
+      <h3 style="font-size:15px">Así se ve hoy (sin relámpago)</h3><table id="pxHoy"></table>
+      </div>
+      <button id="gPx">Guardar precios</button> <p id="pxSt" class="mut"></p>
+    </section>
     <section class="card">
       <h2>Ingreso con Google <span class="est" id="eGo"></span></h2>
       <p class="mut">Con esto la app muestra solo "Registrarse con Google". El Client ID es público (no es una contraseña). Sale de Google Cloud → APIs y servicios → Credenciales → ID de cliente de OAuth (aplicación web), con el origen <code>https://avisosul.com</code>.</p>
@@ -93,6 +113,7 @@
     var h=j.hotmart,m=j.mp,hOk=!!(h.hottok&&h.checkout&&Object.keys(h.checkout).length),mOk=!!m.access_token;
     $('eHm').textContent=hOk?'configurado':'pendiente';$('eHm').className='est '+(hOk?'si':'no');
     $('eMp').textContent=mOk?'configurado':'pendiente';$('eMp').className='est '+(mOk?'si':'no');
+    if(j.precios)pxPintar(j.precios,j.precios_hoy);
     var gOk=!!j.google;$('eGo').textContent=gOk?'activo':'pendiente';$('eGo').className='est '+(gOk?'si':'no');$('gCidV').textContent=gOk?'(guardado '+j.google+')':'';
     $('hHotV').textContent=h.hottok?'(guardado '+h.hottok+')':'';$('mAtV').textContent=m.access_token?'(guardado '+m.access_token+(m.cuenta?' · '+m.cuenta:'')+')':'';$('mWsV').textContent=m.webhook_secret?'(guardada '+m.webhook_secret+')':'';
     var c=h.checkout||{};$('hM').value=c.mensal||'';$('hT').value=c.temporada||'';$('hA').value=c.anual||'';
@@ -114,6 +135,28 @@
   $('gGo').onclick=function(){$('gSt').textContent='Guardando…';
     api('/api/admin.php',{acao:'google',token:tok,client_id:$('gCid').value.trim()}).then(function(j){
       $('gSt').innerHTML=j.ok?'<span class="ok">Guardado. La app ya muestra el botón de Google.</span>':'<span class="err">'+(j.error==='formato_google'?'Ese no parece un Client ID de Google (termina en .apps.googleusercontent.com).':'No se pudo guardar.')+'</span>';if(j.ok){$('gCid').value='';estado()}})};
+  /* ---- precios ---- */
+  var PLS=['mensal','temporada','anual'],PN={mensal:'Mensual',temporada:'Temporada',anual:'Anual'};
+  function pxEsc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
+  function pxCampFila(c){var tr=document.createElement('tr');c=c||{activa:true};
+    tr.innerHTML='<td><input class="t" data-k="es" placeholder="Nombre (es)" value="'+pxEsc(c.es)+'"><br><input class="t" data-k="pt" placeholder="Nome (pt)" value="'+pxEsc(c.pt)+'"></td><td><input class="n" data-k="descuento" value="'+pxEsc(c.descuento)+'"> %</td><td><input class="f" type="date" data-k="desde" value="'+pxEsc(c.desde)+'"><br><input class="f" type="date" data-k="hasta" value="'+pxEsc(c.hasta)+'"></td><td><label><input type="checkbox" data-k="activa" style="width:auto"'+(c.activa?' checked':'')+'> activa</label><input type="hidden" data-k="id" value="'+pxEsc(c.id)+'"></td><td><button type="button" class="x">Quitar</button></td>';
+    tr.querySelector('.x').onclick=function(){tr.remove()};$('pxCamp').appendChild(tr)}
+  function pxOfFila(d,p,o){var tr=document.createElement('tr');o=o||{};
+    tr.innerHTML='<td><input class="n" data-k="d" value="'+pxEsc(d)+'"> %</td><td><select data-k="p">'+PLS.map(function(k){return '<option value="'+k+'"'+(k===p?' selected':'')+'>'+PN[k]+'</option>'}).join('')+'</select></td><td><input class="l" data-k="link" placeholder="https://pay.hotmart.com/…?off=…" value="'+pxEsc(o.link)+'"></td><td>R$ <input class="n" data-k="precio" value="'+pxEsc(o.precio)+'"></td><td><button type="button" class="x">Quitar</button></td>';
+    tr.querySelector('.x').onclick=function(){tr.remove()};$('pxOf').appendChild(tr)}
+  function pxHoy(h){if(!h)return;var c=h.campana;$('pxHoy').innerHTML='<tr><td colspan="4">'+(c?'Campaña vigente: <b>'+pxEsc(c.es)+'</b> ('+h.descuento+' %)':'Sin campaña: precios máximos')+'</td></tr>'+PLS.map(function(k){return '<tr><td>'+PN[k]+'</td><td>AR: '+h.ar[k].fprecio+(h.ar[k].desc?' (-'+h.ar[k].desc+' %)':'')+'</td><td>BR: '+h.br[k].fprecio+(h.br[k].desc?' (-'+h.br[k].desc+' %)':'')+'</td></tr>'}).join('')}
+  function pxPintar(c,h){var M=c.maximos;$('pxAm').value=M.ar.mensal;$('pxAt').value=M.ar.temporada;$('pxAa').value=M.ar.anual;$('pxBm').value=M.br.mensal;$('pxBt').value=M.br.temporada;$('pxBa').value=M.br.anual;$('pxPiso').value=c.piso;
+    var r=c.relampago||{};$('pxRa').checked=!!r.activa;$('pxRd').value=r.descuento;$('pxRr').value=r.radio_km;$('pxRh').value=r.horas;$('pxRv').value=r.min_vecinos;
+    $('pxCamp').innerHTML='<tr><td>Nombre</td><td>Desc.</td><td>Desde / hasta</td><td></td><td></td></tr>';(c.campanas||[]).forEach(pxCampFila);
+    $('pxOf').innerHTML='<tr><td>Desc.</td><td>Plan</td><td>Enlace de la oferta</td><td>Precio en Hotmart</td><td></td></tr>';var o=c.br_ofertas||{};Object.keys(o).forEach(function(d){PLS.forEach(function(p){if(o[d][p])pxOfFila(d,p,o[d][p])})});pxHoy(h)}
+  $('pxCampAdd').onclick=function(){pxCampFila()};$('pxOfAdd').onclick=function(){pxOfFila('','mensal')};
+  $('gPx').onclick=function(){var n=function(id){return $(id).value.replace(',','.')},c={maximos:{ar:{mensal:n('pxAm'),temporada:n('pxAt'),anual:n('pxAa')},br:{mensal:n('pxBm'),temporada:n('pxBt'),anual:n('pxBa')}},piso:n('pxPiso'),
+      relampago:{activa:$('pxRa').checked,descuento:n('pxRd'),radio_km:n('pxRr'),horas:n('pxRh'),min_vecinos:n('pxRv')},campanas:[],br_ofertas:{}};
+    $('pxCamp').querySelectorAll('tr').forEach(function(tr){if(!tr.querySelector('input'))return;var x={};tr.querySelectorAll('[data-k]').forEach(function(i){x[i.dataset.k]=i.type==='checkbox'?i.checked:i.value});c.campanas.push(x)});
+    $('pxOf').querySelectorAll('tr').forEach(function(tr){if(!tr.querySelector('input'))return;var x={};tr.querySelectorAll('[data-k]').forEach(function(i){x[i.dataset.k]=i.value.replace(',','.')});if(!x.link)return;(c.br_ofertas[x.d]=c.br_ofertas[x.d]||{})[x.p]={link:x.link.trim(),precio:x.precio}});
+    $('pxSt').textContent='Guardando…';
+    api('/api/admin.php',{acao:'precios',token:tok,precios:c}).then(function(j){var e={piso:'El piso tiene que estar entre 0 y 90 %.',relampago:'Revisá la oferta relámpago (el % no puede superar el piso).',datos:'Faltan datos.'};
+      $('pxSt').innerHTML=j.ok?'<span class="ok">Guardado. Ya rige en la web, la app y los cobros.</span>':'<span class="err">'+(e[j.error]||(/^campana_/.test(j.error)?'Revisá la campaña '+j.error.split('_')[1]+': nombre en es y pt, % entre 1 y el piso, fechas.':/^oferta_/.test(j.error)?'Revisá la oferta de Hotmart de '+j.error.split('_')[1]+' % ('+(PN[j.error.split('_')[2]]||'')+'): enlace con ?off= y precio.':/^maximo_/.test(j.error)?'Revisá los precios máximos.':'No se pudo guardar.'))+'</span>';if(j.ok)pxHoy(j.precios_hoy)})};
   if(tok)estado();else login();
 })();
 </script>

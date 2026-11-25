@@ -93,11 +93,20 @@ try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!loc
     ar:['Pagamento seguro pelo <b>Mercado Pago</b>, em pesos: <b>dinheiro em conta, débito ou cartão</b>. Cada plano é um pagamento único pelo período. Para ativar o Premium, entre no app com a sua conta antes de pagar.','Pago seguro con <b>Mercado Pago</b>, en pesos: <b>dinero en cuenta, débito o tarjeta</b>. Cada plan es un pago único por el período: no se renueva solo. Para activar Premium, entrá a la app con tu cuenta antes de pagar.']};
   var PLANES=[];document.querySelectorAll('.plan').forEach(function(pl){var b=pl.querySelector('[data-plano]'),pr=pl.querySelector('.preco'),q=pl.querySelector('.q');if(!b||!pr)return;
     PLANES.push({k:b.dataset.plano,pr:pr,q:q,prBr:pr.innerHTML,qPt:q?q.innerHTML:'',qEs:q?q.getAttribute('data-es'):''})});
-  function promoFin(){if(Date.now()<=new Date('2026-12-25T23:59:59-03:00').getTime())return;document.querySelectorAll('.preco').forEach(function(p){var r=p.querySelector('.preg');if(!r)return;var sm=p.querySelector('small');p.textContent=r.textContent;if(sm)p.appendChild(sm)});document.querySelectorAll('.promo-t').forEach(function(x){x.remove()})}
+  /* precios desde el motor del servidor (/api/precios.php): campaña de temporada o relámpago si hay temporal en la ciudad */
+  var PREC=null,CORTO={lanzamiento:['Lançamento','Lanzamiento'],verano:['Verão','Verano'],nino:['El Niño','El Niño'],relampago:['⚡ Relâmpago','⚡ Relámpago']};
+  function promoFin(){if(!PREC||!PREC.ok)return;var P=PREC[PAGOP],c=PREC.campana,lb=c?(CORTO[c.id]||[c.pt,c.es]):null;
+    PLANES.forEach(function(x){var v=P&&P[x.k];if(!v)return;var sm=x.k==='mensal'?['/mês','/mes']:x.k==='anual'?['/ano','/año']:null,
+      pt=(v.desc&&lb?'<s class="preg">'+v.fmax+'</s><span class="p50" data-es="-'+v.desc+'% '+lb[1]+'">-'+v.desc+'% '+lb[0]+'</span><br>':'')+v.fprecio+(sm?'<small data-es=" '+sm[1]+'"> '+sm[0]+'</small>':'');x.pr.innerHTML=pt;
+      if(x.q&&x.k==='anual'){var qp=PAGOP==='ar'?'Sai por '+v.fmes+' por mês. Pagamento único, não renova sozinho.':'Sai por '+v.fmes+' por mês.',qe=PAGOP==='ar'?'Sale '+v.fmes+' por mes. Pago único, no se renueva solo.':'Sale '+v.fmes+' por mes.';x.q.innerHTML=qp;x.q.dataset.pt=qp;x.q.setAttribute('data-es',qe)}});
+    document.querySelectorAll('.promo-t').forEach(function(e){var d=P&&P.mensal?P.mensal.desc:0;if(!c||!d){e.hidden=true;return}e.hidden=false;
+      var f=c.hasta?c.hasta.split('-').reverse().join('/'):'',ic=PREC.relampago?'⚡ ':'🔥 ',pt=ic+'<b>'+c.pt+': '+d+'% de desconto'+(f?' até '+f:'')+'.</b>',es=ic+'<b>'+c.es+': '+d+' % de descuento'+(f?' hasta el '+f:'')+'.</b>';
+      e.innerHTML=pt;e.dataset.pt=pt;e.setAttribute('data-es',es)})}
+  if(document.querySelector('.plan .preco'))fetch('/api/precios.php?c='+encodeURIComponent(LS('c')||'')).then(function(r){return r.json()}).then(function(j){PREC=j;pintarPago()}).catch(function(){});
   function pintarPago(){root.setAttribute('data-pago',PAGOP);
     document.querySelectorAll('.pagopais [data-pp]').forEach(function(b){b.setAttribute('aria-checked',b.dataset.pp===PAGOP?'true':'false')});
     PLANES.forEach(function(x){var a=ARS[x.k];if(!a)return;
-      x.pr.innerHTML=PAGOP==='ar'?'<s class="preg">'+a[0]+'</s><span class="p50" data-es="-50% Navidad">-50% Natal</span><br>'+a[1]+(a[2]?'<small data-es="'+a[3]+'">'+a[2]+'</small>':''):x.prBr;
+      x.pr.innerHTML=PAGOP==='ar'?'<s class="preg">'+a[0]+'</s><span class="p50" data-es="-50% Lanzamiento">-50% Lançamento</span><br>'+a[1]+(a[2]?'<small data-es="'+a[3]+'">'+a[2]+'</small>':''):x.prBr;
       if(x.q){var pt=PAGOP==='ar'&&a[4]?a[4]:x.qPt,es=PAGOP==='ar'&&a[5]?a[5]:x.qEs;x.q.innerHTML=pt;x.q.dataset.pt=pt;x.q.setAttribute('data-es',es)}});
     document.querySelectorAll('.plan .preco').forEach(function(p){if(/^(R\$ |\$ )0$/.test(p.textContent.trim()))p.textContent=PAGOP==='ar'?'$ 0':'R$ 0'});
     document.querySelectorAll('.pagos:not(.promo-t)').forEach(function(p){var t=TXT[PAGOP];p.innerHTML=t[0];p.dataset.pt=t[0];p.setAttribute('data-es',t[1])});

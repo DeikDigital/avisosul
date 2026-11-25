@@ -3,10 +3,12 @@
    Entra solo una sesión de cuenta (api/cuenta.php) cuyo email esté en ADMINS.
    POST {"acao":"estado","token"}                       -> qué está configurado (sin mostrar secretos) y últimos avisos de pago
    POST {"acao":"hotmart","token","hottok","checkout":{mensal,temporada,anual},"extra":{codigo:plan}}  -> guarda hotmart.json
+   POST {"acao":"precios","token","precios":{…}}  -> guarda precios.json (máximos, piso, campañas, relámpago, ofertas de Hotmart)
    POST {"acao":"google","token","client_id"}  -> guarda el Client ID de Google (ingreso con Google en la app)
    POST {"acao":"mp","token","access_token","webhook_secret"}                                          -> verifica y guarda mercadopago.json
    Un campo secreto vacío conserva el valor guardado. */
 require __DIR__ . '/_comun.php';
+require __DIR__ . '/_precios.php';
 const ADMINS = ['deikdigital@gmail.com'];
 
 function sesion_admin($tok) {
@@ -34,6 +36,7 @@ if ($acao === 'estado') {
         'hotmart' => ['hottok' => cola($hm['hottok'] ?? ''), 'checkout' => $hm['checkout'] ?? (object)[], 'planes' => $hm['planes'] ?? (object)[]],
         'mp' => ['access_token' => cola($mp['access_token'] ?? ''), 'webhook_secret' => cola($mp['webhook_secret'] ?? ''), 'cuenta' => $mp['cuenta'] ?? null],
         'google' => (leer('google.json')['client_id'] ?? ''),
+        'precios' => precios_cfg(), 'precios_hoy' => precios_para(''),
         'ofertas_sin_plan' => array_values(array_unique(array_map('trim', $sin))),
         'eventos_hotmart' => array_map(fn($x) => ['t' => $x['t'], 'ev' => $x['ev'], 'off' => $x['off'], 'prod' => $x['prod'], 'email' => $x['email'] ? substr($x['email'], 0, 3) . '…' : ''], $ev),
         'eventos_mp' => array_map(fn($x) => ['t' => $x['t'], 'estado' => $x['estado'], 'plan' => $x['plan'], 'monto' => $x['monto']], $evm)]);
@@ -78,6 +81,39 @@ if ($acao === 'mp') {
     $mp['promo_hasta'] = $mp['promo_hasta'] ?? '2026-12-25';
     escribir('mercadopago.json', $mp);
     salir(['ok' => true, 'cuenta' => $mp['cuenta'] ?? null]);
+}
+if ($acao === 'precios') {
+    $in = $e['precios'] ?? null; if (!is_array($in)) salir(['ok' => false, 'error' => 'datos'], 400);
+    $num = fn($x, $a, $b) => is_numeric($x) && $x >= $a && $x <= $b;
+    $c = ['maximos' => [], 'piso' => (int)($in['piso'] ?? 0)];
+    if (!$num($c['piso'], 0, 90)) salir(['ok' => false, 'error' => 'piso'], 400);
+    foreach (['ar' => [500, 10000000], 'br' => [1, 100000]] as $pa => $lim) foreach (PLANES_P as $p) {
+        $v = $in['maximos'][$pa][$p] ?? null; if (!$num($v, $lim[0], $lim[1])) salir(['ok' => false, 'error' => "maximo_{$pa}_{$p}"], 400);
+        $c['maximos'][$pa][$p] = $pa === 'ar' ? (int)$v : round((float)$v, 2);
+    }
+    $r = $in['relampago'] ?? [];
+    $c['relampago'] = ['activa' => !empty($r['activa']), 'descuento' => (int)($r['descuento'] ?? 0), 'radio_km' => (int)($r['radio_km'] ?? 50), 'horas' => (int)($r['horas'] ?? 6), 'min_vecinos' => (int)($r['min_vecinos'] ?? 2)];
+    if (!$num($c['relampago']['descuento'], 0, $c['piso']) || !$num($c['relampago']['radio_km'], 5, 300) || !$num($c['relampago']['horas'], 1, 48) || !$num($c['relampago']['min_vecinos'], 1, 20)) salir(['ok' => false, 'error' => 'relampago'], 400);
+    $c['campanas'] = [];
+    foreach (array_slice((array)($in['campanas'] ?? []), 0, 12) as $i => $x) {
+        $f = fn($d) => preg_match('/^\d{4}-\d\d-\d\d$/', (string)$d) ? $d : null;
+        $k = ['id' => preg_replace('/[^a-z0-9]/', '', strtolower((string)($x['id'] ?? ''))) ?: 'c' . $i, 'es' => mb_substr(trim((string)($x['es'] ?? '')), 0, 60), 'pt' => mb_substr(trim((string)($x['pt'] ?? '')), 0, 60),
+              'descuento' => (int)($x['descuento'] ?? 0), 'desde' => $f($x['desde'] ?? ''), 'hasta' => $f($x['hasta'] ?? ''), 'activa' => !empty($x['activa'])];
+        if ($k['es'] === '' || $k['pt'] === '' || !$k['desde'] || !$k['hasta'] || $k['desde'] > $k['hasta'] || !$num($k['descuento'], 1, $c['piso'])) salir(['ok' => false, 'error' => 'campana_' . ($i + 1)], 400);
+        $c['campanas'][] = $k;
+    }
+    $c['br_ofertas'] = []; $hm = leer('hotmart.json');
+    $DIAS = ['mensal' => ['plan' => 'mensal', 'dias' => 31], 'anual' => ['plan' => 'anual', 'dias' => 366], 'temporada' => ['plan' => 'temporada', 'hasta' => '03-31']];
+    foreach ((array)($in['br_ofertas'] ?? []) as $d => $pls) foreach (PLANES_P as $p) {
+        $o = $pls[$p] ?? null; if (!$o || trim((string)($o['link'] ?? '')) === '') continue;
+        $u = trim((string)$o['link']); $d = (int)$d;
+        if (!$num($d, 1, $c['piso']) || !preg_match('#^https://(pay|go)\.hotmart\.com/[A-Za-z0-9]+\?(.*&)?off=([A-Za-z0-9]+)#', $u, $m) || !$num($o['precio'] ?? null, 1, 100000)) salir(['ok' => false, 'error' => "oferta_{$d}_{$p}"], 400);
+        $c['br_ofertas'][(string)$d][$p] = ['link' => $u, 'precio' => round((float)$o['precio'], 2)];
+        $hm['planes'][$m[3]] = $DIAS[$p];   // el aviso de Hotmart de esta oferta activa el plan correcto
+    }
+    if (!$c['br_ofertas']) $c['br_ofertas'] = (object)[];
+    escribir('precios.json', $c); escribir('hotmart.json', $hm);
+    salir(['ok' => true, 'precios_hoy' => precios_para('')]);
 }
 if ($acao === 'google') {
     $cid = trim((string)($e['client_id'] ?? ''));

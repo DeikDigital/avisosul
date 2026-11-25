@@ -13,6 +13,7 @@
    Planes: mensal = 31 días, anual = 366 días, temporada = hasta el 31/03. Reembolso o contracargo quitan Premium.
    Un mismo cobro se cuenta una sola vez aunque lleguen avisos de "order" y de "payment": la marca es la referencia externa. */
 require __DIR__ . '/_comun.php';
+require __DIR__ . '/_precios.php';
 
 function cfg_mp() { $f = dir_privado() . '/mercadopago.json'; return file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : []; }
 function mp_api($metodo, $ruta, $cfg, $cuerpo = null) {
@@ -130,10 +131,7 @@ if (($e['acao'] ?? '') !== 'checkout') salir(['ok' => false, 'error' => 'acao'],
 if (empty($cfg['access_token'])) salir(['ok' => false, 'error' => 'sin_config'], 503);
 $plan = (string)($e['plan'] ?? ''); if (!isset($PLANES[$plan])) salir(['ok' => false, 'error' => 'plan'], 400);
 $email = cuenta_email($e['token'] ?? ''); if (!$email) salir(['ok' => false, 'error' => 'sesion'], 401);
-$precios = array_merge(['mensal' => 4990, 'temporada' => 14990, 'anual' => 29990], $cfg['precios'] ?? []);
-$monto = (float)$precios[$plan];
-$finPromo = strtotime(($cfg['promo_hasta'] ?? '2026-12-25') . ' 23:59:59 America/Argentina/Cordoba');
-if (time() > $finPromo) $monto = (float)(($cfg['precios_regulares'] ?? [])[$plan] ?? $monto * 2);   // termina la promo del 50 %
+$monto = (float)precios_para((string)($e['ciudad'] ?? ''))['ar'][$plan]['precio'];   // motor de precios: campaña o relámpago por ciudad, nunca bajo el mínimo
 $titulo = 'Alerta Sur Premium — ' . $PLANES[$plan]['nombre'];
 $ref = ref_nueva($email, $plan);
 $OK = 'https://avisosul.com/app/?pago=ok'; $MAL = 'https://avisosul.com/app/#premium';
