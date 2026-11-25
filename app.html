@@ -209,6 +209,11 @@
   .rki.n1 svg,.rki.n1 em{color:#f5d000}.rki.n1::after{background:#f5d000}
   .rki.n2 svg,.rki.n2 em{color:#ff8a1f}.rki.n2::after{background:#ff8a1f}.rki.n2{border-color:rgba(255,138,31,.55)}
   .rki.n3 svg,.rki.n3 em{color:#ff3b30}.rki.n3::after{background:#ff3b30}.rki.n3{border-color:rgba(255,59,48,.7);box-shadow:0 0 18px rgba(255,59,48,.25)}
+  .rki.n0 svg,.cqk .n0 svg{filter:grayscale(1) brightness(1.15);opacity:.32}
+  .rki.n0,.cqk .n0{color:var(--muted);opacity:.75}.rki.n0 em,.cqk .n0 em{font-weight:600}
+  .rki:not(.n0) svg,.cqk div:not(.n0) svg{animation:rkon 2.4s ease-in-out infinite}
+  @keyframes rkon{50%{transform:scale(1.08)}}
+  @media (prefers-reduced-motion:reduce){.rki svg,.cqk svg{animation:none!important}}
   .wxc2{font-size:12px;color:var(--muted);margin:8px 0 0}
   .ad{margin:14px 0;padding:14px 16px;border-radius:16px;border:1px dashed var(--line);background:rgba(255,255,255,.04);text-align:center;font-size:14px;color:var(--muted);min-height:74px;display:flex;flex-direction:column;justify-content:center;gap:4px}
   .ad small{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
