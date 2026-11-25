@@ -262,3 +262,4 @@ html[lang="es"] .historia .pt,html:not([lang="es"]) .historia .es{display:none}
 .pasos3 b{display:block;color:var(--strong);margin-bottom:4px}.pasos3 span{font-size:14.5px;color:var(--muted)}
 @media (max-width:760px){.pasos3{grid-template-columns:1fr}}
 .historia .ilu.doble{display:grid;gap:12px}
+.logoh img{display:block;width:clamp(150px,20vw,230px);height:auto;margin:0 0 14px;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35))}
