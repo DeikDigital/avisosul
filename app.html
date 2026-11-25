@@ -374,6 +374,7 @@
   .pmx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;background:none;color:inherit;font-size:28px;cursor:pointer}
   .pmb{text-align:left;margin:8px 0 6px;padding-left:20px;font-size:14.5px}.pmb li{margin:4px 0}
   .pmg{font-size:13px;opacity:.8;margin:0 0 12px}
+  .pmpais{margin:0 0 10px;text-align:center}.pmpais>span{display:block;font-size:13px;font-weight:600;opacity:.85;margin-bottom:6px}.pmpais div{display:inline-flex;gap:6px;flex-wrap:wrap;justify-content:center}.pmpais button{font:inherit;font-size:14px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;cursor:pointer}.pmpais button[aria-checked="true"]{background:#f5b301;border-color:#f5b301;color:#142235}.pmpais small{display:block;font-size:11.5px;opacity:.7;margin-top:5px}
   .pmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
   .pmp button{font:inherit;color:inherit;display:flex;flex-direction:column;gap:2px;align-items:center;padding:10px 4px;border-radius:8px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.04);cursor:pointer}
   .pmp button[aria-checked="true"]{border-color:var(--amber);background:rgba(255,178,56,.14)}
@@ -525,7 +526,7 @@
   .crw{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.15em;color:#ffc61a;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
   .tab .cta .pmd{top:2px;right:8px;width:16px;height:16px}.tab .cta .pmd .crw{width:16px;height:16px;color:#ffc61a}
   .lgpb .lk{background:#2e2000!important;color:#ffc61a!important;display:inline-flex;align-items:center;gap:4px}
-  .prb,.pra{font-style:normal}[data-pais="ar"] .prb,[data-pais="br"] .pra,html:not([data-pais="ar"]) .pra{display:none!important}[data-pais="ar"] .pra{display:inline!important}
+  .prb,.pra{font-style:normal}[data-pago="ar"] .prb,[data-pago="br"] .pra,html:not([data-pago="ar"]) .pra{display:none!important}[data-pago="ar"] .pra{display:inline!important}
   .pmpg{font-size:13px;color:var(--muted);margin:8px 0 10px;text-align:center}
   .insl{margin:8px 0;padding-left:20px;display:grid;gap:6px}.insn{font-size:14px;color:var(--muted)}
   #insS{z-index:79}#insS li b{display:inline;color:#fff}#insS [hidden]{display:none!important}#insS h2{font-size:21px}#insS .btn{margin-top:8px}
@@ -572,7 +573,7 @@
   .wx .mm{margin-top:2px}
   .lgtmp{display:flex;gap:10px;align-items:flex-start;margin:8px 0}.lgtmp b{display:block;font-size:14.5px}.lgtmp small{display:block;font-size:12.5px;color:var(--muted)}.lgtmp input[type=date]{margin-top:6px;font:inherit;font-size:16px;padding:6px 8px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--strong)}.lgx{font-weight:600;color:var(--amber);font-size:12px}
   .preg{display:block;font-size:11.5px;font-weight:600;opacity:.6;text-decoration:line-through}.p50{display:inline-block;font-size:10px;font-weight:800;color:#05351c;background:#3ddc84;border-radius:4px;padding:1px 5px;margin:2px 0 3px}
-  [data-pais="ar"] .pmp .pra,html:not([data-pais="ar"]) .pmp .prb{display:flex!important;flex-direction:column;align-items:center}
+  [data-pago="ar"] .pmp .pra,html:not([data-pago="ar"]) .pmp .prb{display:flex!important;flex-direction:column;align-items:center}
   .avq{display:grid;gap:10px}.avq .fila{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.avq .fila:first-child{border-top:0}
   .avq .fila b{display:block;font-size:15px;color:var(--strong)}.avq .fila small{display:block;font-size:12.5px;color:var(--muted)}
   .avseg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}.avseg button{font:inherit;font-size:13px;font-weight:600;padding:8px 10px;border:0;background:transparent;color:var(--muted);cursor:pointer}.avseg button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink)}
@@ -1116,6 +1117,9 @@
       <li><span class="pt">Sem publicidade</span><span class="es">Sin publicidad</span></li>
     </ul>
     <p class="pmg"><span class="pt">Continuam grátis: avisos oficiais, risco, previsão e o Alerta dos vizinhos (relatar e confirmar).</span><span class="es">Siguen gratis: avisos oficiales, riesgo, pronóstico y Alerta de vecinos (reportar y confirmar).</span></p>
+    <div class="pmpais" id="pmPais"><span><span class="pt">Com qual conta você paga?</span><span class="es">¿Con qué cuenta pagás?</span></span>
+      <div role="radiogroup" aria-label="País de pago"><button type="button" role="radio" data-pp="br" aria-checked="false">🇧🇷 Brasil · R$</button><button type="button" role="radio" data-pp="ar" aria-checked="false">🇦🇷 Argentina · $</button></div>
+      <small><span class="pt">Escolha pela sua conta ou cartão, não por onde você está.</span><span class="es">Elegí según tu cuenta o tarjeta, no según dónde estés.</span></small></div>
     <div class="pmp" role="radiogroup" aria-label="Plano">
       <button type="button" role="radio" aria-checked="false" data-p="mensal"><b><span class="pt">Mensal</span><span class="es">Mensual</span></b><span><em class="prb"><s class="preg">R$ 29,80</s><span class="p50">-50%</span>R$ 14,90</em><em class="pra"><s class="preg">$ 9.980</s><span class="p50">-50%</span>$ 4.990</em><small><span class="pt">/mês</span><span class="es">/mes</span></small></span></button>
       <button type="button" role="radio" aria-checked="true" data-p="temporada"><b><span class="pt">Temporada</span><span class="es">Temporada</span></b><span><em class="prb"><s class="preg">R$ 89,80</s><span class="p50">-50%</span>R$ 44,90</em><em class="pra"><s class="preg">$ 29.980</s><span class="p50">-50%</span>$ 14.990</em><small><span class="pt">até 31/03</span><span class="es">hasta 31/03</span></small></span><i><span class="pt">Ideal para o verão</span><span class="es">Ideal para el verano</span></i></button>
@@ -1224,6 +1228,9 @@
     var ip=LS('paisIP');return ip==='ar'||ip==='br'?ip:null})();
   var PAISM=PAISUSO||(PRECID?PRECID[2]:'br'),MARCA=PAISM==='ar'?'Alerta Sur':'Aviso Sul',PAGO=PAISM==='ar'?'Mercado Pago':'Hotmart';
   root.setAttribute('data-pais',PAISM);
+  /* con qué cuenta paga (turistas y doble nacionalidad): ?pago=ar|br o la elección guardada; si no, el país de uso */
+  var PAGOP=(function(){var q=/[?&]pago=(ar|br)\b/.exec(location.search);if(q)LS('pagoPais',q[1]);var v=LS('pagoPais');return v==='ar'||v==='br'?v:PAISM})();
+  root.setAttribute('data-pago',PAGOP);
   function marcaTxt(t){return MARCA==='Aviso Sul'||typeof t!=='string'?t:t.replace(/Aviso Sul/g,MARCA)}
   var PAIS={
     br:{org:'INMET',orgL:'INMET',dcpt:'da Defesa Civil',dces:'de la Defesa Civil',tz:'America/Sao_Paulo',oficial:[['INMET','https://avisos.inmet.gov.br/']],
@@ -1884,10 +1891,12 @@
     if(LS('planFuente')==='hotmart'){LS('plan','gratis');LS('planFuente','');root.setAttribute('data-plan','gratis')}
     return p&&p.pendiente?'pendiente':'no'}
   function pagoBoton(){var b=document.getElementById('pmoGo');if(!b)return;
-    if(PAISM==='ar'){if(!window.__MP)return;b.innerHTML='<span class="pt">Pagar com Mercado Pago</span><span class="es">Pagar con Mercado Pago</span>'}
+    document.querySelectorAll('#pmPais [data-pp]').forEach(function(x){x.setAttribute('aria-checked',x.dataset.pp===PAGOP?'true':'false')});
+    b.innerHTML='<span class="pt">Quero este plano</span><span class="es">Quiero este plan</span>';document.getElementById('pmoVf').hidden=true;
+    if(PAGOP==='ar'){if(!window.__MP)return;b.innerHTML='<span class="pt">Pagar com Mercado Pago</span><span class="es">Pagar con Mercado Pago</span>'}
     else{if(!window.__HM)return;b.innerHTML='<span class="pt">Assinar com Pix ou cartão</span><span class="es">Pagar con Pix o tarjeta</span>'}
     document.getElementById('pmoVf').hidden=false}
-  function irPago(plan){var ar=PAISM==='ar',u=!ar&&window.__HM&&window.__HM[plan];if(!ar&&!u)return;if(ar&&!window.__MP)return;
+  function irPago(plan){var ar=PAGOP==='ar',u=!ar&&window.__HM&&window.__HM[plan];if(!ar&&!u)return;if(ar&&!window.__MP)return;
     if(!LS('cuenta')){LS('pagoPend',plan);var c=document.getElementById('cta');if(c){c.hidden=false;toast(L2('Primero creá tu cuenta: el pago se activa con ese mismo email.','Primeiro crie sua conta: o pagamento é ativado com esse mesmo e-mail.'),false,7000)}return}
     var em=LS('cuentaEmail')||'';LS('pagoEspera',String(Date.now()));
     if(ar){toast(L2('Abriendo Mercado Pago…','Abrindo o Mercado Pago…'));
@@ -1899,11 +1908,11 @@
     setTimeout(function(){location.href=u+(u.indexOf('?')>-1?'&':'?')+'email='+encodeURIComponent(em)+'&sck=avisosul_app_'+plan},700)}
   function pagoVerificar(manual){var t=LS('cuenta');if(!t){if(manual)toast(L2('Entrá con tu cuenta (el email con el que pagaste) para activar Premium.','Entre com sua conta (o e-mail com que pagou) para ativar o Premium.'),false,7000);return}
     var n=0,fin=Date.now()+180000;toast(L2('Confirmando tu pago…','Confirmando seu pagamento…'));
-    (function vez(){var pre=(PAISM==='ar'&&n%2===0)?fetch('/api/mercadopago.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'verificar',token:t})}).catch(function(){}):Promise.resolve();
+    (function vez(){var pre=(PAGOP==='ar'&&n%2===0)?fetch('/api/mercadopago.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'verificar',token:t})}).catch(function(){}):Promise.resolve();
       pre.then(function(){return fetch('/api/cuenta.php?token='+encodeURIComponent(t),{cache:'no-store'})}).then(function(r){return r.json()}).then(function(j){var r=premSync(j);
       if(r==='nuevo'||r==='sigue'){LS('pagoEspera','');toast(L2('¡Listo! Premium activado. Gracias por apoyar ','Pronto! Premium ativado. Obrigado por apoiar o ')+MARCA+'.',true,6000);var o=document.getElementById('pmo');if(o)o.hidden=true;return}
       if(Date.now()<fin){n++;setTimeout(vez,5000);return}
-      LS('pagoEspera','');toast((PAISM==='ar'?L2('Todavía no llegó la confirmación. Con tarjeta o dinero en cuenta es al instante; en efectivo puede tardar hasta 2 días hábiles. Volvé a tocar "Ya pagué" más tarde.','A confirmação ainda não chegou. Toque em "Já paguei" mais tarde.'):L2('Todavía no llegó la confirmación. Con Pix es al instante; con boleto puede tardar hasta 3 días hábiles. Volvé a tocar "Ya pagué" más tarde.','A confirmação ainda não chegou. Com Pix é na hora; com boleto pode levar até 3 dias úteis. Toque em "Já paguei" mais tarde.')),false,12000)}).catch(function(){if(Date.now()<fin)setTimeout(vez,8000)})})()}
+      LS('pagoEspera','');toast((PAGOP==='ar'?L2('Todavía no llegó la confirmación. Con tarjeta o dinero en cuenta es al instante; en efectivo puede tardar hasta 2 días hábiles. Volvé a tocar "Ya pagué" más tarde.','A confirmação ainda não chegou. Toque em "Já paguei" mais tarde.'):L2('Todavía no llegó la confirmación. Con Pix es al instante; con boleto puede tardar hasta 3 días hábiles. Volvé a tocar "Ya pagué" más tarde.','A confirmação ainda não chegou. Com Pix é na hora; com boleto pode levar até 3 dias úteis. Toque em "Já paguei" mais tarde.')),false,12000)}).catch(function(){if(Date.now()<fin)setTimeout(vez,8000)})})()}
   safe(function(){var y=document.getElementById('pmoYa');if(y)y.addEventListener('click',function(){pagoVerificar(true)});
     if(/[?&]pago=ok\b/.test(location.search)||(+LS('pagoEspera')||0)>Date.now()-3600000)setTimeout(function(){pagoVerificar(false)},1200);
     else if(LS('cuenta')&&WEB)fetch('/api/cuenta.php?token='+encodeURIComponent(LS('cuenta')),{cache:'no-store'}).then(function(r){return r.json()}).then(premSync).catch(function(){})});
@@ -1964,12 +1973,13 @@
     var w=document.getElementById('lgWa');if(w)w.addEventListener('click',function(){location.hash='#ajustes';setTimeout(function(){var x=document.getElementById('waBox');if(x){x.scrollIntoView({behavior:'smooth',block:'center'});var t=x.querySelector('input[type=tel]');if(t)t.focus()}},350)})});
   safe(function(){var o=document.getElementById('pmo');if(!o)return;var st=document.getElementById('pmoSt'),plan='temporada';
     function cerrar(){o.hidden=true;if(location.hash==='#premium')history.replaceState(null,'',location.pathname+location.search)}
-    document.getElementById('pmoX').addEventListener('click',cerrar);o.addEventListener('click',function(e){if(e.target===o)cerrar()});
+    document.getElementById('pmoX').addEventListener('click',cerrar);
+    o.querySelectorAll('#pmPais [data-pp]').forEach(function(b){b.addEventListener('click',function(){PAGOP=b.dataset.pp;LS('pagoPais',PAGOP);root.setAttribute('data-pago',PAGOP);st.textContent='';pagoBoton()})});pagoBoton();o.addEventListener('click',function(e){if(e.target===o)cerrar()});
     o.querySelectorAll('.pmp button').forEach(function(b){b.addEventListener('click',function(){plan=b.dataset.p;o.querySelectorAll('.pmp button').forEach(function(x){x.setAttribute('aria-checked',x===b?'true':'false')})})});
     document.getElementById('pmoGo').addEventListener('click',function(){
-      if((PAISM!=='ar'&&window.__HM&&window.__HM[plan])||(PAISM==='ar'&&window.__MP)){irPago(plan);return}
-      fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:plan,pais:PAISM})}).catch(function(){});
-      LS('planElegido',plan);st.textContent=L2(PAISM==='ar'?'¡Anotado! El pago con Mercado Pago se habilita en estos días y te avisamos.':'¡Anotado! El pago con Pix, tarjeta y boleto se habilita en estos días y te avisamos. Si tenés un código, cargalo abajo.','Anotado! O pagamento com Pix, cartão e boleto será liberado nos próximos dias e a gente avisa. Se você tem um código, coloque abaixo.')});
+      if((PAGOP!=='ar'&&window.__HM&&window.__HM[plan])||(PAGOP==='ar'&&window.__MP)){irPago(plan);return}
+      fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:plan,pais:PAGOP})}).catch(function(){});
+      LS('planElegido',plan);st.textContent=L2(PAGOP==='ar'?'¡Anotado! El pago con Mercado Pago se habilita en estos días y te avisamos.':'¡Anotado! El pago con Pix, tarjeta y boleto se habilita en estos días y te avisamos. Si tenés un código, cargalo abajo.','Anotado! O pagamento com Pix, cartão e boleto será liberado nos próximos dias e a gente avisa. Se você tem um código, coloque abaixo.')});
     document.getElementById('pmoCod').addEventListener('submit',function(e){e.preventDefault();var c=document.getElementById('pmoIn').value.trim();if(!c)return;st.textContent=L2('Revisando el código…','Conferindo o código…');
       fetch('/api/codigo.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:c})}).then(function(r){return r.json()}).then(function(j){
         if(!j.ok){st.textContent=j.error==='vencido'?L2('Ese código ya venció.','Esse código já venceu.'):L2('Código no válido.','Código inválido.');return}

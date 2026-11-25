@@ -233,3 +233,10 @@ a{color:var(--sol2)}
 .badge:hover{border-color:#f5b301}
 
 .preco .preg{display:inline-block;font-size:.5em;font-weight:600;opacity:.6;text-decoration:line-through;margin-right:6px}.preco .p50{display:inline-block;font-size:.42em;font-weight:800;color:#05351c;background:#3ddc84;border-radius:4px;padding:2px 6px;vertical-align:middle}
+
+/* elegir con qué cuenta se paga */
+.pagopais{text-align:center;margin:0 auto 18px}.pagopais>span{display:block;font-weight:700;margin-bottom:8px}
+.pagopais div{display:inline-flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pagopais button{font:inherit;font-weight:700;padding:9px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.28);background:transparent;color:inherit;cursor:pointer}
+.pagopais button[aria-checked="true"]{background:#f5b301;border-color:#f5b301;color:#142235}
+.pagopais small{display:block;font-size:13px;opacity:.7;margin-top:6px}
