@@ -1086,13 +1086,13 @@
     <h2 id="ctaT"><span class="pt">Crie sua conta no Aviso Sul em um toque</span><span class="es">Creá tu cuenta en Aviso Sul en un toque</span></h2>
     <p class="ctap"><span class="pt">Assim seus lugares, sua cidade e seus ajustes ficam guardados e você os recupera em qualquer celular.</span><span class="es">Así tus lugares, tu ciudad y tus ajustes quedan guardados y los recuperás en cualquier celular.</span></p>
     <div id="ctaG" class="ctag"></div>
-    <div class="ctao" id="ctaO" hidden><span class="pt">ou com seu e-mail</span><span class="es">o con tu email</span></div>
-    <form id="ctaF" class="pmcod" style="border:0;margin:0;padding:0" hidden>
-      <div id="ctaP1"><input id="ctaE" type="email" inputmode="email" autocomplete="email" placeholder="nome@email.com"><button type="submit"><span class="pt">Receber código</span><span class="es">Recibir código</span></button></div>
+    <div class="ctao" id="ctaO"><span class="pt">ou com seu e-mail</span><span class="es">o con tu email</span></div>
+    <form id="ctaF" class="pmcod" style="border:0;margin:0;padding:0">
+      <div id="ctaP1"><input id="ctaE" type="email" inputmode="email" autocomplete="email" placeholder="nome@email.com"><button type="submit" id="ctaB1"><span class="pt">Entrar</span><span class="es">Entrar</span></button></div>
       <div id="ctaP2" hidden><input id="ctaC" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"><button type="submit"><span class="pt">Entrar</span><span class="es">Entrar</span></button></div>
     </form>
     <p class="pmst" id="ctaSt"></p>
-    <button type="button" class="dsx" id="ctaNo"><span class="pt">Agora não</span><span class="es">Ahora no</span></button>
+    <button type="button" class="dsx" id="ctaNo" hidden><span class="pt">Agora não</span><span class="es">Ahora no</span></button>
   </div>
 </div>
 <div class="onb" id="cqS" hidden role="dialog" aria-modal="true" aria-labelledby="cqT">
@@ -1899,8 +1899,15 @@
     if(PAGOP==='ar'){if(!window.__MP)return;b.innerHTML='<span class="pt">Pagar com Mercado Pago</span><span class="es">Pagar con Mercado Pago</span>'}
     else{if(!window.__HM)return;b.innerHTML='<span class="pt">Assinar com Pix ou cartão</span><span class="es">Pagar con Pix o tarjeta</span>'}
     document.getElementById('pmoVf').hidden=false}
+  /* el código se pide solo para pagar o activar Premium */
+  function ctaVerificar(plan){var o=document.getElementById('cta');if(!o)return;if(plan)LS('pagoPend',plan);window.__ctaVerif=true;
+    document.getElementById('ctaE').value=LS('cuentaEmail')||'';document.getElementById('ctaP1').hidden=false;document.getElementById('ctaP2').hidden=true;document.getElementById('ctaNo').hidden=false;var cp=document.querySelector('#cta .ctap');if(cp)cp.hidden=true;
+    document.getElementById('ctaT').innerHTML='<span class="pt">Confirme seu e-mail</span><span class="es">Confirmá tu email</span>';
+    document.getElementById('ctaB1').innerHTML='<span class="pt">Receber código</span><span class="es">Recibir código</span>';
+    document.getElementById('ctaSt').textContent=L2('Para pagar y activar Premium te mandamos un código de 6 números (o entrá con Google).','Para pagar e ativar o Premium enviamos um código de 6 números (ou entre com o Google).');o.hidden=false}
   function irPago(plan){var ar=PAGOP==='ar',u=!ar&&window.__HM&&window.__HM[plan];if(!ar&&!u)return;if(ar&&!window.__MP)return;
     if(!LS('cuenta')){LS('pagoPend',plan);var c=document.getElementById('cta');if(c){c.hidden=false;toast(L2('Primero creá tu cuenta: el pago se activa con ese mismo email.','Primeiro crie sua conta: o pagamento é ativado com esse mesmo e-mail.'),false,7000)}return}
+    if(LS('cuentaNv')==='1'){ctaVerificar(plan);return}
     var em=LS('cuentaEmail')||'';LS('pagoEspera',String(Date.now()));
     if(ar){toast(L2('Abriendo Mercado Pago…','Abrindo o Mercado Pago…'));
       fetch('/api/mercadopago.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'checkout',token:LS('cuenta'),plan:plan})}).then(function(r){return r.json()}).then(function(j){
@@ -1909,7 +1916,7 @@
         toast(L2('No se pudo abrir el pago. Probá de nuevo en un rato.','Não foi possível abrir o pagamento. Tente de novo daqui a pouco.'),false,6000)}).catch(function(){toast(L2('Sin conexión.','Sem conexão.'),false,5000)});return}
     toast(L2('Abriendo el pago seguro de Hotmart. Usá el email ','Abrindo o pagamento seguro da Hotmart. Use o e-mail ')+em,false,4000);
     setTimeout(function(){location.href=u+(u.indexOf('?')>-1?'&':'?')+'email='+encodeURIComponent(em)+'&sck=avisosul_app_'+plan},700)}
-  function pagoVerificar(manual){var t=LS('cuenta');if(!t){if(manual)toast(L2('Entrá con tu cuenta (el email con el que pagaste) para activar Premium.','Entre com sua conta (o e-mail com que pagou) para ativar o Premium.'),false,7000);return}
+  function pagoVerificar(manual){var t=LS('cuenta');if(t&&LS('cuentaNv')==='1'){if(manual)ctaVerificar();return}if(!t){if(manual)toast(L2('Entrá con tu cuenta (el email con el que pagaste) para activar Premium.','Entre com sua conta (o e-mail com que pagou) para ativar o Premium.'),false,7000);return}
     var n=0,fin=Date.now()+180000;toast(L2('Confirmando tu pago…','Confirmando seu pagamento…'));
     (function vez(){var pre=(PAGOP==='ar'&&n%2===0)?fetch('/api/mercadopago.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'verificar',token:t})}).catch(function(){}):Promise.resolve();
       pre.then(function(){return fetch('/api/cuenta.php?token='+encodeURIComponent(t),{cache:'no-store'})}).then(function(r){return r.json()}).then(function(j){var r=premSync(j);
@@ -1919,23 +1926,27 @@
   safe(function(){var y=document.getElementById('pmoYa');if(y)y.addEventListener('click',function(){pagoVerificar(true)});
     if(/[?&]pago=ok\b/.test(location.search)||(+LS('pagoEspera')||0)>Date.now()-3600000)setTimeout(function(){pagoVerificar(false)},1200);
     else if(LS('cuenta')&&WEB)fetch('/api/cuenta.php?token='+encodeURIComponent(LS('cuenta')),{cache:'no-store'}).then(function(r){return r.json()}).then(premSync).catch(function(){})});
-  function ctaEntrar(tok,email){LS('cuenta',tok);LS('cuentaEmail',email);
+  function ctaEntrar(tok,email,nv){LS('cuenta',tok);LS('cuentaEmail',email);LS('cuentaNv',nv?'1':'');
     fetch('/api/cuenta.php?token='+encodeURIComponent(tok),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){premSync(j);if(LS('pagoPend')){var pp=LS('pagoPend');LS('pagoPend','');irPago(pp);return}var aj=j.ajustes||{},n=0;
       for(var k in aj){if(CTA_K.indexOf(k)>=0&&!LS(k)){LS(k,aj[k]);n++}}if(n)location.reload();else ctaSubir()}).catch(function(){});ctaPintar()}
   function ctaPintar(){var b=document.getElementById('ctaAj');if(!b)return;var em=LS('cuentaEmail');
-    b.innerHTML=em?'<span>'+L2('Cuenta: ','Conta: ')+'<b>'+esc(em)+'</b></span><button type="button" class="pb" id="ctaSalir">'+L2('Cerrar sesión','Sair')+'</button>'
+    b.innerHTML=em?'<span>'+L2('Cuenta: ','Conta: ')+'<b>'+esc(em)+'</b>'+(LS('cuentaNv')==='1'?' <button type="button" class="pb" id="ctaVer">'+L2('Verificar email','Verificar e-mail')+'</button>':'')+'</span><button type="button" class="pb" id="ctaSalir">'+L2('Cerrar sesión','Sair')+'</button>'
       :'<span>'+L2('Sin cuenta: tus ajustes quedan solo en este celular.','Sem conta: seus ajustes ficam só neste celular.')+'</span><button type="button" class="pb" id="ctaAbrir">'+L2('Crear cuenta o entrar','Criar conta ou entrar')+'</button>';
     var x=document.getElementById('ctaSalir');if(x)x.addEventListener('click',function(){try{google.accounts.id.disableAutoSelect()}catch(e){}fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'salir',token:LS('cuenta')})}).catch(function(){});
-      try{localStorage.removeItem('avisosul-cuenta');localStorage.removeItem('avisosul-cuentaEmail')}catch(e){}ctaPintar()});
+      try{localStorage.removeItem('avisosul-cuenta');localStorage.removeItem('avisosul-cuentaEmail');localStorage.removeItem('avisosul-cuentaNv')}catch(e){}ctaPintar();var o=document.getElementById('cta');if(o&&WEB)o.hidden=false});
+    var vv=document.getElementById('ctaVer');if(vv)vv.addEventListener('click',function(){ctaVerificar()});
     var y=document.getElementById('ctaAbrir');if(y)y.addEventListener('click',function(){document.getElementById('cta').hidden=false})}
   safe(function(){var o=document.getElementById('cta');if(!o)return;var st=document.getElementById('ctaSt'),email='';
-    function cerrar(){o.hidden=true;window.__ctaAbierta=false;if(window.__ctaCerrada){var f=window.__ctaCerrada;window.__ctaCerrada=null;f()}}
+    var T0=document.getElementById('ctaT').innerHTML,B0=document.getElementById('ctaB1').innerHTML;
+    function cerrar(){if(!LS('cuenta')&&!window.__ctaVerif)return;document.getElementById('ctaT').innerHTML=T0;document.getElementById('ctaB1').innerHTML=B0;document.getElementById('ctaP1').hidden=false;document.getElementById('ctaP2').hidden=true;st.textContent='';var cp=document.querySelector('#cta .ctap');if(cp)cp.hidden=false;o.hidden=true;window.__ctaAbierta=false;window.__ctaVerif=false;document.getElementById('ctaNo').hidden=true;if(window.__ctaCerrada){var f=window.__ctaCerrada;window.__ctaCerrada=null;f()}}
     document.getElementById('ctaNo').addEventListener('click',function(){try{sessionStorage.setItem('avisosul-ctaNo','1')}catch(e){}cerrar()});
     document.getElementById('ctaF').addEventListener('submit',function(e){e.preventDefault();
       if(!document.getElementById('ctaP2').hidden){var c=document.getElementById('ctaC').value.trim();st.textContent=L2('Revisando…','Conferindo…');
         fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'verificar',email:email,codigo:c})}).then(function(r){return r.json()}).then(function(j){
           if(j.ok){st.textContent='';ctaEntrar(j.token,j.email);cerrar()}else st.textContent=L2('Código incorrecto o vencido.','Código incorreto ou vencido.')}).catch(function(){st.textContent=L2('Sin conexión.','Sem conexão.')});return}
       email=document.getElementById('ctaE').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){st.textContent=L2('Revisá el email.','Confira o e-mail.');return}
+      if(!window.__ctaVerif){st.textContent=L2('Entrando…','Entrando…');
+        fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'email',email:email})}).then(function(r){return r.json()}).then(function(j){if(j.ok){st.textContent='';ctaEntrar(j.token,j.email,true);cerrar()}else st.textContent=j.error==='limite'?L2('Demasiados intentos. Probá en un rato.','Muitas tentativas. Tente daqui a pouco.'):L2('Revisá el email.','Confira o e-mail.')}).catch(function(){st.textContent=L2('Sin conexión.','Sem conexão.')});return}
       st.textContent=L2('Enviando el código…','Enviando o código…');
       fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'codigo',email:email})}).then(function(r){return r.json()}).then(function(j){
         if(j.ok){document.getElementById('ctaP1').hidden=true;document.getElementById('ctaP2').hidden=false;st.textContent=L2('Te mandamos un código de 6 números a ','Enviamos um código de 6 números para ')+email+L2('. Mirá también en spam.','. Veja também no spam.');document.getElementById('ctaC').focus()}
@@ -1947,7 +1958,7 @@
           fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'google',credential:res.credential})}).then(function(r){return r.json()}).then(function(k){if(k.ok){ctaEntrar(k.token,k.email);cerrar()}else st.textContent=L2('No se pudo entrar con Google.','Não foi possível entrar com o Google.')})}});
         google.accounts.id.renderButton(document.getElementById('ctaG'),{theme:'filled_black',size:'large',shape:'pill',text:'signup_with',width:280,locale:root.getAttribute('data-lang')==='es'?'es':'pt-BR'});google.accounts.id.prompt()}catch(e){conEmail()}};document.head.appendChild(sc)}).catch(conEmail);
     var no=false;try{no=sessionStorage.getItem('avisosul-ctaNo')}catch(e){}
-    if(!LS('cuenta')&&!no&&WEB){o.hidden=false;window.__ctaAbierta=true}
+    if(!LS('cuenta')&&WEB){o.hidden=false;window.__ctaAbierta=true}
     if(LS('cuenta')){setInterval(ctaSubir,120000);document.addEventListener('visibilitychange',function(){if(document.hidden)ctaSubir()})}
     ctaPintar()});
   safe(function(){var o=document.getElementById('onb');if(!o||(LS('onb')&&!/[?&]onb=1\b/.test(location.search)))return;if(window.__ctaAbierta){window.__ctaCerrada=function(){o.hidden=false}}else o.hidden=false;

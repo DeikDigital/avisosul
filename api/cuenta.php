@@ -4,6 +4,7 @@
    GET  ?token=...                     -> {"ok":true,"email":..,"ajustes":{..}}
    POST {"acao":"codigo","email"}      -> manda un código al email (vale 15 min)
    POST {"acao":"verificar","email","codigo"} -> {"ok":true,"token":..}
+   POST {"acao":"email","email"}       -> entra sin código: sesión "no verificada" (guarda sus propios ajustes, sin Premium ni pagos)
    POST {"acao":"google","credential"} -> {"ok":true,"token":..}   (credencial de Google Identity Services)
    POST {"acao":"guardar","token","ajustes"} -> guarda los ajustes (máx. 20 KB)
    POST {"acao":"salir","token"}       -> cierra la sesión
@@ -38,10 +39,16 @@ function cuenta_de($tok) {
         return [$d, null];
     });
 }
+/* Sesiones sin verificar: archivo aparte, nunca ven ni pisan los datos de una cuenta verificada con el mismo email. */
+function nv_de($tok) {
+    $h = hash('sha256', (string)$tok);
+    return con_archivo('cuentas_nv.json', function ($d) use ($h) { $x = $d[$h] ?? null; if ($x) { $d[$h]['visto'] = time(); } return [$d, $x]; });
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['cfg'])) { $gf = dir_privado() . '/google.json'; $gc = file_exists($gf) ? json_decode(file_get_contents($gf), true) : []; salir(['ok' => true, 'google' => cfg_google(), 'maps' => $gc['maps_key'] ?? null, 'hotmart' => checkout_br(), 'mp' => mp_ok()]); }
     $c = cuenta_de($_GET['token'] ?? '');
+    if (!$c) { $n = nv_de($_GET['token'] ?? ''); if ($n) salir(['ok' => true, 'email' => $n['email'], 'ajustes' => $n['ajustes'] ?? (object)[], 'premium' => null, 'nv' => true]); }
     if (!$c) salir(['ok' => false, 'error' => 'sesion'], 401);
     salir(['ok' => true, 'email' => $c[0], 'ajustes' => $c[1]['ajustes'] ?? (object)[], 'premium' => premium_de($c[0])]);
 }
@@ -62,6 +69,18 @@ if ($acao === 'codigo') {
     $txt = "Seu código para entrar no Aviso Sul é: $cod\nTu código para entrar en Aviso Sul es: $cod\n\nVale por 15 minutos. Se não foi você, ignore este e-mail.\nSi no fuiste vos, ignorá este mail.\n\nhttps://avisosul.com";
     $ok = @mail($em, '=?UTF-8?B?' . base64_encode($asunto) . '?=', $txt, "From: Aviso Sul <contato@avisosul.com>\r\nContent-Type: text/plain; charset=UTF-8");
     salir(['ok' => (bool)$ok, 'error' => $ok ? null : 'envio']);
+}
+if ($acao === 'email') {
+    $em = email_ok($e['email'] ?? ''); if (!$em) salir(['ok' => false, 'error' => 'email'], 400);
+    $vis = visitante(); $tok = bin2hex(random_bytes(24));
+    $ok = con_archivo('cuentas_nv.json', function ($d) use ($em, $tok, $vis) {
+        $n = 0; foreach ($d as $x) if (($x['v'] ?? '') === $vis && $x['t'] > time() - 3600) $n++;
+        if ($n >= 20) return [$d, false];
+        $d[hash('sha256', $tok)] = ['email' => $em, 't' => time(), 'v' => $vis, 'ajustes' => (object)[]];
+        return [$d, true];
+    });
+    if (!$ok) salir(['ok' => false, 'error' => 'limite'], 429);
+    salir(['ok' => true, 'token' => $tok, 'email' => $em, 'nv' => true]);
 }
 if ($acao === 'verificar') {
     $em = email_ok($e['email'] ?? ''); $cod = preg_replace('/\D/', '', (string)($e['codigo'] ?? ''));
@@ -92,11 +111,13 @@ if ($acao === 'guardar') {
         foreach ($d as $em => $c) if (isset($c['ses'][$h])) { $d[$em]['ajustes'] = $aj; $d[$em]['visto'] = time(); return [$d, true]; }
         return [$d, false];
     });
+    if (!$r) $r = con_archivo('cuentas_nv.json', function ($d) use ($h, $aj) { if (!isset($d[$h])) return [$d, false]; $d[$h]['ajustes'] = $aj; $d[$h]['visto'] = time(); return [$d, true]; });
     salir(['ok' => $r], $r ? 200 : 401);
 }
 if ($acao === 'salir') {
     $h = hash('sha256', (string)($e['token'] ?? ''));
     con_archivo('cuentas.json', function ($d) use ($h) { foreach ($d as $em => $c) unset($d[$em]['ses'][$h]); return [$d, true]; });
+    con_archivo('cuentas_nv.json', function ($d) use ($h) { unset($d[$h]); return [$d, true]; });
     salir(['ok' => true]);
 }
 salir(['ok' => false, 'error' => 'acao'], 400);
