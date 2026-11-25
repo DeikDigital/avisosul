@@ -9,7 +9,7 @@ y de Argentina y las guarda en datos/est/<lat>_<lon>.json. La app las lee de ahi
 - Usa un tiempo maximo por corrida (TOPE) y un candado, para no pisarse con la corrida siguiente.
 - Datos: OpenStreetMap, licencia ODbL (se cita en la app).
 """
-import json, os, sys, time, urllib.parse, urllib.request
+import csv, hashlib, io, json, os, sys, time, urllib.parse, urllib.request
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 SALIDA = os.path.join("datos", "est")
@@ -20,6 +20,11 @@ VIEJO = 14 * 86400  # se renueva cada 14 dias
 PASO = 2            # grados por cuadro
 SERVIDORES = ["https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
               "https://overpass-api.de/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
+# Argentina: dataset oficial "Precios en surtidor" de la Secretaria de Energia (todas las estaciones con
+# coordenadas y precios declarados). Se baja una vez por dia y llena los cuadros argentinos de una sola vez.
+SE_URL = ("http://datos.energia.gob.ar/dataset/1c181390-5045-475e-94dc-410429be4b17/resource/"
+          "80ac25de-a44a-4445-9215-090cf55cfda5/download/precios-en-surtidor-resolucin-3142016.csv")
+SE_MARCA = os.path.join(SALIDA, "_se.json")
 # zonas cubiertas: (lat min, lat max, lon min, lon max)
 ZONAS = [(-56, -20, -74, -52),   # Argentina
          (-34, -20, -58, -44)]   # Sur y Sudeste de Brasil (PR, SC, RS, SP)
@@ -79,14 +84,69 @@ def compacto(el):
     return x
 
 
+def argentina():
+    """Baja el CSV oficial y arma los cuadros de Argentina. Devuelve la cantidad de cuadros escritos (0 si falla)."""
+    if os.path.exists(SE_MARCA) and time.time() - os.path.getmtime(SE_MARCA) < 86400:
+        return 0
+    try:
+        req = urllib.request.Request(SE_URL, headers={"User-Agent": "AvisoSul/1.0 (+https://avisosul.com)"})
+        raw = urllib.request.urlopen(req, timeout=120).read().decode("utf-8", "replace")
+    except Exception as e:
+        print("  SE: sin respuesta", str(e)[:80]); json.dump({"t": int(time.time()), "ok": False}, open(SE_MARCA, "w")); return 0
+    filas = csv.DictReader(io.StringIO(raw.lstrip("\ufeff")))
+    est = {}
+    for f in filas:
+        g = {k.strip().lower(): (v or "").strip() for k, v in f.items() if k}
+        try:
+            lat, lon = float(g.get("latitud", "").replace(",", ".")), float(g.get("longitud", "").replace(",", "."))
+        except ValueError:
+            continue
+        if not (-56 < lat < -21 and -74 < lon < -53):
+            continue
+        clave_e = g.get("cuit", "") + "|" + g.get("direccion", "") + "|" + str(round(lat, 4))
+        x = est.setdefault(clave_e, {"i": "s" + hashlib.md5(clave_e.encode()).hexdigest()[:10], "a": round(lat, 5), "o": round(lon, 5), "k": "f",
+                                      "b": (g.get("empresabandera") or g.get("empresa") or "")[:60], "n": g.get("empresa", "")[:60],
+                                      "d": (g.get("direccion", "") + (", " + g.get("localidad", "").title() if g.get("localidad") else ""))[:100], "p": {}})
+        prod, precio = g.get("producto", ""), g.get("precio", "").replace(",", ".")
+        if prod and precio:
+            try:
+                pv = float(precio)
+                if pv > 0 and (g.get("tipohorario", "").lower().startswith("diurno") or prod not in x["p"]):
+                    x["p"][prod[:40]] = [round(pv, 2), g.get("fecha_vigencia", "")[:10]]
+            except ValueError:
+                pass
+    if len(est) < 500:
+        print("  SE: datos insuficientes", len(est)); json.dump({"t": int(time.time()), "ok": False}, open(SE_MARCA, "w")); return 0
+    por = {}
+    for x in est.values():
+        por.setdefault(clave(x["a"], x["o"]), []).append(x)
+    estado = json.load(open(ESTADO)) if os.path.exists(ESTADO) else {}
+    for k, lista in por.items():
+        # se suman los cargadores electricos de OpenStreetMap si el cuadro ya los tenia
+        viejo = os.path.join(SALIDA, k + ".json")
+        if os.path.exists(viejo):
+            try:
+                lista = lista + [e for e in json.load(open(viejo)).get("e", []) if e.get("k") == "c"]
+            except Exception:
+                pass
+        json.dump({"t": int(time.time()), "fuente": "SE", "e": lista}, open(viejo, "w"), ensure_ascii=False, separators=(",", ":"))
+        estado[k] = int(time.time())
+    json.dump(estado, open(ESTADO, "w"))
+    json.dump({"t": int(time.time()), "ok": True, "estaciones": len(est), "cuadros": len(por)}, open(SE_MARCA, "w"))
+    print("  SE: %d estaciones en %d cuadros" % (len(est), len(por)))
+    return len(por)
+
+
 def main():
     os.makedirs(SALIDA, exist_ok=True)
     if os.path.exists(CANDADO) and time.time() - os.path.getmtime(CANDADO) < TOPE + 120:
         print("estaciones: otra corrida en curso"); return
     open(CANDADO, "w").write(str(time.time()))
     try:
+        argentina()
         estado = json.load(open(ESTADO)) if os.path.exists(ESTADO) else {}
         ciudades = json.load(open(os.path.join(BASE, "ciudades.json"), encoding="utf-8"))
+        ciudades.sort(key=lambda c: 0 if c.get("slug") == "cordoba" else 1)
         prio = []
         for c in ciudades:
             for dla in (-PASO, 0, PASO):

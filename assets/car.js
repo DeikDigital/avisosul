@@ -284,7 +284,7 @@
       var els = [], k = tag === 'charging_station' ? 'c' : 'f';
       arr.forEach(function (lista) { lista.forEach(function (x) {
         if (x.k !== k || (filtro && !filtro([x.a, x.o]))) return;
-        var t = { amenity: tag }; if (x.b) t.brand = x.b; if (x.n) t.name = x.n; if (x.h) t.opening_hours = x.h; if (x.t) t.phone = x.t; if (x.d) t['addr:street'] = x.d; (x.f || []).forEach(function (f) { t['fuel:' + f] = 'yes' });
+        var t = { amenity: tag }; if (x.b) t.brand = x.b; if (x.n) t.name = x.n; if (x.h) t.opening_hours = x.h; if (x.t) t.phone = x.t; if (x.d) t['addr:street'] = x.d; (x.f || []).forEach(function (f) { t['fuel:' + f] = 'yes' }); if (x.p) t._precios = x.p;
         els.push({ type: x.i[0] === 'n' ? 'node' : x.i[0] === 'w' ? 'way' : 'relation', id: x.i.slice(1), lat: x.a, lon: x.o, tags: t });
       }) });
       return { elements: els };
@@ -433,6 +433,7 @@
     if (t.opening_hours) li.push('🕒 ' + esc(t.opening_hours === '24/7' ? (es ? 'Abierta las 24 h' : 'Aberto 24 h') : t.opening_hours));
     var comb = []; for (var k in t) if (/^fuel:/.test(k) && t[k] === 'yes') comb.push(k.slice(5).replace(/_/g, ' '));
     if (comb.length) li.push('⛽ ' + esc(comb.join(', ')));
+    if (t._precios) { var pr = Object.keys(t._precios).map(function (k) { var v = t._precios[k]; return esc(k.replace(/\s*\(.*?\)/g, '').replace(/ entre .*$/i, '')) + ' <b>$ ' + Math.round(v[0]).toLocaleString('es-AR') + '</b>' + (v[1] ? ' <small>(' + esc(v[1].slice(8, 10) + '/' + v[1].slice(5, 7)) + ')</small>' : '') }); if (pr.length) li.push('💲 ' + pr.join(' · ') + ' <small>' + L2('Precios declarados a la Secretaría de Energía', 'Preços declarados à Secretaria de Energia') + '</small>') }
     if (t.phone || t['contact:phone']) li.push('📞 <a href="tel:' + esc(t.phone || t['contact:phone']) + '">' + esc(t.phone || t['contact:phone']) + '</a>');
     if (t.shop || t.amenity === 'charging_station' && t.socket) li.push('🛒 ' + esc(t.shop || ''));
     var q = encodeURIComponent((x.nom || x.n) + ' ' + x.p[0].toFixed(5) + ',' + x.p[1].toFixed(5));
