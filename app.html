@@ -1855,7 +1855,7 @@
   var _pw3=pintarWx;pintarWx=function(){_pw3();safe(precUI);safe(escena)};
   /* ---- permisos al principio: una pantalla en la primera visita. El navegador solo deja pedirlos despues de un toque. ---- */
   /* ---- cuenta: email con código o Google; guarda y recupera los ajustes del teléfono ---- */
-  var CTA_K=['c','cM','lang','langM','lugares','theme','avNivel','avFen','avNoche','avDesde','avHasta','temaModo','waTel','waCod','waNum','waEstado','waLug','cqUlt','plan','planHasta','prec','planElegido'];
+  var CTA_K=['c','cM','lang','langM','lugares','theme','avNivel','avFen','avNoche','avDesde','avHasta','temaModo','waTel','waCod','waNum','waEstado','waLug','cqUlt','prec','planElegido'];
   function ctaSubir(){var t=LS('cuenta');if(!t||!WEB)return;var a={};CTA_K.forEach(function(k){var v=LS(k);if(v!==null&&v!==undefined&&v!=='')a[k]=v});
     fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'guardar',token:t,ajustes:a}),keepalive:true}).catch(function(){})}
   safe(function(){var w=document.getElementById('vzW');if(!w)return;w.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;VZ.hace=+b.getAttribute('data-h');[].forEach.call(w.children,function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});var m=document.getElementById('vzMeta');if(m&&m.textContent){var d=new Date(Date.now()-VZ.hace*60000),q=function(n){return(n<10?'0':'')+n};m.textContent=m.textContent.replace(/\d\d\/\d\d \d\d:\d\d$/,q(d.getDate())+'/'+q(d.getMonth()+1)+' '+q(d.getHours())+':'+q(d.getMinutes()))}})});
@@ -1892,6 +1892,7 @@
   function premSync(j){var p=j&&j.premium,ahora=Date.now();
     if(p&&p.hasta*1000>ahora){var ya=LS('plan')==='premium'&&LS('planFuente')==='hotmart';LS('plan','premium');LS('planHasta',String(p.hasta*1000));LS('planFuente','hotmart');root.setAttribute('data-plan','premium');try{carMarca()}catch(e){}return ya?'sigue':'nuevo'}
     if(LS('planFuente')==='hotmart'){LS('plan','gratis');LS('planFuente','');root.setAttribute('data-plan','gratis')}
+    else if(LS('plan')==='premium'&&j&&j.email&&LS('planCodEmail')!==j.email)planGratis();
     return p&&p.pendiente?'pendiente':'no'}
   function pagoBoton(){var b=document.getElementById('pmoGo');if(!b)return;
     document.querySelectorAll('#pmPais [data-pp]').forEach(function(x){x.setAttribute('aria-checked',x.dataset.pp===PAGOP?'true':'false')});
@@ -1926,7 +1927,8 @@
   safe(function(){var y=document.getElementById('pmoYa');if(y)y.addEventListener('click',function(){pagoVerificar(true)});
     if(/[?&]pago=ok\b/.test(location.search)||(+LS('pagoEspera')||0)>Date.now()-3600000)setTimeout(function(){pagoVerificar(false)},1200);
     else if(LS('cuenta')&&WEB)fetch('/api/cuenta.php?token='+encodeURIComponent(LS('cuenta')),{cache:'no-store'}).then(function(r){return r.json()}).then(premSync).catch(function(){})});
-  function ctaEntrar(tok,email,nv){LS('cuenta',tok);LS('cuentaEmail',email);LS('cuentaNv',nv?'1':'');
+  function planGratis(){LS('plan','gratis');LS('planHasta','');LS('planFuente','');LS('planCodEmail','');root.setAttribute('data-plan','gratis');try{carMarca()}catch(e){}safe(trTxt)}
+  function ctaEntrar(tok,email,nv){var prev=LS('cuentaEmail')||LS('cuentaUlt')||'';if(prev&&prev!==email)planGratis();else if(LS('plan')==='premium'&&LS('planFuente')!=='hotmart'&&!LS('planCodEmail'))LS('planCodEmail',email);LS('cuentaUlt',email);LS('cuenta',tok);LS('cuentaEmail',email);LS('cuentaNv',nv?'1':'');
     fetch('/api/cuenta.php?token='+encodeURIComponent(tok),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){premSync(j);if(LS('pagoPend')){var pp=LS('pagoPend');LS('pagoPend','');irPago(pp);return}var aj=j.ajustes||{},n=0;
       for(var k in aj){if(CTA_K.indexOf(k)>=0&&!LS(k)){LS(k,aj[k]);n++}}if(n)location.reload();else ctaSubir()}).catch(function(){});ctaPintar()}
   function ctaPintar(){var b=document.getElementById('ctaAj');if(!b)return;var em=LS('cuentaEmail');
@@ -2000,8 +2002,8 @@
     document.getElementById('pmoCod').addEventListener('submit',function(e){e.preventDefault();var c=document.getElementById('pmoIn').value.trim();if(!c)return;st.textContent=L2('Revisando el código…','Conferindo o código…');
       fetch('/api/codigo.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:c})}).then(function(r){return r.json()}).then(function(j){
         if(!j.ok){st.textContent=j.error==='vencido'?L2('Ese código ya venció.','Esse código já venceu.'):L2('Código no válido.','Código inválido.');return}
-        if(LS('cod-'+c.toUpperCase())){st.textContent=L2('Este código ya se usó en este celular.','Este código já foi usado neste celular.');return}
-        LS('cod-'+c.toUpperCase(),'1');LS('plan','premium');LS('planHasta',String(Date.now()+j.horas*3600000));root.setAttribute('data-plan','premium');safe(trTxt);safe(precUI);
+        if(LS('cod-'+c.toUpperCase())===(LS('cuentaEmail')||'-')){st.textContent=L2('Este código ya se usó en esta cuenta.','Este código já foi usado nesta conta.');return}
+        LS('cod-'+c.toUpperCase(),LS('cuentaEmail')||'-');LS('plan','premium');LS('planFuente','codigo');LS('planCodEmail',LS('cuentaEmail')||'');LS('planHasta',String(Date.now()+j.horas*3600000));root.setAttribute('data-plan','premium');safe(trTxt);safe(precUI);
         root.setAttribute('data-plan','premium');carMarca();st.textContent=j.horas>=720?L2('¡Listo! Pase VIP activado: tenés Premium en este celular.','Pronto! Passe VIP ativado: você tem Premium neste celular.'):L2('¡Listo! Tenés Premium gratis por ','Pronto! Você tem Premium grátis por ')+j.horas+L2(' horas.',' horas.')})
         .catch(function(){st.textContent=L2('No se pudo revisar el código. Revisá la conexión.','Não foi possível conferir o código. Confira a conexão.')})});
     var qp=/[?&]plan=(mensal|temporada|anual)\b/.exec(location.search);if(qp){var bq=o.querySelector('.pmp button[data-p="'+qp[1]+'"]');if(bq)bq.click()}
