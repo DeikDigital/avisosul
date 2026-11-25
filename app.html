@@ -981,7 +981,7 @@
     <input type="file" accept="video/*" capture="environment" id="avInV" hidden>
     <div class="avp" id="avPrev" hidden></div>
     <textarea id="avMsg" rows="3" maxlength="400"></textarea>
-    <small class="avn"><span class="pt">Junto vão a cidade, o estado oficial de agora e o link.</span><span class="es">Junto van la ciudad, el estado oficial de ahora y el enlace.</span></small>
+    <small class="avn"><span class="pt">A foto ou o vídeo vai com um relato do Aviso Sul: alerta, localização precisa, dia, hora e temperatura.</span><span class="es">La foto o el video va con un reporte de Aviso Sul: alerta, ubicación precisa, día, hora y temperatura.</span></small>
     <button type="button" class="btn btn-wa" id="avSend"><span class="pt">Enviar</span><span class="es">Enviar</span></button>
     <small class="avn" id="avSt"></small>
     <button type="button" class="dsx" id="avX"><span class="pt">Cancelar</span><span class="es">Cancelar</span></button>
@@ -1508,8 +1508,37 @@
     if(WX&&typeof WX.temp==='number'&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))t+=' '+L2('Ahora ','Agora ')+WX.temp+'°, '+(WX.ahora[l]||'').toLowerCase()+'.';
     return t+'\n\n'+L2('Avisos gratis en tu celular: ','Avisos grátis no seu celular: ')+u}
   var AVF=null;
+  /* ---- reporte que acompaña la foto o el video al compartir: logo, nombre, alerta, ubicación precisa, día, hora y temperatura ---- */
+  function cargarImg(u){return new Promise(function(ok){var i=new Image();i.onload=function(){ok(i)};i.onerror=function(){ok(null)};i.src=u})}
+  function ubicPrecisa(){return new Promise(function(ok){if(!navigator.geolocation){ok(null);return}
+    navigator.geolocation.getCurrentPosition(function(p){ok([p.coords.latitude,p.coords.longitude])},function(){ok(null)},{enableHighAccuracy:true,timeout:8000,maximumAge:60000})})}
+  function datosReporte(g){var l=root.getAttribute('data-lang')==='es'?'es':'pt',d=new Date(),p=function(n){return(n<10?'0':'')+n};
+    var av=(DATOS&&DATOS.avisos)?DATOS.avisos.filter(function(x){return!x.hasta||new Date(x.hasta)>new Date()}):[],x=av[0];
+    var lug=g?lugAvisos(g):[];if(lug.length)x=lug[0];
+    var tw=(WX&&typeof WX.temp==='number')?WX.temp+'°C'+(WX.ahora&&WX.ahora[l]?' · '+WX.ahora[l]:''):'';
+    return {alerta:x?(l==='es'?(x.titulo_es||x.titulo_pt):(x.titulo_pt||x.titulo_es)):L2('Sin avisos oficiales vigentes','Sem avisos oficiais em vigor'),nivel:x?x.nivel:null,
+      lugar:(g?g[0].toFixed(5)+', '+g[1].toFixed(5)+' · ':'')+C.nombre,hora:p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear()+' · '+p(d.getHours())+':'+p(d.getMinutes()),temp:tw}}
+  function dibujarReporte(ctx,x,y,w,h,r,logo,ico,msg){var k=w/1080,f=function(px,b){return (b?'700 ':'500 ')+Math.round(px*k)+'px "IBM Plex Sans",Inter,system-ui,sans-serif'};
+    ctx.fillStyle='#142235';ctx.fillRect(x,y,w,h);ctx.fillStyle=r.nivel==='rojo'?'#E8452C':r.nivel==='naranja'?'#FF8A1F':r.nivel?'#FFD23F':'#2E9E5B';ctx.fillRect(x,y,w,10*k);
+    var px=x+40*k,py=y+44*k;
+    if(logo)ctx.drawImage(logo,px,py-6*k,92*k,92*k);ctx.fillStyle='#fff';ctx.font=f(46,1);ctx.textBaseline='top';ctx.fillText('Aviso Sul',px+108*k,py+2*k);
+    ctx.fillStyle='#8EBBE0';ctx.font=f(26);ctx.fillText('avisosul.com',px+110*k,py+56*k);
+    if(ico)ctx.drawImage(ico,x+w-150*k,py-14*k,110*k,110*k);
+    var ty=py+122*k;ctx.fillStyle=r.nivel?'#FFD86B':'#A8E0B4';ctx.font=f(36,1);
+    var lines=[[r.nivel?'⚠':'✓',r.alerta],['📍',r.lugar],['🕒',r.hora]];if(r.temp)lines.push(['🌡',r.temp]);if(msg)lines.push(['💬','“'+msg.slice(0,90)+(msg.length>90?'…':'')+'”']);
+    lines.forEach(function(L,i){ctx.fillStyle=i===0?(r.nivel?'#FFD86B':'#A8E0B4'):'#E9F1F8';ctx.font=f(i===0?36:30,i===0);var t=L[0]+'  '+L[1];
+      while(ctx.measureText(t).width>w-80*k&&t.length>4)t=t.slice(0,-2);if(t!==L[0]+'  '+L[1])t+='…';ctx.fillText(t,px,ty);ty+=(i===0?54:46)*k})}
+  function armarReporte(foto,msg){return Promise.all([ubicPrecisa(),cargarImg('/assets/logo-nube.png'),document.fonts&&document.fonts.load?document.fonts.load('700 40px "IBM Plex Sans"').catch(function(){}):0]).then(function(v){
+    var r=datosReporte(v[0]);return cargarImg('/assets/ic/'+(r.nivel?'alerta':'ok')+'.png').then(function(ico){
+      var lin=4+(r.temp?1:0)+(msg?1:0),hb=Math.round((200+lin*48));
+      if(foto){return cargarImg(URL.createObjectURL(foto)).then(function(im){var W=Math.min(1440,im?im.naturalWidth:1080),k=W/1080,H=im?Math.round(im.naturalHeight*W/im.naturalWidth):0,c=document.createElement('canvas');
+        c.width=W;c.height=H+Math.round(hb*k);var x=c.getContext('2d');if(im)x.drawImage(im,0,0,W,H);dibujarReporte(x,0,H,W,Math.round(hb*k),r,v[1],ico,msg);
+        return new Promise(function(ok){c.toBlob(function(b){ok(b?new File([b],'aviso-sul.jpg',{type:'image/jpeg'}):foto)},'image/jpeg',.88)})})}
+      var c=document.createElement('canvas');c.width=1080;c.height=hb;dibujarReporte(c.getContext('2d'),0,0,1080,hb,r,v[1],ico,msg);
+      return new Promise(function(ok){c.toBlob(function(b){ok(b?new File([b],'aviso-sul-reporte.png',{type:'image/png'}):null)},'image/png')})})})}
   function avPrev(){var p=document.getElementById('avPrev');p.innerHTML='';p.hidden=!AVF;if(!AVF)return;var u=URL.createObjectURL(AVF),e=document.createElement(/^video/.test(AVF.type)?'video':'img');e.src=u;if(e.tagName==='VIDEO'){e.muted=true;e.controls=true;e.playsInline=true}p.appendChild(e);
     var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Quitar');x.addEventListener('click',function(){AVF=null;avPrev()});p.appendChild(x)}
+  window.__armarReporte=function(f,m){return armarReporte(f,m)};
   function compartirAviso(ev){if(ev)ev.preventDefault();if(!esPremium()){bloqueo();return}
     document.getElementById('avMsg').placeholder=L2('Contá qué está pasando (opcional)','Conte o que está acontecendo (opcional)');document.getElementById('avSt').textContent='';document.getElementById('avO').hidden=false}
   safe(function(){var o=document.getElementById('avO'),iF=document.getElementById('avInF'),iV=document.getElementById('avInV');if(!o)return;
@@ -1517,8 +1546,14 @@
     [iF,iV].forEach(function(i){i.addEventListener('change',function(){if(i.files&&i.files[0]){AVF=i.files[0];avPrev()}i.value=''})});
     document.getElementById('avX').addEventListener('click',function(){o.hidden=true});
     document.getElementById('avSend').addEventListener('click',function(){var m=document.getElementById('avMsg').value.trim(),t=(m?m+'\n\n':'')+textoAviso(),fin=function(){o.hidden=true;AVF=null;avPrev();document.getElementById('avMsg').value=''};
-      if(AVF){if(navigator.canShare&&navigator.canShare({files:[AVF]})){navigator.share({files:[AVF],text:t}).then(fin).catch(function(){})}
-        else document.getElementById('avSt').textContent=L2('Este navegador no deja enviar la foto o el video desde la página. Quitalo para mandar solo el texto.','Este navegador não deixa enviar a foto ou o vídeo pela página. Remova para mandar só o texto.');return}
+      var st=document.getElementById('avSt');st.textContent=L2('Armando el reporte con ubicación, hora y temperatura…','Montando o relato com localização, hora e temperatura…');
+      var esFoto=AVF&&/^image\//.test(AVF.type);
+      armarReporte(esFoto?AVF:null,m).then(function(rep){st.textContent='';
+        var files=AVF?(esFoto?[rep]:[AVF].concat(rep?[rep]:[])):(rep?[rep]:[]);
+        if(files.length&&navigator.canShare&&navigator.canShare({files:files})){navigator.share({files:files,text:t}).then(fin).catch(function(){});return}
+        if(AVF&&!esFoto&&navigator.canShare&&navigator.canShare({files:[AVF]})){navigator.share({files:[AVF],text:t}).then(fin).catch(function(){});return}
+        if(AVF){st.textContent=L2('Este navegador no deja enviar la foto o el video desde la página. Quitalo para mandar solo el texto.','Este navegador não deixa enviar a foto ou o vídeo pela página. Remova para mandar só o texto.');return}
+        if(navigator.share)navigator.share({text:t}).then(fin).catch(function(){});else{window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener');fin()}});return;
       if(navigator.share)navigator.share({text:t}).then(fin).catch(function(){});else{window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener');fin()}})});
   /* boton flotante para volver al inicio mientras se mira Ajustes */
   safe(function(){var v=document.getElementById('volverF'),a=document.getElementById('ajustes');if(!v||!a||!('IntersectionObserver' in window))return;
