@@ -1,3 +1,5 @@
+/* abrir siempre arriba (el navegador recuerda la posición anterior), salvo enlaces a una sección */
+try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!location.hash){window.scrollTo(0,0);window.addEventListener('load',function(){if(!location.hash&&window.scrollY<400)window.scrollTo(0,0)})}}catch(e){}
 /* Aviso Sul — pagina principal y paginas de servicio.
    Idioma: el texto en portugues esta en el HTML; el espanol va en data-es. Se comparte la eleccion con la app.
    En vivo: lee los mismos datos que la app (/vivo/, con respaldo en GitHub). */
