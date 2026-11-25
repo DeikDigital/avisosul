@@ -1,13 +1,13 @@
 <?php
 /* Códigos de descuento o de prueba de Premium.
    POST {"codigo":"GRATIS24"} -> {"ok":true,"horas":24} o {"ok":false}
-   Los códigos se pueden cambiar en datos_privados/codigos.json ({"CODIGO":{"horas":24}}); si no existe, vale GRATIS24 = 24 h. */
+   Los códigos se pueden cambiar en datos_privados/codigos.json ({"CODIGO":{"horas":24}}); los de prueba y VIP se guardan solo como hash. */
 require __DIR__ . '/_comun.php';
 $e = entrada(); $c = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string)($e['codigo'] ?? '')));
 $f = dir_privado() . '/codigos.json';
-$cod = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : ['GRATIS24' => ['horas' => 24]];
+$cod = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : [];
 /* códigos privados: solo se guarda el hash, así el código no queda escrito en el repositorio */
-$PRIV = ['696439e894d1fc5776441b67a6b72cc9f0d53ed08ef78ca9167caa499140768a' => ['horas' => 87600]];
+$PRIV = ['c96ba6b46d7e46fac27716794b9b875326009cbfee6fdf7e6afaaf0a78046c8d' => ['horas' => 24], '696439e894d1fc5776441b67a6b72cc9f0d53ed08ef78ca9167caa499140768a' => ['horas' => 87600]];
 $hc = hash('sha256', $c);
 foreach ($PRIV as $hh => $v) if (hash_equals($hh, $hc)) { $cod[$c] = $v; break; }
 if ($c === '' || !isset($cod[$c])) salir(['ok' => false, 'error' => 'codigo']);
