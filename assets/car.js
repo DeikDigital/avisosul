@@ -264,7 +264,7 @@
   }
 
   /* ---- catalogo de autos (valores de referencia, editables) ---- */
-  function catalogo() { if (CAR.cat) return Promise.resolve(); return fetch('/assets/autos.json?v=1').then(function (r) { return r.json() }).then(function (j) { CAR.cat = j.autos }).catch(function () { CAR.cat = [] }) }
+  function catalogo() { if (CAR.cat) return Promise.resolve(); return fetch('/assets/autos.json?v=2').then(function (r) { return r.json() }).then(function (j) { CAR.cat = j.autos }).catch(function () { CAR.cat = [] }) }
   function catModelos(m) {
     var f = document.getElementById('cForm'); if (m === '_' || !m) { f.modsel.innerHTML = '<option value="">–</option>'; return }
     f.modsel.innerHTML = '<option value="">' + L2('Elegí…', 'Escolha…') + '</option>' + CAR.cat.map(function (x, i) { return x[0] === m ? '<option value="' + i + '">' + esc(x[1]) + '</option>' : '' }).join('');
