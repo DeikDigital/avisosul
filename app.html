@@ -1840,9 +1840,16 @@
     var n=document.querySelector('.now [data-k=now]');if(n&&PREC)n.textContent=L2('Ahora en tu ubicación','Agora na sua localização');
     var c=document.querySelector('.now .wxc');if(c&&PREC)c.textContent=L2('Tu punto exacto por GPS. Pronóstico: Open-Meteo. Los avisos oficiales son los de ','Seu ponto exato por GPS. Previsão: Open-Meteo. Os avisos oficiais são os de ')+C.nombre+'.'}
   function precPedir(silencio){if(!navigator.geolocation||!esPremium())return;
-    navigator.geolocation.getCurrentPosition(function(p){PREC=[+p.coords.latitude.toFixed(3),+p.coords.longitude.toFixed(3)];LS('prec','on');precUI();precCargar();
-      if(RADAR&&RADAR.map){RADAR.map.setView(PREC,8);L.circleMarker(PREC,{radius:6,color:'#3da5ff',weight:3,fillColor:'#3da5ff',fillOpacity:.9}).addTo(RADAR.map)}},
-      function(){if(!silencio){var b=document.getElementById('bPrec');if(b)b.title=L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.')}LS('prec','')},{enableHighAccuracy:true,timeout:12000,maximumAge:120000})}
+    var b=document.getElementById('bPrec'),t0=b?b.innerHTML:'',fin=function(){if(b&&b.dataset.busca){b.innerHTML=t0;delete b.dataset.busca}};
+    if(b&&!silencio){b.dataset.busca='1';b.innerHTML='📍 '+L2('Buscando…','Buscando…')}
+    var aplicar=function(g){var n=[+g[0].toFixed(3),+g[1].toFixed(3)];if(PREC&&Math.abs(PREC[0]-n[0])<0.002&&Math.abs(PREC[1]-n[1])<0.002)return;
+      var prim=!PREC;PREC=n;LS('prec','on');fin();precUI();precCargar();
+      if(prim&&RADAR&&RADAR.map){RADAR.map.setView(PREC,8);L.circleMarker(PREC,{radius:6,color:'#3da5ff',weight:3,fillColor:'#3da5ff',fillOpacity:.9}).addTo(RADAR.map)}};
+    /* 1) al instante: la posición que el celular ya tiene (o la del seguimiento en vivo); 2) se afina con GPS en segundo plano */
+    if(YO)aplicar(YO);
+    navigator.geolocation.getCurrentPosition(function(p){aplicar([p.coords.latitude,p.coords.longitude])},function(){},{enableHighAccuracy:false,timeout:5000,maximumAge:600000});
+    navigator.geolocation.getCurrentPosition(function(p){aplicar([p.coords.latitude,p.coords.longitude])},
+      function(){fin();if(!PREC){if(!silencio&&b)b.title=L2('No se pudo obtener la ubicación.','Não foi possível obter a localização.');LS('prec','')}},{enableHighAccuracy:true,timeout:20000,maximumAge:60000})}
   safe(function(){var b=document.getElementById('bPrec');if(!b)return;
     b.addEventListener('click',function(){if(!esPremium()){bloqueo();return}if(PREC){PREC=null;LS('prec','');precUI();safe(pintar);safe(cargarWx);return}precPedir(false)});
     if(LS('prec')==='on'&&navigator.permissions&&navigator.permissions.query)navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')precPedir(true)}).catch(function(){});
