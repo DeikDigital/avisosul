@@ -444,6 +444,10 @@
   .vzc button{font:inherit;font-size:12.5px;font-weight:800;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--strong);padding:7px 9px;cursor:pointer;white-space:nowrap}
   .vzn{font-size:13px;color:var(--muted);margin:10px 0 0}
   .tab .cta .pmd{right:8px}
+  #waBox input[type=tel]{font:inherit;width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--strong);margin:6px 0 8px}
+  .wack{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted);margin-bottom:10px}.wack input{margin-top:3px}
+  .pmd2{font-style:normal;font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px;background:#f5b301;color:#16202b;vertical-align:middle}
+  #waEst p{margin:6px 0 10px}.waok{font-weight:800;color:#1e8e3e}
   .tab{background:var(--bg-2)!important;backdrop-filter:none!important}
   /* ---------- sin resplandores: nada de sombras de color, brillos ni pulsos ---------- */
   *,*::before,*::after{box-shadow:none!important;text-shadow:none!important}
@@ -803,6 +807,18 @@
         <button type="button" class="pb pbi" id="pGeo"><i class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></i><b><span class="pt">Usar minha localização</span><span class="es">Usar mi ubicación</span></b><small id="pGeoS"></small></button>
       </div>
     </div>
+    <div class="cfgg" id="waBox">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.500a8.400 8.400 0 0 1-12.400 7.400L3 21l2.100-5.400A8.400 8.400 0 1 1 21 11.500z"/></svg><span class="pt">Alertas no WhatsApp</span><span class="es">Alertas por WhatsApp</span> <i class="pmd2">Premium</i></h3>
+      <p class="pt">Quando sair um aviso oficial para o seu ponto, mandamos uma mensagem no seu WhatsApp. Uma por aviso, sem propaganda.</p>
+      <p class="es">Cuando salga un aviso oficial para tu punto, te mandamos un mensaje a tu WhatsApp. Uno por aviso, sin publicidad.</p>
+      <div id="waForm">
+        <input type="tel" id="waTel" inputmode="tel" autocomplete="tel" placeholder="(45) 99999-9999" aria-label="WhatsApp">
+        <label class="wack"><input type="checkbox" id="waOk"> <span class="pt">Aceito receber avisos do Aviso Sul no WhatsApp. Posso parar quando quiser escrevendo PARAR.</span><span class="es">Acepto recibir avisos de Aviso Sul por WhatsApp. Puedo dejar de recibirlos cuando quiera escribiendo PARAR.</span></label>
+        <button type="button" class="btn btn-wa" id="waGo"><span class="pt">Ativar no WhatsApp</span><span class="es">Activar en WhatsApp</span></button>
+      </div>
+      <div id="waEst" hidden></div>
+      <small class="vzst" id="waSt"></small>
+    </div>
   </div>
 </section>
 
@@ -826,8 +842,8 @@
 <div class="onb" id="pmo" hidden role="dialog" aria-modal="true">
   <div class="onbc gl">
     <h2><span class="pt">Função Premium</span><span class="es">Función Premium</span></h2>
-    <p class="pt" style="color:#b9c6d3">Avisar com foto e vídeo e a localização precisa fazem parte do plano Premium.</p>
-    <p class="es" style="color:#b9c6d3">Avisar con foto y video y la ubicación precisa son parte del plan Premium.</p>
+    <p class="pt" style="color:#b9c6d3">Alertas no WhatsApp, avisar com foto e vídeo e a localização precisa fazem parte do plano Premium.</p>
+    <p class="es" style="color:#b9c6d3">Las alertas por WhatsApp, avisar con foto y video y la ubicación precisa son parte del plan Premium.</p>
     <button type="button" class="btn btn-wa" id="pmoOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
   </div>
 </div>
@@ -1104,6 +1120,28 @@
           .catch(function(){st.textContent=L2('No se pudo enviar. Revisá la conexión.','Não foi possível enviar. Confira a conexão.');snd.disabled=false})},
         function(){st.textContent=L2('Para reportar hace falta permitir la ubicación.','Para relatar é preciso permitir a localização.');snd.disabled=false},{enableHighAccuracy:true,timeout:15000})});
     vzCargar();setInterval(function(){safe(vzCargar)},3*60000)});
+  /* ---- alertas por WhatsApp (Premium): inscripcion en /api/whatsapp.php; se activa mandando "ATIVAR <codigo>" a nuestro numero ---- */
+  function waPintar(){var e=document.getElementById('waEst'),f=document.getElementById('waForm');if(!e)return;var tel=LS('waTel'),cod=LS('waCod'),num=LS('waNum'),est=LS('waEstado');
+    if(!tel){e.hidden=true;f.hidden=false;return}f.hidden=true;e.hidden=false;
+    var link=num?'https://wa.me/'+num+'?text='+encodeURIComponent('ATIVAR '+cod):'';
+    e.innerHTML=est==='ativo'?'<p class="waok">✓ '+L2('Activo en ','Ativo em ')+esc(tel)+'</p>':
+      (link?'<p>'+L2('Último paso: mandanos este mensaje desde tu WhatsApp para activar.','Último passo: mande esta mensagem do seu WhatsApp para ativar.')+'</p><a class="btn btn-wa" href="'+link+'" target="_blank" rel="noopener">'+L2('Enviar ','Enviar ')+'«ATIVAR '+esc(cod)+'»</a>':
+       '<p>'+L2('Quedaste anotado con el ','Você ficou inscrito com o ')+esc(tel)+'. '+L2('El servicio se enciende en estos días: cuando esté, acá aparece el botón para activarlo.','O serviço será ligado nos próximos dias: quando estiver, aparece aqui o botão para ativar.')+'</p>')+
+      '<button type="button" class="dsx" id="waX">'+L2('Dejar de recibir','Parar de receber')+'</button>';
+    document.getElementById('waX').addEventListener('click',function(){fetch('/api/whatsapp.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'cancelar',tel:tel,codigo:cod})}).catch(function(){});
+      ['waTel','waCod','waNum','waEstado'].forEach(function(k){try{localStorage.removeItem('avisosul-'+k)}catch(x){}});waPintar()})}
+  function waEstado(){var tel=LS('waTel'),cod=LS('waCod');if(!WEB||!tel||LS('waEstado')==='ativo')return;
+    fetch('/api/whatsapp.php?tel='+encodeURIComponent(tel)+'&codigo='+encodeURIComponent(cod),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j.estado==='ativo'){LS('waEstado','ativo');waPintar()}}).catch(function(){})}
+  safe(function(){var go=document.getElementById('waGo');if(!go)return;var st=document.getElementById('waSt');
+    go.addEventListener('click',function(){if(!esPremium()){bloqueo();return}
+      var t=document.getElementById('waTel').value,d=t.replace(/\D/g,'');if(d.length<10){st.textContent=L2('Revisá el número: con código de área.','Confira o número: com DDD.');return}
+      if(!document.getElementById('waOk').checked){st.textContent=L2('Marcá que aceptás recibir los avisos.','Marque que aceita receber os avisos.');return}
+      var g=refPunto();go.disabled=true;st.textContent='';
+      fetch('/api/whatsapp.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'inscrever',tel:t,lat:g[0],lon:g[1],cidade:cid,lang:root.getAttribute('data-lang')})})
+        .then(function(r){return r.json()}).then(function(j){go.disabled=false;if(!j.ok){st.textContent=j.error==='limite'?L2('Ya hay varias inscripciones desde esta conexión. Probá mañana.','Já há várias inscrições desta conexão. Tente amanhã.'):L2('No se pudo guardar. Revisá el número.','Não foi possível salvar. Confira o número.');return}
+          LS('waTel',t);LS('waCod',j.codigo);LS('waEstado',j.estado);if(j.numero)LS('waNum',j.numero);waPintar()})
+        .catch(function(){go.disabled=false;st.textContent=L2('No se pudo guardar. Revisá la conexión.','Não foi possível salvar. Confira a conexão.')})});
+    waPintar();waEstado();document.addEventListener('visibilitychange',function(){if(!document.hidden)safe(waEstado)})});
   /* ---- mis lugares: se guardan en el telefono; el aviso se evalua con el contorno oficial ---- */
   var LUG=[],LUGPICK=null;try{LUG=JSON.parse(LS('lugares')||'[]')||[]}catch(e){LUG=[]}
   function lugGuardar(){LS('lugares',JSON.stringify(LUG))}
@@ -1374,7 +1412,7 @@
   });
 
   function txtFijos(){
-    safe(trTxt);safe(lugPintar);safe(ofPintar);safe(vzPintar);
+    safe(trTxt);safe(lugPintar);safe(ofPintar);safe(vzPintar);safe(waPintar);
     if(notifOn())st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);
     else st('pNotif',L2('Te avisa cuando aparece un aviso oficial nuevo mientras la app está abierta o instalada.','Avisa quando surge um aviso oficial novo enquanto o app está aberto ou instalado.'));
     st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
