@@ -82,6 +82,7 @@
   var pq=/[?&]pago=(ar|br)\b/.exec(location.search);if(pq){LS('pagoPais',pq[1]);LS('pagoM','1')}
   var PAGOP=LS('pagoPais')==='ar'||LS('pagoPais')==='br'?LS('pagoPais'):(function(){var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}return /^America\/(Argentina\/|Buenos_Aires|Cordoba|Mendoza|Catamarca|Jujuy|Rosario)/.test(tz)?'ar':'br'})();
   root.setAttribute('data-pago',PAGOP);
+  (function(){var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}root.setAttribute('data-pais',/^America\/(Argentina\/|Buenos_Aires|Cordoba|Mendoza|Catamarca|Jujuy|Rosario)/.test(tz)?'ar':'br')})();
   var ARS={mensal:['$ 9.980','$ 4.990',' /mês',' /mes','Pagamento único por 1 mês. Não renova sozinho.','Pago único por 1 mes. No se renueva solo.'],
     temporada:['$ 29.980','$ 14.990','','',null,null],
     anual:['$ 59.980','$ 29.990',' /ano',' /año','Sai por $ 2.499 por mês. Pagamento único, não renova sozinho.','Sale $ 2.499 por mes. Pago único, no se renueva solo.']};
@@ -103,7 +104,7 @@
     pls.parentNode.insertBefore(d,pls);
     d.querySelectorAll('[data-pp]').forEach(function(b){b.addEventListener('click',function(){PAGOP=b.dataset.pp;LS('pagoPais',PAGOP);LS('pagoM','1');pintarPago()})});
     pintarPago();
-    if(WEB&&!LS('pagoM'))fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){var c=String(j.country_code||'').toUpperCase(),pp=c==='AR'?'ar':c==='BR'?'br':null;if(pp&&pp!==PAGOP&&!LS('pagoM')){PAGOP=pp;pintarPago()}}).catch(function(){})});
+    if(WEB&&!LS('pagoM'))fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){var c=String(j.country_code||'').toUpperCase(),pp=c==='AR'?'ar':c==='BR'?'br':null;if(pp)root.setAttribute('data-pais',pp);if(pp&&pp!==PAGOP&&!LS('pagoM')){PAGOP=pp;pintarPago()}}).catch(function(){})});
   if(!PLANES.length)promoFin();
   /* "Quero": cuenta el interes por cada plan y abre la app con el plan y la cuenta de pago elegidos */
   document.querySelectorAll('[data-plano]').forEach(function(b){b.addEventListener('click',function(){
