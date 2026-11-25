@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aviso Sul — avisos de tempo severo</title>
 <meta name="description" content="Canal gratuito e independente que reúne os avisos oficiais de tempo severo da sua cidade, no Brasil e na Argentina. Em português e espanhol.">
-<meta name="theme-color" content="#0b1118">
+<meta name="theme-color" content="#142235">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icon-192.png">
+<link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@600;700&display=swap">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Aviso Sul">
@@ -19,18 +19,18 @@
 -->
 <style>
   :root{
-    --amber:#f5b301; --amber-ink:#2e2000; --wa:#1f8f4e;
+    --amber:#FFB238; --amber-ink:#1E1404; --wa:#1f8f4e;
     /* modo noche (por defecto) */
-    --bg:#0b1118; --bg-2:#111a24; --card:#16212d; --line:#263544;
-    --text:#e9eef3; --muted:#9fb0c1; --strong:#ffffff;
-    --sky-1:#04070b; --sky-2:#0e1823; --sky-3:#1c2a39; --cloud-b:.55; --cloud-o:.95;
+    --bg:#142235; --bg-2:#1A2C44; --card:#1F3350; --line:#2E4A6B;
+    --text:#E9F1F8; --muted:#A9BCD0; --strong:#ffffff;
+    --sky-1:#16263A; --sky-2:#243A52; --sky-3:#4C7097; --cloud-b:.55; --cloud-o:.95;
     --sil:#020406; --scrim:rgba(4,7,11,.62);
     --box:#0e1620; --box-line:#3a4c5f;
   }
   [data-theme="light"]{
-    --bg:#f3f1ec; --bg-2:#e8e4da; --card:#ffffff; --line:#cdc6b6;
-    --text:#17212c; --muted:#56616d; --strong:#0e161e;
-    --sky-1:#3d4955; --sky-2:#6c7986; --sky-3:#a3adb6; --cloud-b:1.25; --cloud-o:.9;
+    --bg:#EEF3F8; --bg-2:#E1EAF3; --card:#ffffff; --line:#C6D4E2;
+    --text:#16263A; --muted:#4F6378; --strong:#0E1A2A;
+    --sky-1:#33506F; --sky-2:#6E98C0; --sky-3:#ABD2EF; --cloud-b:1.25; --cloud-o:.9;
     --sil:#141b22; --scrim:rgba(20,28,36,.50);
     --box:#ffffff; --box-line:#17212c;
   }
@@ -45,7 +45,7 @@
 
   /* ---------- cielo ---------- */
   .hero{position:relative;overflow:hidden;color:#fff;isolation:isolate;
-    background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 48%,var(--sky-3) 100%);
+    background:url("/assets/cielo.svg") center/cover,linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 48%,var(--sky-3) 100%);
     transition:background .6s}
   .clouds{position:absolute;inset:-8% -30% auto -30%;height:78%;z-index:-4;pointer-events:none;
     filter:brightness(var(--cloud-b));opacity:var(--cloud-o);will-change:transform}
@@ -68,7 +68,7 @@
   .top{position:relative;z-index:2}
   .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:14px;padding-bottom:6px}
   .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.02em;font-size:18px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
-  .brand svg{width:26px;height:26px;flex:none}
+  .brand svg{width:26px;height:26px;flex:none}.brand img{width:30px;height:30px;border-radius:8px;flex:none}.brand{font-family:'IBM Plex Sans',inherit}
   .seg{display:flex;border:1px solid rgba(255,255,255,.35);border-radius:999px;overflow:hidden;background:rgba(0,0,0,.28);backdrop-filter:blur(6px)}
   .seg button{background:none;border:0;color:#e3eaf1;font:inherit;font-size:13.5px;font-weight:700;padding:7px 12px;cursor:pointer}
   [data-lang="pt"] .seg button[data-set="pt"],[data-lang="es"] .seg button[data-set="es"]{background:var(--amber);color:var(--amber-ink)}
@@ -508,7 +508,7 @@
   <header class="top">
     <div class="wrap">
       <div class="brand">
-        <svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>
+        <img src="/assets/logo-96.png" alt="" width="30" height="30">
         Aviso Sul<span class="pl">Premium</span>
       </div>
       <div class="seg" role="group" aria-label="Idioma">
@@ -828,7 +828,7 @@
 
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbT">
   <div class="onbc gl">
-    <svg viewBox="20 10 160 185" aria-hidden="true"><path d="M100 84 158 184H42z" fill="#f5b301" stroke="#f5b301" stroke-width="14" stroke-linejoin="round"/><rect x="94" y="118" width="12" height="32" rx="6" fill="#16202b"/><circle cx="100" cy="166" r="7" fill="#16202b"/><g fill="#5a6c80"><circle cx="66" cy="74" r="30"/><circle cx="104" cy="54" r="38"/><circle cx="142" cy="78" r="28"/><rect x="38" y="72" width="132" height="34" rx="17"/></g></svg>
+    <img src="/icon-192.png" alt="" width="96" height="96" style="display:block;margin:0 auto 10px;border-radius:22px">
     <h2 id="onbT"><span class="pt">Ative o Aviso Sul</span><span class="es">Activá Aviso Sul</span></h2>
     <ul>
       <li><b>🔔 <span class="pt">Notificações</span><span class="es">Notificaciones</span></b><span class="pt">Para avisar quando surgir um aviso oficial novo.</span><span class="es">Para avisarte cuando aparece un aviso oficial nuevo.</span></li>
@@ -917,7 +917,7 @@
   function periodo(){var d=new Date(),h=d.getHours();return(h>=7&&h<20?'d':'n')+d.getDate()}
   function temaHora(){return periodo().charAt(0)==='d'?'light':'night'}
   function setTheme(t,manual){root.setAttribute('data-theme',t);if(manual)LS('tema',t+'|'+periodo());
-    var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='night'?'#0b1118':'#3d4955');labelTheme()}
+    var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='night'?'#142235':'#33506F');labelTheme()}
 
   /* ---- ciudades ----
      Una sola página para todas las ciudades: ?c=foz o ?c=iguazu.

@@ -163,3 +163,56 @@ p{margin:0 0 12px}
 .fin{background:var(--bg)!important}
 .punto{animation:none!important}
 .vivo{background:var(--card)!important}
+
+/* =========================================================
+   Identidad low-poly (nov 2026): cielo de tormenta facetado que se abre a celeste,
+   nubes grises, rayo y "SUL" en ámbar. Reemplaza la paleta anterior.
+   ========================================================= */
+:root{
+  --bg:#142235;--bg2:#1A2C44;--card:#1F3350;--line:#2E4A6B;--text:#E9F1F8;--muted:#A9BCD0;--strong:#FFFFFF;
+  --sol:#FFB238;--sol2:#FFD86B;--ceu:#8EBBE0;--perigo:#E8572A;
+  --amarelo:#FFD23F;--laranja:#FF8A1F;--vermelho:#E8452C;
+}
+body{background:var(--bg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+h1,h2,h3,h4,.marca,.preco{font-family:"IBM Plex Sans",Inter,system-ui,sans-serif}
+h1{font-weight:700;letter-spacing:-.025em}h2{font-weight:700}h3{font-weight:700}
+a{color:var(--sol2)}
+.top{background:rgba(20,34,53,.9);border-bottom-color:rgba(142,187,224,.14)}
+.marca{font-weight:700}
+.marca img{width:36px;height:36px;border-radius:9px;display:block}
+.marca svg{display:none}
+.kick{color:var(--ceu);letter-spacing:.12em}
+.lead,.card p,.mock .doc,.faq details p,.texto p,.texto li{color:#CFDCE8}
+.btn{border-radius:12px}
+.btn-sol{background:var(--sol);color:#1E1404}
+.btn-sol:hover{background:var(--sol2)}
+.btn-lin{border-color:rgba(233,241,248,.4);background:transparent;color:var(--strong)}
+.btn-lin:hover{background:rgba(233,241,248,.08)}
+.btn:disabled{opacity:.75;cursor:default}
+.idi button[aria-pressed="true"]{background:var(--sol);color:#1E1404}
+/* portada: la escena del logo de fondo */
+.hero{background:#16263A url("/assets/cielo.svg") center/cover!important;padding:72px 0 64px}
+.hero .wrap{position:relative;z-index:1;grid-template-columns:1fr 1fr}
+.escena{position:relative;margin:0}
+.escena img{display:block;width:100%;height:auto;border-radius:24px;border:1px solid rgba(142,187,224,.3)}
+.escena .vivo{position:relative;margin:-70px 18px 0;padding:16px 18px}
+.escena .vivo .n{font-size:44px;margin:8px 0 2px}
+.hero .lluvia{display:none}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr}.escena .vivo{margin:-50px 10px 0}}
+.vivo{background:rgba(20,34,53,.92)!important;border:1px solid rgba(142,187,224,.28);border-radius:22px}
+.vivo .t{color:var(--ceu)}
+.punto{background:var(--sol)}
+.cid{background:rgba(142,187,224,.08)}
+/* secciones */
+.sec.alt{background:var(--bg2) url("/assets/cielo-noite.svg") center/cover}
+.card,.plan,.faq details,.cmp,.mock{background:var(--card);border-color:var(--line);border-radius:18px}
+.ico{background:rgba(255,178,56,.14);color:var(--sol);border-radius:14px}
+.paso .num,.pasos .card::before,.plan .sello{background:var(--sol);color:#1E1404}
+.plan.top-p{border-color:var(--sol)}
+.cmp>div:first-child{background:rgba(142,187,224,.12)}
+.cor .tag{background:rgba(255,210,63,.16)}
+.fin{background:#16263A url("/assets/cielo.svg") center/cover!important}
+.fin h2{color:#fff}
+.pie{background:#101C2C;border-top-color:var(--line)}
+.lista li::before{background-color:var(--sol)}
+#mapa{background:#16263A}

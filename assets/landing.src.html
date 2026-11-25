@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aviso Sul · Alerta de temporal, granizo e vendaval no Sul do Brasil</title>
 <meta name="description" content="Os avisos oficiais do INMET para a sua casa, o trabalho e a roça no Paraná, em Santa Catarina e no Rio Grande do Sul: mapa ao vivo, risco da próxima hora e o que fazer. Grátis, sem cadastro.">
-<meta name="theme-color" content="#0b1118">
-<link rel="icon" href="/icon-192.png">
+<meta name="theme-color" content="#142235">
+
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:title" content="Aviso Sul · O temporal não manda aviso. A gente manda.">
 <meta property="og:description" content="Avisos oficiais do INMET no seu celular, com mapa e o que fazer. Paraná, Santa Catarina e Rio Grande do Sul.">
 <meta property="og:image" content="https://avisosul.com/icon-512.png">
-<link rel="stylesheet" href="/assets/site.css?v=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@600;700&family=Inter:wght@400;600;700&display=swap"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png"><link rel="stylesheet" href="/assets/site.css?v=4">
 </head>
 <body data-tit-es="Aviso Sul · Alerta de temporal, granizo y viento en el Sur de Brasil">
 <svg class="svg-hide" aria-hidden="true">{{SYM}}</svg>
@@ -45,14 +45,17 @@
       </div>
       <p class="small" data-es="Lo básico es gratis para siempre. Sin registro. Abre en el navegador y se instala como app.">O básico é grátis para sempre. Sem cadastro. Abre no navegador e instala como app.</p>
     </div>
-    <aside class="vivo" aria-live="polite">
-      <div class="t"><span class="punto"></span><span data-es="Ahora en el Sur">Agora no Sul</span></div>
-      <div class="n" id="vN">–</div>
-      <div id="vTxt" class="muted" data-es="Consultando los avisos del INMET…">Consultando os avisos do INMET…</div>
-      <div class="niv" id="vNiv"></div>
-      <div class="cids" id="vCid"></div>
-      <p class="small" id="vAt" style="margin:12px 0 0"></p>
-    </aside>
+    <figure class="escena">
+      <picture><source srcset="/assets/escena-cuadro.webp" type="image/webp"><img src="/assets/escena-cuadro.jpg" alt="Logo de Aviso Sul: nube de tormenta con rayo y señal de peligro" width="1100" height="956"></picture>
+      <aside class="vivo" aria-live="polite">
+        <div class="t"><span class="punto"></span><span data-es="Ahora en el Sur">Agora no Sul</span></div>
+        <div class="n" id="vN">–</div>
+        <div id="vTxt" class="muted" data-es="Consultando los avisos del INMET…">Consultando os avisos do INMET…</div>
+        <div class="niv" id="vNiv"></div>
+        <div class="cids" id="vCid"></div>
+        <p class="small" id="vAt" style="margin:12px 0 0"></p>
+      </aside>
+    </figure>
   </div>
 </section>
 
