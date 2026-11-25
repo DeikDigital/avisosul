@@ -5,6 +5,7 @@ $planes = ['mensal', 'anual', 'temporada'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $in = entrada(); $p = in_array($in['plano'] ?? '', $planes) ? $in['plano'] : null;
     if (!$p) salir(['ok' => false], 400);
+    $pais = ($in['pais'] ?? '') === 'ar' ? 'ar' : 'br'; $p = $pais === 'ar' ? 'ar-' . $p : $p;
     $yo = visitante();
     salir(con_archivo('interesse.json', function ($d) use ($p, $yo) {
         $dia = gmdate('Y-m-d'); $k = $dia . '|' . $yo . '|' . $p;
