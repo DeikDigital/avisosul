@@ -61,6 +61,7 @@ if (isset($_GET['hook'])) {
     }
     if ($tipo === 'order' && preg_match('/^[A-Za-z0-9_-]{4,64}$/', $id)) {
         [$code, $o] = mp_api('GET', '/v1/orders/' . rawurlencode($id), $cfg);
+        if ($code === 404) salir(['ok' => true, 'nota' => 'no existe']);   // avisos de prueba o de otra cuenta: no reintentar
         if ($code !== 200 || !$o) salir(['ok' => false, 'error' => 'consulta'], 502);   // Mercado Pago reintenta
         $s = strtolower((string)($o['status'] ?? '')); $sd = strtolower((string)($o['status_detail'] ?? ''));
         if (in_array($s, ['refunded', 'charged_back'], true) || in_array($sd, ['refunded', 'charged_back'], true)) $st = in_array('charged_back', [$s, $sd], true) ? 'charged_back' : 'refunded';
@@ -69,6 +70,7 @@ if (isset($_GET['hook'])) {
         $refExt = (string)($o['external_reference'] ?? ''); $monto = $o['total_paid_amount'] ?? ($o['total_amount'] ?? null); $cobro = 'ord:' . $id;
     } elseif ($tipo === 'payment' && preg_match('/^\d+$/', $id)) {
         [$code, $pago] = mp_api('GET', '/v1/payments/' . $id, $cfg);
+        if ($code === 404) salir(['ok' => true, 'nota' => 'no existe']);
         if ($code !== 200 || !$pago) salir(['ok' => false, 'error' => 'consulta'], 502);
         $st = (string)($pago['status'] ?? ''); $refExt = (string)($pago['external_reference'] ?? ''); $monto = $pago['transaction_amount'] ?? null; $cobro = 'pago:' . $id;
     } else {
