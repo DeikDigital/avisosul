@@ -1799,7 +1799,7 @@
     var r=datosReporte(v[0]);return cargarImg('/assets/ic/'+(r.nivel?'alerta':'ok')+'.png').then(function(ico){
       var lin=4+(r.temp?1:0)+(msg?1:0),hb=Math.round((200+lin*48));
       if(foto){return cargarImg(URL.createObjectURL(foto)).then(function(im){var W=Math.min(1440,im?im.naturalWidth:1080),k=W/1080,H=im?Math.round(im.naturalHeight*W/im.naturalWidth):0,c=document.createElement('canvas');
-        c.width=W;c.height=H+Math.round(hb*k);var x=c.getContext('2d');if(im)x.drawImage(im,0,0,W,H);dibujarReporte(x,0,H,W,Math.round(hb*k),r,v[1],ico,msg);
+        var HB=Math.round(hb*k);c.width=W;c.height=H+HB;var x=c.getContext('2d');dibujarReporte(x,0,0,W,HB,r,v[1],ico,msg);if(im)x.drawImage(im,0,HB,W,H);/* datos arriba: abajo los tapa la barra de WhatsApp */
         return new Promise(function(ok){c.toBlob(function(b){ok(b?new File([b],'aviso-sul.jpg',{type:'image/jpeg'}):foto)},'image/jpeg',.88)})})}
       var c=document.createElement('canvas');c.width=1080;c.height=hb;dibujarReporte(c.getContext('2d'),0,0,1080,hb,r,v[1],ico,msg);
       return new Promise(function(ok){c.toBlob(function(b){ok(b?new File([b],'aviso-sul-reporte.png',{type:'image/png'}):null)},'image/png')})})})}
