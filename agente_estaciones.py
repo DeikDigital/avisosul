@@ -24,7 +24,7 @@ SERVIDORES = ["https://overpass.private.coffee/api/interpreter", "https://overpa
 # coordenadas y precios declarados). Se baja una vez por dia y llena los cuadros argentinos de una sola vez.
 SE_URL = ("http://datos.energia.gob.ar/dataset/1c181390-5045-475e-94dc-410429be4b17/resource/"
           "80ac25de-a44a-4445-9215-090cf55cfda5/download/precios-en-surtidor-resolucin-3142016.csv")
-SE_MARCA = os.path.join(SALIDA, "_se.json")
+SE_MARCA = os.path.join(SALIDA, "_se2.json")
 # zonas cubiertas: (lat min, lat max, lon min, lon max)
 ZONAS = [(-56, -20, -74, -52),   # Argentina
          (-34, -20, -58, -44)]   # Sur y Sudeste de Brasil (PR, SC, RS, SP)
