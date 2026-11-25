@@ -1119,7 +1119,7 @@
       <button type="button" role="radio" aria-checked="true" data-p="temporada"><b><span class="pt">Temporada</span><span class="es">Temporada</span></b><span><em class="prb">R$ 44,90</em><em class="pra">$ 14.990</em><small><span class="pt">até 31/03</span><span class="es">hasta 31/03</span></small></span><i><span class="pt">Ideal para o verão</span><span class="es">Ideal para el verano</span></i></button>
       <button type="button" role="radio" aria-checked="false" data-p="anual"><b><span class="pt">Anual</span><span class="es">Anual</span></b><span><em class="prb">R$ 89,90</em><em class="pra">$ 29.990</em><small><span class="pt">/ano</span><span class="es">/año</span></small></span></button>
     </div>
-    <p class="pmpg"><span class="prb"><span class="pt">Pagamento seguro pela Hotmart: Pix, cartão ou boleto. Garantia de 7 dias. Use o mesmo e-mail da sua conta.</span><span class="es">Pago seguro por Hotmart: Pix, tarjeta o boleto. 7 días de garantía. Usá el mismo email de tu cuenta.</span></span><span class="pra">Pagás con Mercado Pago: dinero en cuenta, débito o tarjeta, en pesos.</span></p>
+    <p class="pmpg"><span class="prb"><span class="pt">Pagamento seguro pela Hotmart: Pix, cartão ou boleto. Garantia de 7 dias. Use o mesmo e-mail da sua conta.</span><span class="es">Pago seguro por Hotmart: Pix, tarjeta o boleto. 7 días de garantía. Usá el mismo email de tu cuenta.</span></span><span class="pra">Pagás con Mercado Pago: dinero en cuenta, débito o tarjeta, en pesos. Cada plan es un pago único por el período: no se renueva solo.</span></p>
     <button type="button" class="btn btn-wa" id="pmoGo"><span class="pt">Quero este plano</span><span class="es">Quiero este plan</span></button>
     <p class="pmvf" id="pmoVf" hidden><button type="button" class="lnk" id="pmoYa"><span class="pt">Já paguei: verificar meu Premium</span><span class="es">Ya pagué: verificar mi Premium</span></button></p>
     <p class="pmst" id="pmoSt"></p>
@@ -1877,11 +1877,18 @@
     if(p&&p.hasta*1000>ahora){var ya=LS('plan')==='premium'&&LS('planFuente')==='hotmart';LS('plan','premium');LS('planHasta',String(p.hasta*1000));LS('planFuente','hotmart');root.setAttribute('data-plan','premium');try{carMarca()}catch(e){}return ya?'sigue':'nuevo'}
     if(LS('planFuente')==='hotmart'){LS('plan','gratis');LS('planFuente','');root.setAttribute('data-plan','gratis')}
     return p&&p.pendiente?'pendiente':'no'}
-  function pagoBoton(){var b=document.getElementById('pmoGo');if(!b||PAISM==='ar'||!window.__HM)return;
-    b.innerHTML='<span class="pt">Assinar com Pix ou cartão</span><span class="es">Pagar con Pix o tarjeta</span>';document.getElementById('pmoVf').hidden=false}
-  function irPago(plan){var u=window.__HM&&window.__HM[plan];if(!u)return;
+  function pagoBoton(){var b=document.getElementById('pmoGo');if(!b)return;
+    if(PAISM==='ar'){if(!window.__MP)return;b.innerHTML='<span class="pt">Pagar com Mercado Pago</span><span class="es">Pagar con Mercado Pago</span>'}
+    else{if(!window.__HM)return;b.innerHTML='<span class="pt">Assinar com Pix ou cartão</span><span class="es">Pagar con Pix o tarjeta</span>'}
+    document.getElementById('pmoVf').hidden=false}
+  function irPago(plan){var ar=PAISM==='ar',u=!ar&&window.__HM&&window.__HM[plan];if(!ar&&!u)return;if(ar&&!window.__MP)return;
     if(!LS('cuenta')){LS('pagoPend',plan);var c=document.getElementById('cta');if(c){c.hidden=false;toast(L2('Primero creá tu cuenta: el pago se activa con ese mismo email.','Primeiro crie sua conta: o pagamento é ativado com esse mesmo e-mail.'),false,7000)}return}
     var em=LS('cuentaEmail')||'';LS('pagoEspera',String(Date.now()));
+    if(ar){toast(L2('Abriendo Mercado Pago…','Abrindo o Mercado Pago…'));
+      fetch('/api/mercadopago.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'checkout',token:LS('cuenta'),plan:plan})}).then(function(r){return r.json()}).then(function(j){
+        if(j.ok&&j.url){location.href=j.url;return}
+        if(j.error==='sesion'){LS('cuenta','');LS('pagoPend',plan);document.getElementById('cta').hidden=false;toast(L2('Volvé a entrar con tu cuenta para pagar.','Entre de novo com sua conta para pagar.'),false,6000);return}
+        toast(L2('No se pudo abrir el pago. Probá de nuevo en un rato.','Não foi possível abrir o pagamento. Tente de novo daqui a pouco.'),false,6000)}).catch(function(){toast(L2('Sin conexión.','Sem conexão.'),false,5000)});return}
     toast(L2('Abriendo el pago seguro de Hotmart. Usá el email ','Abrindo o pagamento seguro da Hotmart. Use o e-mail ')+em,false,4000);
     setTimeout(function(){location.href=u+(u.indexOf('?')>-1?'&':'?')+'email='+encodeURIComponent(em)+'&sck=avisosul_app_'+plan},700)}
   function pagoVerificar(manual){var t=LS('cuenta');if(!t){if(manual)toast(L2('Entrá con tu cuenta (el email con el que pagaste) para activar Premium.','Entre com sua conta (o e-mail com que pagou) para ativar o Premium.'),false,7000);return}
@@ -1889,7 +1896,7 @@
     (function vez(){fetch('/api/cuenta.php?token='+encodeURIComponent(t),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){var r=premSync(j);
       if(r==='nuevo'||r==='sigue'){LS('pagoEspera','');toast(L2('¡Listo! Premium activado. Gracias por apoyar ','Pronto! Premium ativado. Obrigado por apoiar o ')+MARCA+'.',true,6000);var o=document.getElementById('pmo');if(o)o.hidden=true;return}
       if(Date.now()<fin){n++;setTimeout(vez,5000);return}
-      LS('pagoEspera','');toast(L2('Todavía no llegó la confirmación. Con Pix es al instante; con boleto puede tardar hasta 3 días hábiles. Volvé a tocar "Ya pagué" más tarde.','A confirmação ainda não chegou. Com Pix é na hora; com boleto pode levar até 3 dias úteis. Toque em "Já paguei" mais tarde.'),false,12000)}).catch(function(){if(Date.now()<fin)setTimeout(vez,8000)})})()}
+      LS('pagoEspera','');toast((PAISM==='ar'?L2('Todavía no llegó la confirmación. Con tarjeta o dinero en cuenta es al instante; en efectivo puede tardar hasta 2 días hábiles. Volvé a tocar "Ya pagué" más tarde.','A confirmação ainda não chegou. Toque em "Já paguei" mais tarde.'):L2('Todavía no llegó la confirmación. Con Pix es al instante; con boleto puede tardar hasta 3 días hábiles. Volvé a tocar "Ya pagué" más tarde.','A confirmação ainda não chegou. Com Pix é na hora; com boleto pode levar até 3 dias úteis. Toque em "Já paguei" mais tarde.')),false,12000)}).catch(function(){if(Date.now()<fin)setTimeout(vez,8000)})})()}
   safe(function(){var y=document.getElementById('pmoYa');if(y)y.addEventListener('click',function(){pagoVerificar(true)});
     if(/[?&]pago=ok\b/.test(location.search)||(+LS('pagoEspera')||0)>Date.now()-3600000)setTimeout(function(){pagoVerificar(false)},1200);
     else if(LS('cuenta')&&WEB)fetch('/api/cuenta.php?token='+encodeURIComponent(LS('cuenta')),{cache:'no-store'}).then(function(r){return r.json()}).then(premSync).catch(function(){})});
@@ -1915,7 +1922,7 @@
         if(j.ok){document.getElementById('ctaP1').hidden=true;document.getElementById('ctaP2').hidden=false;st.textContent=L2('Te mandamos un código de 6 números a ','Enviamos um código de 6 números para ')+email+L2('. Mirá también en spam.','. Veja também no spam.');document.getElementById('ctaC').focus()}
         else st.textContent=j.error==='limite'?L2('Demasiados intentos. Probá en un rato.','Muitas tentativas. Tente daqui a pouco.'):L2('No se pudo enviar el código. Probá de nuevo.','Não foi possível enviar o código. Tente de novo.')}).catch(function(){st.textContent=L2('Sin conexión.','Sem conexão.')})});
     /* Google: el botón aparece solo cuando está cargado el Client ID en el servidor */
-    if(WEB)fetch('/api/cuenta.php?cfg=1').then(function(r){return r.json()}).then(function(j){window.__HM=j.hotmart||null;pagoBoton();if(!j.google)return;var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;
+    if(WEB)fetch('/api/cuenta.php?cfg=1').then(function(r){return r.json()}).then(function(j){window.__HM=j.hotmart||null;window.__MP=!!j.mp;pagoBoton();if(!j.google)return;var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;
       sc.onload=function(){try{google.accounts.id.initialize({client_id:j.google,auto_select:true,cancel_on_tap_outside:false,itp_support:true,use_fedcm_for_prompt:true,context:'signup',callback:function(res){st.textContent=L2('Entrando…','Entrando…');
           fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'google',credential:res.credential})}).then(function(r){return r.json()}).then(function(k){if(k.ok){ctaEntrar(k.token,k.email);cerrar()}else st.textContent=L2('No se pudo entrar con Google.','Não foi possível entrar com o Google.')})}});
         google.accounts.id.renderButton(document.getElementById('ctaG'),{theme:'filled_black',size:'large',shape:'pill',text:'continue_with',locale:root.getAttribute('data-lang')==='es'?'es':'pt-BR'});google.accounts.id.prompt()}catch(e){}};document.head.appendChild(sc)}).catch(function(){});
@@ -1953,7 +1960,7 @@
     document.getElementById('pmoX').addEventListener('click',cerrar);o.addEventListener('click',function(e){if(e.target===o)cerrar()});
     o.querySelectorAll('.pmp button').forEach(function(b){b.addEventListener('click',function(){plan=b.dataset.p;o.querySelectorAll('.pmp button').forEach(function(x){x.setAttribute('aria-checked',x===b?'true':'false')})})});
     document.getElementById('pmoGo').addEventListener('click',function(){
-      if(PAISM!=='ar'&&window.__HM&&window.__HM[plan]){irPago(plan);return}
+      if((PAISM!=='ar'&&window.__HM&&window.__HM[plan])||(PAISM==='ar'&&window.__MP)){irPago(plan);return}
       fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:plan,pais:PAISM})}).catch(function(){});
       LS('planElegido',plan);st.textContent=L2(PAISM==='ar'?'¡Anotado! El pago con Mercado Pago se habilita en estos días y te avisamos.':'¡Anotado! El pago con Pix, tarjeta y boleto se habilita en estos días y te avisamos. Si tenés un código, cargalo abajo.','Anotado! O pagamento com Pix, cartão e boleto será liberado nos próximos dias e a gente avisa. Se você tem um código, coloque abaixo.')});
     document.getElementById('pmoCod').addEventListener('submit',function(e){e.preventDefault();var c=document.getElementById('pmoIn').value.trim();if(!c)return;st.textContent=L2('Revisando el código…','Conferindo o código…');

@@ -16,6 +16,7 @@ function premium_de($em) {
     return ['hasta' => (int)($x['hasta'] ?? 0), 'plan' => $x['plan'] ?? 'premium', 'estado' => $x['estado'] ?? '', 'pendiente' => $x['pendiente'] ?? null];
 }
 function checkout_br() { $f = dir_privado() . '/hotmart.json'; $c = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : []; $o = []; foreach (($c['checkout'] ?? []) as $k => $u) if (preg_match('#^https://(pay|go)\.hotmart\.com/#', (string)$u)) $o[$k] = $u; return $o ?: null; }
+function mp_ok() { $f = dir_privado() . '/mercadopago.json'; $c = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : []; return !empty($c['access_token']); }
 function email_ok($e) { $e = strtolower(trim((string)$e)); return filter_var($e, FILTER_VALIDATE_EMAIL) && strlen($e) <= 120 ? $e : null; }
 function nueva_sesion($email) {
     $tok = bin2hex(random_bytes(24));
@@ -37,7 +38,7 @@ function cuenta_de($tok) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($_GET['cfg'])) { $gf = dir_privado() . '/google.json'; $gc = file_exists($gf) ? json_decode(file_get_contents($gf), true) : []; salir(['ok' => true, 'google' => cfg_google(), 'maps' => $gc['maps_key'] ?? null, 'hotmart' => checkout_br()]); }
+    if (isset($_GET['cfg'])) { $gf = dir_privado() . '/google.json'; $gc = file_exists($gf) ? json_decode(file_get_contents($gf), true) : []; salir(['ok' => true, 'google' => cfg_google(), 'maps' => $gc['maps_key'] ?? null, 'hotmart' => checkout_br(), 'mp' => mp_ok()]); }
     $c = cuenta_de($_GET['token'] ?? '');
     if (!$c) salir(['ok' => false, 'error' => 'sesion'], 401);
     salir(['ok' => true, 'email' => $c[0], 'ajustes' => $c[1]['ajustes'] ?? (object)[], 'premium' => premium_de($c[0])]);
