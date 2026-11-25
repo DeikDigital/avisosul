@@ -353,6 +353,20 @@
   .pmcod{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.2);text-align:left}.pmcod label{font-size:13.5px;font-weight:700}
   .pmcod div{display:flex;gap:6px;margin-top:6px}.pmcod input{flex:1;min-width:0;width:100%;font:inherit;font-size:16px;text-transform:uppercase;padding:9px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.25);color:inherit}
   .pmcod button{font:inherit;font-weight:800;padding:9px 14px;border-radius:12px;border:0;background:var(--amber);color:var(--amber-ink);cursor:pointer}
+  .tools .cq{height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .cq svg{width:15px;height:15px}.tools .cq i{font-style:normal;font-size:9px;font-weight:800;padding:1px 6px;border-radius:999px;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000}
+  .cqs{max-width:440px;position:relative}.cqr{display:grid;gap:6px;margin-top:10px;text-align:left}
+  .cqr button{font:inherit;text-align:left;color:inherit;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer}.cqr button small{display:block;opacity:.7;font-size:12px}
+  .cqsrc{display:block;margin-top:10px;font-size:11px;opacity:.6}
+  .cqp{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:60;max-width:520px;margin:0 auto;max-height:62vh;overflow:auto;padding:16px 16px 14px;border-radius:20px;background:#142235;box-shadow:0 12px 40px rgba(0,0,0,.5)!important;border:1px solid rgba(142,187,224,.35);color:#E9F1F8}
+  [data-theme="light"] .cqp{background:#fff;color:#16263A;border-color:#C6D4E2}
+  .cqp h3{margin:0 34px 2px 0;font-size:18px}.cqp .cqsub{font-size:12.5px;opacity:.75;margin:0 0 10px}
+  .cqnow{display:flex;align-items:center;gap:12px;margin-bottom:10px}.cqnow b{font-size:34px;line-height:1}.cqnow span{font-size:14px}
+  .cqh{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}.cqh div{flex:none;text-align:center;font-size:12px;padding:6px 8px;border-radius:10px;background:rgba(142,187,224,.12);min-width:54px}.cqh b{display:block;font-size:14px}
+  .cqk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}.cqk div{text-align:center;font-size:12px;padding:6px 4px;border-radius:12px;background:rgba(142,187,224,.10);border:1px solid transparent}
+  .cqk svg{width:34px;height:34px;display:block;margin:0 auto 2px}.cqk em{display:block;font-style:normal;font-weight:800;font-size:11px}.cqk .n1{border-color:#FFD23F}.cqk .n2{border-color:#FF8A1F}.cqk .n3{border-color:#E8452C}
+  .cqav{font-size:13.5px;padding:8px 10px;border-radius:10px;margin-top:6px;border-left:5px solid #FFD23F;background:rgba(255,210,63,.10)}.cqav.naranja{border-left-color:#FF8A1F}.cqav.rojo{border-left-color:#E8452C}
+  .cqmini{position:fixed;right:14px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:59;display:inline-flex;align-items:center;gap:6px;max-width:60vw;padding:9px 13px;border-radius:999px;border:0;background:var(--amber);color:var(--amber-ink);font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+  .cqmini svg{width:16px;height:16px;flex:none}.cqmini span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .vz5{grid-template-columns:repeat(5,1fr)!important}@media (max-width:420px){.vz5{grid-template-columns:repeat(3,1fr)!important}}
   .vzl{display:block;font-weight:800;margin:6px 0 6px;color:var(--strong)}.vzl small{font-weight:600;color:var(--muted)}
   #vzTxt{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--strong);resize:vertical}
@@ -381,7 +395,7 @@
   .tools .prc{margin:0;height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .prc svg{width:15px;height:15px}.tools .prc i{padding:1px 6px;font-size:9px}
   .tg.ico{width:38px;height:38px;padding:0!important;justify-content:center}
   .selc{flex:1 1 auto;max-width:none}
-  @media (max-width:560px){.tools .wrap{flex-wrap:wrap!important;row-gap:8px!important}.selc{flex:1 1 100%}.tools .rgn{flex:1 1 0;font-size:11px}.tools .sp{display:none}.tools .prc{font-size:12.5px;padding:0 9px;gap:4px}.tools .wrap{gap:5px!important}}
+  @media (max-width:560px){.tools .wrap{flex-wrap:wrap!important;row-gap:8px!important}.selc{flex:1 1 100%}.tools .rgn{flex:1 1 100%;font-size:11px}.tools .sp{display:none}.tools .prc{font-size:12.5px;padding:0 9px;gap:4px}.tools .wrap{gap:5px!important}}
   @media (max-width:380px){.tools .prc{font-size:11.5px;padding:0 7px}.tools .prc svg{display:none}}
   #bLang{position:relative;width:70px;height:36px;padding:0 7px!important;display:inline-flex;align-items:center;justify-content:space-between;gap:0}
   #bLang::before{content:"";position:absolute;top:3px;left:3px;width:32px;height:28px;border-radius:999px;background:var(--amber);transition:transform .25s ease}
@@ -577,8 +591,9 @@
   <div class="tools">
     <div class="wrap">
       <label class="selc"><span class="sr pt">Cidade</span><span class="sr es">Ciudad</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/></svg><select id="selCity"></select></label>
-      <span class="tag rgn" data-k="tag"></span>
+      <button type="button" class="tg cq" id="bCq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="pt">Consultar lugar</span><span class="es">Consultar lugar</span><i title="Premium">★</i></button>
       <button type="button" class="tg prc" id="bPrec" title="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span class="pt">Localização precisa</span><span class="es">Ubicación precisa</span><i title="Premium">★</i></button>
+      <span class="tag rgn" data-k="tag"></span>
       
     </div>
   </div>
@@ -905,6 +920,18 @@
   </div>
 </div>
 
+<div class="onb" id="cqS" hidden role="dialog" aria-modal="true" aria-labelledby="cqT">
+  <div class="onbc gl cqs">
+    <button type="button" class="pmx" id="cqSX" aria-label="Fechar / Cerrar">×</button>
+    <h2 id="cqT"><span class="pt">Consultar um lugar</span><span class="es">Consultar un lugar</span></h2>
+    <form id="cqF" class="pmcod" style="border:0;margin:0;padding:0"><label for="cqIn"><span class="pt">Cidade, bairro, endereço ou região</span><span class="es">Ciudad, barrio, dirección o región</span></label>
+      <div><input id="cqIn" autocomplete="off" placeholder="Ex.: Cascavel, PR"><button type="submit"><span class="pt">Buscar</span><span class="es">Buscar</span></button></div></form>
+    <div id="cqR" class="cqr"></div>
+    <small class="cqsrc">Busca: © OpenStreetMap (Nominatim)</small>
+  </div>
+</div>
+<aside class="cqp" id="cqP" hidden aria-live="polite"><button type="button" class="pmx" id="cqPX" aria-label="Fechar / Cerrar">×</button><div id="cqB"></div></aside>
+<button type="button" class="cqmini" id="cqM" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span id="cqMN"></span></button>
 <div class="onb" id="pmo" hidden role="dialog" aria-modal="true" aria-labelledby="pmoT">
   <div class="onbc gl pmoc">
     <button type="button" class="pmx" id="pmoX" aria-label="Fechar / Cerrar">×</button>
@@ -924,7 +951,7 @@
     <button type="button" class="btn btn-wa" id="pmoGo"><span class="pt">Quero este plano</span><span class="es">Quiero este plan</span></button>
     <p class="pmst" id="pmoSt"></p>
     <form class="pmcod" id="pmoCod"><label for="pmoIn"><span class="pt">Tem um código?</span><span class="es">¿Tenés un código?</span></label>
-      <div><input id="pmoIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="GRATIS24"><button type="submit"><span class="pt">Aplicar</span><span class="es">Aplicar</span></button></div></form>
+      <div><input id="pmoIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="••••••"><button type="submit"><span class="pt">Aplicar</span><span class="es">Aplicar</span></button></div></form>
   </div>
 </div>
 
@@ -1228,6 +1255,43 @@
           .catch(function(){st.textContent=L2('No se pudo enviar. Revisá la conexión.','Não foi possível enviar. Confira a conexão.');snd.disabled=false})},
         function(){st.textContent=L2('Para reportar hace falta permitir la ubicación.','Para relatar é preciso permitir a localização.');snd.disabled=false},{enableHighAccuracy:true,timeout:15000})});
     vzCargar();setInterval(function(){safe(vzCargar)},3*60000)});
+  /* ---- consultar un lugar (Premium): búsqueda en OpenStreetMap, pronóstico de Open-Meteo y avisos oficiales que tocan ese punto ---- */
+  safe(function(){var b=document.getElementById('bCq'),S=document.getElementById('cqS'),P=document.getElementById('cqP'),M=document.getElementById('cqM'),R=document.getElementById('cqR');if(!b)return;
+    var WMO={0:['☀️','Céu limpo','Cielo despejado'],1:['🌤️','Poucas nuvens','Poco nublado'],2:['⛅','Parcialmente nublado','Parcialmente nublado'],3:['☁️','Nublado','Nublado'],45:['🌫️','Neblina','Niebla'],48:['🌫️','Neblina','Niebla'],51:['🌦️','Garoa','Llovizna'],53:['🌦️','Garoa','Llovizna'],55:['🌧️','Garoa forte','Llovizna fuerte'],61:['🌦️','Chuva fraca','Lluvia débil'],63:['🌧️','Chuva','Lluvia'],65:['🌧️','Chuva forte','Lluvia fuerte'],80:['🌦️','Pancadas','Chaparrones'],81:['🌧️','Pancadas fortes','Chaparrones fuertes'],82:['🌧️','Pancadas muito fortes','Chaparrones muy fuertes'],95:['⛈️','Tempestade','Tormenta'],96:['⛈️','Tempestade com granizo','Tormenta con granizo'],99:['⛈️','Tempestade com granizo forte','Tormenta con granizo fuerte']};
+    function wmo(c){return WMO[c]||WMO[Math.floor(c/10)*10]||['🌡️','—','—']}
+    var ult=null;try{ult=JSON.parse(LS('cqUlt')||'null')}catch(e){}
+    function abrirBusqueda(){if(!esPremium()){bloqueo();return}S.hidden=false;setTimeout(function(){document.getElementById('cqIn').focus()},50)}
+    b.addEventListener('click',abrirBusqueda);
+    document.getElementById('cqSX').addEventListener('click',function(){S.hidden=true});S.addEventListener('click',function(e){if(e.target===S)S.hidden=true});
+    document.getElementById('cqF').addEventListener('submit',function(e){e.preventDefault();var q=document.getElementById('cqIn').value.trim();if(q.length<2)return;
+      R.innerHTML='<p>'+L2('Buscando…','Buscando…')+'</p>';
+      fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&countrycodes=br,ar,uy,py&accept-language='+(root.getAttribute('data-lang')==='es'?'es':'pt-BR')+'&q='+encodeURIComponent(q))
+        .then(function(r){return r.json()}).then(function(j){if(!j.length){R.innerHTML='<p>'+L2('No encontramos ese lugar. Probá con la ciudad y el estado.','Não encontramos esse lugar. Tente com a cidade e o estado.')+'</p>';return}
+          R.innerHTML='';j.forEach(function(x){var bt=document.createElement('button');bt.type='button';var nom=(x.name||x.display_name.split(',')[0]);bt.innerHTML='<b>'+esc(nom)+'</b><small>'+esc(x.display_name)+'</small>';
+            bt.addEventListener('click',function(){S.hidden=true;consultar({n:nom,d:x.display_name,lat:+x.lat,lon:+x.lon})});R.appendChild(bt)})})
+        .catch(function(){R.innerHTML='<p>'+L2('No se pudo buscar. Revisá la conexión.','Não foi possível buscar. Confira a conexão.')+'</p>'})});
+    function consultar(lg){ult=lg;LS('cqUlt',JSON.stringify(lg));M.hidden=true;P.hidden=false;var box=document.getElementById('cqB');
+      box.innerHTML='<h3>'+esc(lg.n)+'</h3><p class="cqsub">'+L2('Consultando…','Consultando…')+'</p>';
+      fetch('https://api.open-meteo.com/v1/forecast?latitude='+lg.lat.toFixed(3)+'&longitude='+lg.lon.toFixed(3)+'&current=temperature_2m,weather_code,wind_gusts_10m&hourly=temperature_2m,precipitation_probability,wind_gusts_10m,weather_code&forecast_hours=12&timezone=auto')
+        .then(function(r){return r.json()}).then(function(w){pintar(lg,w)}).catch(function(){pintar(lg,null)})}
+    function pintar(lg,w){var l=root.getAttribute('data-lang')==='es'?'es':'pt',li=l==='es'?2:1,box=document.getElementById('cqB'),r={},up=function(k,n){if(!(r[k]>=n))r[k]=n},h='',now='';
+      if(w&&w.hourly){var H=w.hourly,pm=0,gm=0;for(var i=0;i<H.time.length;i++){var c=H.weather_code[i];pm=Math.max(pm,H.precipitation_probability[i]||0);gm=Math.max(gm,H.wind_gusts_10m[i]||0);
+          if(c>=95)up('raios',2);if(c===96||c===99)up('granizo',c===99?3:2);
+          if(i<8)h+='<div>'+esc(H.time[i].slice(11,13))+'h<b>'+wmo(c)[0]+'</b>'+Math.round(H.temperature_2m[i])+'° · '+(H.precipitation_probability[i]||0)+'%<br>'+Math.round(H.wind_gusts_10m[i]||0)+' km/h</div>'}
+        up('chuva',pm>=80?2:pm>=50?1:0);up('vendaval',gm>=75?3:gm>=55?2:gm>=40?1:0);
+        if(w.current){var cw=wmo(w.current.weather_code);now='<div class="cqnow"><b>'+Math.round(w.current.temperature_2m)+'°</b><span>'+cw[0]+' '+esc(cw[li])+'<br>'+L2('Ráfagas ','Rajadas ')+Math.round(w.current.wind_gusts_10m||0)+' km/h</span></div>'}}
+      var av=lugAvisos([lg.lat,lg.lon]);av.forEach(function(a){var t=((a.titulo_pt||'')+' '+(a.titulo_es||'')).toLowerCase(),n=a.nivel==='rojo'?3:a.nivel==='naranja'?2:1;
+        if(/tempest|tormenta/.test(t)){up('chuva',n);up('vendaval',n);up('raios',n);up('granizo',n)}if(/chuva|lluvia/.test(t))up('chuva',n);if(/vent|vient|vendaval/.test(t))up('vendaval',n);if(/granizo/.test(t))up('granizo',n)});
+      var hay=FEN.some(function(f){return (r[f[0]]||0)>0});
+      box.innerHTML='<h3>'+esc(lg.n)+'</h3><p class="cqsub">'+esc(lg.d||'')+'</p>'+now+(h?'<div class="cqh">'+h+'</div>':'<p class="cqsub">'+L2('Pronóstico no disponible ahora.','Previsão indisponível agora.')+'</p>')+
+        '<p class="cqsub" style="margin:0 0 6px"><svg aria-hidden="true" style="width:18px;height:18px;vertical-align:-4px"><use href="#i-'+(hay?'riesgo':'ok')+'"/></svg> '+L2('Riesgo climatológico · 12 h','Risco climatológico · 12 h')+'</p>'+
+        '<div class="cqk">'+FEN.map(function(f){var n=r[f[0]]||0;return '<div class="n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('')+'</div>'+
+        (av.length?av.map(function(a){return '<div class="cqav '+esc(a.nivel)+'"><b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b></div>'}).join(''):'<p class="cqsub">'+L2('Sin avisos oficiales del INMET para este punto ahora.','Sem avisos oficiais do INMET para este ponto agora.')+'</p>')+
+        '<p class="cqsub" style="margin-top:8px">'+L2('Pronóstico: Open-Meteo. Avisos: INMET. Estimación propia, no reemplaza a los avisos oficiales.','Previsão: Open-Meteo. Avisos: INMET. Estimativa própria, não substitui os avisos oficiais.')+'</p>';
+      document.getElementById('cqMN').textContent=lg.n}
+    document.getElementById('cqPX').addEventListener('click',function(){P.hidden=true;M.hidden=false});
+    M.addEventListener('click',function(){if(ult){consultar(ult)}});
+    if(ult&&esPremium()){document.getElementById('cqMN').textContent=ult.n;M.hidden=false}});
   /* ---- alertas por WhatsApp (Premium): inscripcion en /api/whatsapp.php; se activa mandando "ATIVAR <codigo>" a nuestro numero ---- */
   function waPintar(){var e=document.getElementById('waEst'),f=document.getElementById('waForm');if(!e)return;var tel=LS('waTel'),cod=LS('waCod'),num=LS('waNum'),est=LS('waEstado');
     if(!tel){e.hidden=true;f.hidden=false;return}f.hidden=true;e.hidden=false;
@@ -1511,7 +1575,7 @@
         if(!j.ok){st.textContent=j.error==='vencido'?L2('Ese código ya venció.','Esse código já venceu.'):L2('Código no válido.','Código inválido.');return}
         if(LS('cod-'+c.toUpperCase())){st.textContent=L2('Este código ya se usó en este celular.','Este código já foi usado neste celular.');return}
         LS('cod-'+c.toUpperCase(),'1');LS('plan','premium');LS('planHasta',String(Date.now()+j.horas*3600000));root.setAttribute('data-plan','premium');safe(trTxt);safe(precUI);
-        st.textContent=L2('¡Listo! Tenés Premium gratis por ','Pronto! Você tem Premium grátis por ')+j.horas+L2(' horas.',' horas.')})
+        st.textContent=j.horas>=720?L2('¡Listo! Pase VIP activado: tenés Premium en este celular.','Pronto! Passe VIP ativado: você tem Premium neste celular.'):L2('¡Listo! Tenés Premium gratis por ','Pronto! Você tem Premium grátis por ')+j.horas+L2(' horas.',' horas.')})
         .catch(function(){st.textContent=L2('No se pudo revisar el código. Revisá la conexión.','Não foi possível conferir o código. Confira a conexão.')})});
     function abrirSiHash(){if(location.hash==='#premium'){o.hidden=false}}addEventListener('hashchange',abrirSiHash);abrirSiHash();
     document.getElementById('tabPrem').addEventListener('click',function(e){e.preventDefault();o.hidden=false})});

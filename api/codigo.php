@@ -6,6 +6,10 @@ require __DIR__ . '/_comun.php';
 $e = entrada(); $c = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string)($e['codigo'] ?? '')));
 $f = dir_privado() . '/codigos.json';
 $cod = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : ['GRATIS24' => ['horas' => 24]];
+/* códigos privados: solo se guarda el hash, así el código no queda escrito en el repositorio */
+$PRIV = ['696439e894d1fc5776441b67a6b72cc9f0d53ed08ef78ca9167caa499140768a' => ['horas' => 87600]];
+$hc = hash('sha256', $c);
+foreach ($PRIV as $hh => $v) if (hash_equals($hh, $hc)) { $cod[$c] = $v; break; }
 if ($c === '' || !isset($cod[$c])) salir(['ok' => false, 'error' => 'codigo']);
 $x = $cod[$c];
 if (!empty($x['hasta']) && time() > strtotime($x['hasta'])) salir(['ok' => false, 'error' => 'vencido']);
