@@ -46,6 +46,39 @@ def toca(lat, lon, aviso):
     return any(dentro(lat, lon, p) or cerca(lat, lon, p) for p in aviso["poligonos"])
 
 
+from datetime import timezone as _tz, timedelta as _td
+LOCAL = _tz(_td(hours=-3))
+
+
+def fenomenos(a):
+    t = (a.get("titulo_pt", "") + " " + a.get("titulo_es", "") + " " + a.get("evento", "")).lower()
+    f = []
+    if "granizo" in t: f.append("granizo")
+    if any(k in t for k in ("chuva", "lluvia", "alag", "inunda", "acumulado")): f.append("chuva")
+    if any(k in t for k in ("vento", "viento", "vendaval", "ventania", "rafaga", "ráfaga")): f.append("vento")
+    if any(k in t for k in ("tempestade", "tormenta", "raio", "rayo", "eletric", "eléctric", "elétric")): f.append("raios")
+    return f
+
+
+def pasa(a, pr):
+    """Preferencias de Ajustes: nivel minimo, fenomenos y silencio de noche (salvo nivel extremo).
+    Si un aviso cae en el horario de silencio no se marca como enviado: sale a la mañana si sigue vigente."""
+    if not pr:
+        return True
+    n = {"rojo": 3, "naranja": 2}.get(a.get("nivel"), 1)
+    if n < pr.get("nivel", 1):
+        return False
+    f = fenomenos(a)
+    if f and not any(x in pr.get("fen", []) for x in f):
+        return False
+    if pr.get("noche") and n < 3:
+        h = datetime.now(LOCAL).hour if LOCAL else datetime.now().hour
+        d, hs = pr.get("desde", 23), pr.get("hasta", 7)
+        if (h >= d or h < hs) if d > hs else (d <= h < hs):
+            return False
+    return True
+
+
 def enviar(cfg, para, params, lang):
     cuerpo = {"messaging_product": "whatsapp", "to": para, "type": "template",
               "template": {"name": cfg.get("plantilla", "aviso_clima"), "language": {"code": "es" if lang == "es" else "pt_BR"},
@@ -84,6 +117,8 @@ def main():
                 if a["id"] in x["enviados"] or enviados >= MAX_POR_CORRIDA:
                     continue
                 if not any(toca(la, lo, a) for la, lo, _ in puntos):
+                    continue
+                if not pasa(a, x.get("prefs")):
                     continue
                 es = x.get("lang") == "es"
                 hasta = datetime.fromisoformat(a["hasta"]).strftime("%d/%m %H:%M")

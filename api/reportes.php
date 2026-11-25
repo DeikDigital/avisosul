@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = bin2hex(random_bytes(6)); $m = null;
             if ($media && move_uploaded_file($tmp, dir_media() . "/$id.$media")) $m = "$id.$media";
             $d['ult'][$yo] = time();
-            $d['rep'][] = ['id' => $id, 'tipo' => $tipo, 'tam' => $tam, 'tx' => $tx, 'm' => $m, 'lat' => $lat, 'lon' => $lon, 't' => time(), 'v' => $yo, 'c' => []];
+            $d['rep'][] = ['id' => $id, 'tipo' => $tipo, 'tam' => $tam, 'tx' => $tx, 'm' => $m, 'lat' => $lat, 'lon' => $lon, 't' => time() - 60 * max(0, min(180, (int)($_POST['hace'] ?? 0))), 'v' => $yo, 'c' => []];
             if (count($d['rep']) > 3000) $d['rep'] = array_slice($d['rep'], -3000);
             return [$d, ['ok' => true, 'id' => $id]];
         });

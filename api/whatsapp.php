@@ -52,6 +52,17 @@ if ($acao === 'inscrever') {
     if ($r['ok']) $r['numero'] = $numero;   // null mientras el servicio no este encendido
     salir($r, $r['ok'] ? 200 : 429);
 }
+if ($acao === 'prefs') {   /* nivel minimo (1-3), fenomenos y silencio de noche, elegidos en Ajustes */
+    $cod = (string)($e['codigo'] ?? '');
+    $fen = array_values(array_intersect((array)($e['fen'] ?? []), ['granizo', 'chuva', 'vento', 'raios']));
+    $pr = ['nivel' => max(1, min(3, (int)($e['nivel'] ?? 1))), 'fen' => $fen ?: ['granizo', 'chuva', 'vento', 'raios'],
+           'noche' => !empty($e['noche']), 'desde' => max(0, min(23, (int)($e['desde'] ?? 23))), 'hasta' => max(0, min(23, (int)($e['hasta'] ?? 7)))];
+    $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $cod, $pr) {
+        if (!isset($d[$tel]) || !hash_equals($d[$tel]['codigo'], $cod)) return [$d, ['ok' => false, 'error' => 'tel']];
+        $d[$tel]['prefs'] = $pr; return [$d, ['ok' => true]];
+    });
+    salir($r, $r['ok'] ? 200 : 403);
+}
 if ($acao === 'lugar') {   /* avisar también por otro lugar consultado (Premium): on=true lo suma, on=false lo saca */
     $cod = (string)($e['codigo'] ?? ''); $lat = round((float)($e['lat'] ?? 0), 3); $lon = round((float)($e['lon'] ?? 0), 3);
     $nome = mb_substr(strip_tags((string)($e['nome'] ?? '')), 0, 60); $on = !empty($e['on']);

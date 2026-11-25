@@ -562,6 +562,18 @@
   .pmvf{text-align:center;margin:6px 0 0}.pmvf .lnk{background:none;border:0;color:var(--amber);font:inherit;font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer}
   .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:95;max-width:calc(100% - 28px);width:420px;padding:12px 14px;border-radius:8px;background:#16263b;color:#fff;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.45);font-size:14.5px;line-height:1.35}
   .toast.ok{border-color:#3ddc84}.toast[hidden]{display:none}
+  @media (max-width:430px){.top #bLang{width:56px!important}.top #bLang::before{width:25px!important}[data-lang="es"] .top #bLang::before{transform:translateX(25px)!important}.top #bLang .fl-br,.top #bLang .fl-ar,.top #bLang svg{width:16px!important;height:12px!important}#bTheme{width:56px!important;padding:0 7px!important}#bTheme::before{width:25px!important}[data-theme="light"] #bTheme::before{transform:translateX(25px)!important}#bTheme svg{width:15px!important;height:15px!important}.top #bCfg{width:34px!important;height:34px!important}.top .wrap{gap:6px!important}.brand{font-size:17px!important;gap:6px!important}.brand img{width:34px!important;height:34px!important}}
+  .brand .pl{display:inline-flex!important;align-items:center;padding:0!important;background:none!important;border:0!important;margin-left:2px}.brand .pl .crw{width:18px;height:18px}
+  html:not([data-plan="premium"]) .brand .pl{display:none!important}
+  /* cuando paso */
+  .vzw{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}.vzw button{font:inherit;font-size:14px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--strong);cursor:pointer}.vzw button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
+  /* ajustes de avisos */
+  .avq{display:grid;gap:10px}.avq .fila{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.avq .fila:first-child{border-top:0}
+  .avq .fila b{display:block;font-size:15px;color:var(--strong)}.avq .fila small{display:block;font-size:12.5px;color:var(--muted)}
+  .avseg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}.avseg button{font:inherit;font-size:13px;font-weight:600;padding:8px 10px;border:0;background:transparent;color:var(--muted);cursor:pointer}.avseg button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink)}
+  .fens{display:flex;gap:6px;flex-wrap:wrap}.fens label{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+  .hrs{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}.hrs select{font:inherit;font-size:16px;padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--strong)}
+  .sw{position:relative;width:46px;height:26px;flex:none}.sw input{opacity:0;width:0;height:0}.sw span{position:absolute;inset:0;border-radius:6px;background:rgba(255,255,255,.18);transition:.2s;cursor:pointer}.sw span::before{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:4px;background:#fff;transition:.2s}.sw input:checked+span{background:#3ddc84}.sw input:checked+span::before{transform:translateX(20px)}
   .osmb{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.6)}[data-theme="light"] .osmb{filter:none}
   .lgh{font-size:22px;letter-spacing:.01em}
   .lgpb .lgw{width:24px;height:24px;margin:0;flex:none}
@@ -668,7 +680,7 @@
     <div class="wrap">
       <div class="brand">
         <img src="/assets/logo-nube-96.png" alt="" width="34" height="34">
-        <span class="bn">Aviso Sul</span><span class="pl">Premium</span>
+        <span class="bn">Aviso Sul</span><span class="pl" title="Premium" aria-label="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></span>
       </div>
       <span class="hsp"></span>
       <button type="button" class="tg" id="bLang" aria-label="Idioma: português / español"><svg class="fl-br" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#169B48"/><path d="M14 2.500 25.500 10 14 17.500 2.500 10z" fill="#FDD835"/><circle cx="14" cy="10" r="4.200" fill="#1A3E8C"/><path d="M10 9.200q4-1.600 8 .8" stroke="#fff" stroke-width=".9" fill="none"/></svg><svg class="fl-ar" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#74ACDF"/><rect y="6.700" width="28" height="6.600" fill="#fff"/><circle cx="14" cy="10" r="2.300" fill="#F6B40E"/></svg></button>
@@ -806,6 +818,8 @@
           <button type="button" data-z="ovo"><b style="font-size:32px">●</b><span class="pt">Ovo</span><span class="es">Huevo</span><small>~5 cm</small></button>
         </div>
       </div>
+      <p class="vzq"><span class="pt">Quando foi?</span><span class="es">¿Cuándo pasó?</span></p>
+      <div class="vzw" id="vzW" role="group"><button type="button" data-h="0" aria-pressed="true"><span class="pt">Agora</span><span class="es">Ahora</span></button><button type="button" data-h="30" aria-pressed="false"><span class="pt">Há 30 min</span><span class="es">Hace 30 min</span></button><button type="button" data-h="60" aria-pressed="false"><span class="pt">Há 1 h</span><span class="es">Hace 1 h</span></button><button type="button" data-h="120" aria-pressed="false"><span class="pt">Há 2 h</span><span class="es">Hace 2 h</span></button></div>
       <label class="vzl" for="vzTxt"><span class="pt">Conte o que você vê <small id="vzOpc">(opcional)</small></span><span class="es">Contá lo que ves <small id="vzOpc2">(opcional)</small></span></label>
       <textarea id="vzTxt" rows="3" maxlength="280"></textarea>
       <div class="vzm">
@@ -996,6 +1010,21 @@
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.400 3.600-7 8-7s8 2.600 8 7"/></svg><span class="pt">Sua conta</span><span class="es">Tu cuenta</span></h3>
       <div class="cuenta" id="ctaAj"></div>
     </div>
+    <div class="cfgg" id="avBox">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="pt">Avisos</span><span class="es">Avisos</span></h3>
+      <div class="avq">
+        <div class="fila"><div><b><span class="pt">Avisar a partir de</span><span class="es">Avisarme desde</span></b><small><span class="pt">Nível do aviso oficial</span><span class="es">Nivel del aviso oficial</span></small></div>
+          <div class="avseg" id="avNiv"><button type="button" data-v="1"><span class="pt">Moderado</span><span class="es">Moderado</span></button><button type="button" data-v="2">Alto</button><button type="button" data-v="3"><span class="pt">Extremo</span><span class="es">Extremo</span></button></div></div>
+        <div class="fila" style="display:block"><b><span class="pt">O que avisamos</span><span class="es">Qué te avisamos</span></b>
+          <div class="fens" id="avFen" style="margin-top:8px"><label><input type="checkbox" value="granizo"> <span class="pt">Granizo</span><span class="es">Granizo</span></label><label><input type="checkbox" value="chuva"> <span class="pt">Chuva e alagamento</span><span class="es">Lluvia e inundación</span></label><label><input type="checkbox" value="vento"> <span class="pt">Vento forte</span><span class="es">Viento fuerte</span></label><label><input type="checkbox" value="raios"> <span class="pt">Tempestade elétrica</span><span class="es">Tormenta eléctrica</span></label></div></div>
+        <div class="fila"><div><b><span class="pt">De noite</span><span class="es">De noche</span></b><small id="avNocheT"></small>
+          <div class="hrs" id="avHrs" style="margin-top:6px"><span class="pt">Silêncio das</span><span class="es">Silencio de</span><select id="avDesde" aria-label="Desde"></select><span class="pt">às</span><span class="es">a</span><select id="avHasta" aria-label="Hasta"></select></div></div>
+          <label class="sw"><input type="checkbox" id="avNoche"><span></span></label></div>
+        <div class="fila"><div><b><span class="pt">Aparência</span><span class="es">Apariencia</span></b><small><span class="pt">Automático segue a hora do dia</span><span class="es">Automático sigue la hora del día</span></small></div>
+          <div class="avseg" id="avTema"><button type="button" data-v="auto"><span class="pt">Auto</span><span class="es">Auto</span></button><button type="button" data-v="light"><span class="pt">Claro</span><span class="es">Claro</span></button><button type="button" data-v="night"><span class="pt">Escuro</span><span class="es">Oscuro</span></button></div></div>
+      </div>
+      <small class="vzst"><span class="pt">Vale para as notificações e para o WhatsApp.</span><span class="es">Vale para las notificaciones y para el WhatsApp.</span></small>
+    </div>
     <div class="cfgg wa1" id="waBox">
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.500a8.400 8.400 0 0 1-12.400 7.400L3 21l2.100-5.400A8.400 8.400 0 1 1 21 11.500z"/></svg><span class="pt">Cadastre seu WhatsApp para receber alertas</span><span class="es">Agendá tu WhatsApp para recibir alertas</span> <i class="pmd2">Premium</i></h3>
       <p class="pt">Deixe seu número e, quando sair um aviso oficial para o seu ponto, a mensagem chega direto no seu WhatsApp. Uma por aviso, sem propaganda. Para parar, escreva PARAR.</p>
@@ -1156,7 +1185,7 @@
   function langAuto(){var ls=(navigator.languages||[navigator.language||'']).map(function(x){return String(x).toLowerCase()});
     for(var i=0;i<ls.length;i++){if(ls[i].indexOf('pt')===0)return 'pt';if(ls[i].indexOf('es')===0)return 'es'}
     var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}return /Argentina|Montevideo|Asuncion|Santiago|Lima|Bogota|La_Paz/.test(tz)?'es':'pt'}
-  function setLang(l){root.setAttribute('data-lang',l);root.setAttribute('lang',l==='es'?'es':'pt-BR');LS('lang',l);labelTheme();safe(pintar);safe(nwsPintar)}
+  function setLang(l){root.setAttribute('data-lang',l);root.setAttribute('lang',l==='es'?'es':'pt-BR');LS('lang',l);labelTheme();safe(pintar);safe(nwsPintar);if(window.__avPinta)safe(window.__avPinta)}
   /* ---- tema ---- */
   var T={pt:{night:'Modo noite',light:'Versão clara'},es:{night:'Modo noche',light:'Versión clara'}};
   function labelTheme(){var el=document.querySelector('.lbl-theme');if(!el)return;
@@ -1421,7 +1450,7 @@
     R.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){VZ.r=+b.dataset.r;R.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});vzCargar()})});
     var f=document.getElementById('vzForm'),snd=document.getElementById('vzSend'),st=document.getElementById('vzSt'),tx=document.getElementById('vzTxt'),meta=document.getElementById('vzMeta'),prev=document.getElementById('vzPrev');
     function listo(){snd.disabled=!(VZ.tipo&&(VZ.tipo!=='granizo'||VZ.tam)&&(VZ.tipo!=='outro'||tx.value.trim().length>2))}
-    function pintarMeta(){var d=new Date(),p=function(n){return(n<10?'0':'')+n};meta.textContent='📍 '+L2('Se envía con tu ubicación precisa','Vai com a sua localização precisa')+' · 🕒 '+p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes())}
+    function pintarMeta(){var d=new Date(Date.now()-(VZ.hace||0)*60000),p=function(n){return(n<10?'0':'')+n};meta.textContent='📍 '+L2('Se envía con tu ubicación precisa','Vai com a sua localização precisa')+' · 🕒 '+p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes())}
     document.getElementById('vzRep').addEventListener('click',function(){f.hidden=!f.hidden;st.textContent='';pintarMeta()});
     setInterval(function(){if(!f.hidden)pintarMeta()},30000);
     tx.addEventListener('input',listo);
@@ -1440,7 +1469,7 @@
       snd.disabled=true;st.textContent=L2('Buscando tu ubicación precisa…','Buscando sua localização precisa…');
       navigator.geolocation.getCurrentPosition(function(p){VZPOS=[p.coords.latitude,p.coords.longitude];
         var fd=new FormData();fd.append('acao','novo');fd.append('tipo',VZ.tipo);if(VZ.tipo==='granizo')fd.append('tam',VZ.tam);fd.append('texto',tx.value.trim());
-        fd.append('lat',p.coords.latitude);fd.append('lon',p.coords.longitude);
+        fd.append('hace',VZ.hace||0);fd.append('lat',p.coords.latitude);fd.append('lon',p.coords.longitude);
         (VZ.file?vzAchicar(VZ.file):Promise.resolve(null)).then(function(m){if(m)fd.append('media',m,(VZ.file.name||'media'));st.textContent=m?L2('Subiendo…','Enviando…'):st.textContent;
           return fetch('/api/reportes.php',{method:'POST',body:fd})}).then(function(r){return r.json()}).then(function(j){if(j.ok){st.textContent=L2('¡Gracias! Tu reporte ya está en el mapa de los vecinos.','Obrigado! Seu relato já está no mapa dos vizinhos.');f.hidden=true;VZ.tipo=VZ.tam=VZ.file=null;tx.value='';prev.hidden=true;prev.innerHTML='';
               document.querySelectorAll('#vzForm [aria-pressed]').forEach(function(x){x.setAttribute('aria-pressed','false')});document.getElementById('vzTamBox').hidden=true;vzCargar()}
@@ -1520,7 +1549,7 @@
       var g=refPunto();go.disabled=true;st.textContent='';
       fetch('/api/whatsapp.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'inscrever',tel:t,lat:g[0],lon:g[1],cidade:cid,lang:root.getAttribute('data-lang')})})
         .then(function(r){return r.json()}).then(function(j){go.disabled=false;if(!j.ok){st.textContent=j.error==='limite'?L2('Ya hay varias inscripciones desde esta conexión. Probá mañana.','Já há várias inscrições desta conexão. Tente amanhã.'):L2('No se pudo guardar. Revisá el número.','Não foi possível salvar. Confira o número.');return}
-          LS('waTel',t);LS('waCod',j.codigo);LS('waEstado',j.estado);if(j.numero)LS('waNum',j.numero);waPintar()})
+          LS('waTel',t);LS('waCod',j.codigo);LS('waEstado',j.estado);if(j.numero)LS('waNum',j.numero);waPintar();avWa()})
         .catch(function(){go.disabled=false;st.textContent=L2('No se pudo guardar. Revisá la conexión.','Não foi possível salvar. Confira a conexão.')})});
     waPintar();waEstado();document.addEventListener('visibilitychange',function(){if(!document.hidden)safe(waEstado)})});
   /* ---- mis lugares: se guardan en el telefono; el aviso se evalua con el contorno oficial ---- */
@@ -1554,7 +1583,7 @@
   /* aviso nuevo sobre un lugar: notificacion (mientras la app este abierta) */
   function lugEval(){var vis={};try{vis=JSON.parse(LS('lugvis')||'{}')||{}}catch(e){}
     LUG.forEach(function(u){lugAvisos(u.g).forEach(function(a){var k=u.id+'|'+a.id;if(vis[k])return;vis[k]=1;
-      safe(function(){notificar(MARCA+' · '+u.n,(root.getAttribute('data-lang')==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta))})})});
+      if(avisoPasa(a))safe(function(){notificar(MARCA+' · '+u.n,(root.getAttribute('data-lang')==='es'?a.titulo_es:a.titulo_pt)+' · '+L2('hasta las ','até as ')+hhmm(a.hasta))})})});
     LS('lugvis',JSON.stringify(vis))}
   function lugAgregar(g){var n=(document.getElementById('lgName').value||'').trim()||L2('Mi lugar','Meu lugar');
     var u={id:String(Date.now()),n:n,g:[Math.round(g[0]*1e4)/1e4,Math.round(g[1]*1e4)/1e4]};LUG.push(u);lugGuardar();
@@ -1627,7 +1656,7 @@
     if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(function(r){r.showNotification(titulo,o)}).catch(function(){try{new Notification(titulo,o)}catch(x){}});else try{new Notification(titulo,o)}catch(x){}}
   function vigilar(){if(!DATOS||!DATOS.avisos)return;var k='vistos-'+cid,ya=(LS(k)||'').split('|'),nu=[];
     DATOS.avisos.forEach(function(a){var id=(a.url||a.titulo_es||'')+'';if(ya.indexOf(id)<0){nu.push(a);ya.push(id)}});
-    if(nu.length&&LS(k)!==null)notificar(MARCA+' · '+C.nombre,L2(nu[0].titulo_es||nu[0].titulo_pt,nu[0].titulo_pt||nu[0].titulo_es)+' ('+(DATOS.fuente||'')+')');
+    if(nu.length&&LS(k)!==null&&avisoPasa(nu[0]))notificar(MARCA+' · '+C.nombre,L2(nu[0].titulo_es||nu[0].titulo_pt,nu[0].titulo_pt||nu[0].titulo_es)+' ('+(DATOS.fuente||'')+')');
     LS(k,ya.slice(-40).join('|'))}
   var _pa2=pintarAhora;pintarAhora=function(){_pa2();safe(vigilar)};
   safe(function(){
@@ -1682,7 +1711,7 @@
     var hasta=+LS('planHasta');if(hasta&&Date.now()>hasta){LS('plan','gratis');LS('planHasta','')}
     setInterval(function(){var h=+LS('planHasta');if(h&&Date.now()>h){LS('plan','gratis');LS('planHasta','');root.setAttribute('data-plan','gratis');safe(trTxt)}},60000);
     root.setAttribute('data-plan',LS('plan')==='premium'?'premium':'gratis');root.setAttribute('data-trial','0')});
-  function trTxt(){var p=document.querySelector('.pl');if(p)p.textContent=esPremium()?'Premium':L2('Gratis','Grátis');
+  function trTxt(){var p=null;
     var t=document.getElementById('trT'),x=document.getElementById('trX');if(!t)return;
     t.textContent=TR.fin?L2('Tu prueba Premium terminó','Seu teste Premium terminou'):L2('Mañana termina tu prueba Premium','Amanhã termina seu teste Premium');
     x.textContent=TR.fin?L2('Ahora estás en la versión gratis. Ya no tenés:','Agora você está na versão grátis. Você não tem mais:'):L2('Desde mañana seguís en la versión gratis. Vas a dejar de tener:','A partir de amanhã você segue na versão grátis. Você deixa de ter:')}
@@ -1797,9 +1826,34 @@
   var _pw3=pintarWx;pintarWx=function(){_pw3();safe(precUI);safe(escena)};
   /* ---- permisos al principio: una pantalla en la primera visita. El navegador solo deja pedirlos despues de un toque. ---- */
   /* ---- cuenta: email con código o Google; guarda y recupera los ajustes del teléfono ---- */
-  var CTA_K=['c','cM','lang','langM','lugares','theme','waTel','waCod','waNum','waEstado','waLug','cqUlt','plan','planHasta','prec','planElegido'];
+  var CTA_K=['c','cM','lang','langM','lugares','theme','avNivel','avFen','avNoche','avDesde','avHasta','temaModo','waTel','waCod','waNum','waEstado','waLug','cqUlt','plan','planHasta','prec','planElegido'];
   function ctaSubir(){var t=LS('cuenta');if(!t||!WEB)return;var a={};CTA_K.forEach(function(k){var v=LS(k);if(v!==null&&v!==undefined&&v!=='')a[k]=v});
     fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'guardar',token:t,ajustes:a}),keepalive:true}).catch(function(){})}
+  safe(function(){var w=document.getElementById('vzW');if(!w)return;w.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;VZ.hace=+b.getAttribute('data-h');[].forEach.call(w.children,function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});var m=document.getElementById('vzMeta');if(m&&m.textContent){var d=new Date(Date.now()-VZ.hace*60000),q=function(n){return(n<10?'0':'')+n};m.textContent=m.textContent.replace(/\d\d\/\d\d \d\d:\d\d$/,q(d.getDate())+'/'+q(d.getMonth()+1)+' '+q(d.getHours())+':'+q(d.getMinutes()))}})});
+  /* ---- preferencias de avisos: nivel minimo, fenomenos, silencio de noche y apariencia ---- */
+  function avPrefs(){return{n:+(LS('avNivel')||1),f:(LS('avFen')||'granizo,chuva,vento,raios').split(',').filter(Boolean),noche:LS('avNoche')!=='0',d:+(LS('avDesde')||23),h:+(LS('avHasta')||7)}}
+  function avFenDe(a){var t=((a.titulo_pt||'')+' '+(a.titulo_es||'')+' '+(a.evento||'')).toLowerCase(),f=[];
+    if(/granizo/.test(t))f.push('granizo');if(/chuva|lluvia|alag|inunda|acumulado/.test(t))f.push('chuva');if(/vento|viento|vendaval|ventania|r[aá]faga/.test(t))f.push('vento');if(/tempestade|tormenta|raio|rayo|el[eé]tric/.test(t))f.push('raios');return f}
+  function avisoPasa(a){var p=avPrefs(),n=a.nivel==='rojo'?3:a.nivel==='naranja'?2:1;if(n<p.n)return false;
+    var f=avFenDe(a);if(f.length&&!f.some(function(x){return p.f.indexOf(x)>-1}))return false;
+    if(p.noche&&n<3){var h=new Date().getHours(),q=p.d>p.h?(h>=p.d||h<p.h):(h>=p.d&&h<p.h);if(q)return false}return true}
+  function avWa(){var t=LS('waTel'),c=LS('waCod');if(!t||!c)return;var p=avPrefs();
+    fetch('/api/whatsapp.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'prefs',tel:t,codigo:c,nivel:p.n,fen:p.f,noche:p.noche,desde:p.d,hasta:p.h})}).catch(function(){})}
+  safe(function(){var box=document.getElementById('avBox');if(!box)return;
+    function pinta(){var p=avPrefs();[].forEach.call(document.querySelectorAll('#avNiv button'),function(b){b.setAttribute('aria-pressed',+b.dataset.v===p.n?'true':'false')});
+      [].forEach.call(document.querySelectorAll('#avFen input'),function(i){i.checked=p.f.indexOf(i.value)>-1});
+      document.getElementById('avNoche').checked=p.noche;document.getElementById('avHrs').style.opacity=p.noche?1:.45;
+      document.getElementById('avNocheT').textContent=p.noche?L2('Solo te despertamos si el aviso es extremo.','Só acordamos você se o aviso for extremo.'):L2('Te avisamos a cualquier hora.','Avisamos a qualquer hora.');
+      document.getElementById('avDesde').value=p.d;document.getElementById('avHasta').value=p.h;
+      var tm=LS('temaModo')||'auto';[].forEach.call(document.querySelectorAll('#avTema button'),function(b){b.setAttribute('aria-pressed',b.dataset.v===tm?'true':'false')})}
+    ['avDesde','avHasta'].forEach(function(id){var s=document.getElementById(id),o='';for(var i=0;i<24;i++)o+='<option value="'+i+'">'+(i<10?'0':'')+i+':00</option>';s.innerHTML=o;
+      s.addEventListener('change',function(){LS(id,s.value);pinta();avWa()})});
+    document.getElementById('avNiv').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;LS('avNivel',b.dataset.v);pinta();avWa()});
+    document.getElementById('avFen').addEventListener('change',function(){var v=[].filter.call(document.querySelectorAll('#avFen input'),function(i){return i.checked}).map(function(i){return i.value});if(!v.length){pinta();return}LS('avFen',v.join(','));avWa()});
+    document.getElementById('avNoche').addEventListener('change',function(){LS('avNoche',this.checked?'1':'0');pinta();avWa()});
+    document.getElementById('avTema').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;LS('temaModo',b.dataset.v);
+      if(b.dataset.v==='auto'){LS('tema','');setTheme(temaHora())}else setTheme(b.dataset.v);pinta()});
+    window.__avPinta=pinta;pinta()});
   /* ---- Premium pagado con Hotmart (Brasil): la cuenta y el pago usan el mismo email ---- */
   function toast(t,ok,ms){var e=document.getElementById('toast');if(!e)return;e.textContent=t;e.className='toast'+(ok?' ok':'');e.hidden=false;clearTimeout(toast.t);if(ms)toast.t=setTimeout(function(){e.hidden=true},ms)}
   function premSync(j){var p=j&&j.premium,ahora=Date.now();
@@ -1900,7 +1954,7 @@
 
   safe(function(){
     /* por defecto: claro de dia (7 a 20 h) y oscuro de noche; si la persona lo cambia a mano, vale hasta el proximo cambio de dia/noche */
-    function temaAuto(){var m=(LS('tema')||'').split('|');setTheme(m[1]===periodo()&&(m[0]==='night'||m[0]==='light')?m[0]:temaHora())}
+    function temaAuto(){var md=LS('temaModo');if(md==='light'||md==='night'){setTheme(md);return}var m=(LS('tema')||'').split('|');setTheme(m[1]===periodo()&&(m[0]==='night'||m[0]==='light')?m[0]:temaHora())}
     temaAuto();setInterval(function(){var m=(LS('tema')||'').split('|');if(m[1]!==periodo()&&root.getAttribute('data-theme')!==temaHora())temaAuto()},300000);
     /* Idioma inicial:
        - Publicada: portugués por defecto. Un enlace con ?lang=es abre en español.
@@ -1915,7 +1969,7 @@
     var b=document.querySelectorAll('.seg button');
     document.getElementById('bLang').addEventListener('click',function(){LS('langM','1');setLang(root.getAttribute('data-lang')==='es'?'pt':'es')});
     for(var i=0;i<b.length;i++)b[i].addEventListener('click',function(){LS('langM','1');setLang(this.getAttribute('data-set'))});
-    document.getElementById('bTheme').addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='night'?'light':'night',true)});
+    document.getElementById('bTheme').addEventListener('click',function(){var nt=root.getAttribute('data-theme')==='night'?'light':'night';if(LS('temaModo')==='light'||LS('temaModo')==='night')LS('temaModo',nt);setTheme(nt,true);var tb=document.querySelectorAll('#avTema button');[].forEach.call(tb,function(b){b.setAttribute('aria-pressed',b.dataset.v===(LS('temaModo')||'auto')?'true':'false')})});
   });
 
   function txtFijos(){
