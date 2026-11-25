@@ -537,13 +537,16 @@
   @media (max-width:560px){.tools .cq,.tools .prc,.tools .car{flex:1 1 auto;justify-content:center;margin:0!important}}
   [data-car="1"] .tools .car{opacity:1}[data-car="1"] .tools .car .pr{background:none!important;padding:0!important}.tools .tg svg,.tools .tg .crw{flex:none}
   @media (max-width:600px){input,select,textarea{font-size:16px!important}}
-  .fx{position:fixed;top:calc(6px + env(safe-area-inset-top));left:8px;right:8px;z-index:45;display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:16px;max-width:720px;margin:0 auto;
-    background:rgba(20,34,53,.9)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 22px rgba(0,0,0,.35);transform:translateY(0);transition:transform .25s,opacity .25s}
+  .fx{position:fixed;top:calc(6px + env(safe-area-inset-top));left:8px;right:8px;z-index:45;display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:20px;max-width:720px;margin:0 auto;
+    background:#16263b!important;background-image:none!important;border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 22px rgba(0,0,0,.35);transform:translateY(0);transition:transform .25s,opacity .25s}
   .fx[hidden]{display:flex!important;opacity:0;transform:translateY(-120%);pointer-events:none}
-  [data-theme="light"] .fx{background:rgba(255,255,255,.94)!important;border-color:rgba(23,33,44,.14)}
-  .fx .fxc{display:flex;align-items:center;gap:5px;min-width:0;flex:1}.fx .fxc svg{width:16px;height:16px;flex:none;color:var(--amber)}.fx .fxc b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14.5px;color:var(--strong)}
-  .fx .fxt{display:grid;text-align:right;line-height:1.05;flex:none}.fx .fxt b{font-size:17px;font-variant-numeric:tabular-nums;color:var(--strong)}.fx .fxt small{font-size:11px;color:var(--muted)}
-  .fx .fxr{display:flex;align-items:center;gap:4px;flex:none;padding:3px 8px 3px 4px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:800}.fx .fxr svg{width:24px;height:24px}.fx .fxr em{font-style:normal}
+  [data-theme="light"] .fx{background:#fff!important;border-color:rgba(23,33,44,.14)}
+  .fx .fxc{display:flex;align-items:center;gap:5px;min-width:0;flex:1}.fx .fxc svg{width:19px;height:19px;flex:none;color:var(--amber)}.fx .fxc b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:17px;color:var(--strong)}
+  .fx .fxw{flex:none;display:flex;align-items:center;gap:3px;font-size:24px;font-weight:800;color:var(--strong);font-variant-numeric:tabular-nums}.fx .fxw i{font-style:normal;font-size:22px}.fx .fxw:empty{display:none}
+  .fx .fxt{display:grid;text-align:right;line-height:1.05;flex:none}.fx .fxt b{font-size:22px;font-variant-numeric:tabular-nums;color:var(--strong)}.fx .fxt small{font-size:12px;color:var(--muted)}
+  .fx .fxr{display:flex;flex-direction:column;align-items:center;gap:0;flex:none;padding:3px 7px;border-radius:14px;border:1px solid var(--line);font-size:10.5px;font-weight:800;line-height:1.05;min-width:52px}.fx .fxr svg{width:28px;height:28px}
+  @media (max-width:400px){.fx{gap:7px;padding:10px 10px}.fx .fxc b{font-size:15px}.fx .fxw{font-size:21px}.fx .fxw i{font-size:19px}.fx .fxt b{font-size:19px}.fx .fxr{min-width:46px;font-size:10px}.fx .fxr svg{width:25px;height:25px}}
+  main section,#ahora,#radar,#vecinos,#lugares,#ajustes{scroll-margin-top:84px}.fx .fxr em{font-style:normal}
   .fx .fxr.n0 em{color:var(--muted);font-weight:600}.fx .fxr.n1{border-color:#f5d000}.fx .fxr.n1 em{color:#f5d000}.fx .fxr.n2{border-color:#ff8a1f;background:rgba(255,138,31,.15)}.fx .fxr.n2 em{color:#ff8a1f}.fx .fxr.n3{border-color:#ff3b30;background:rgba(255,59,48,.18);animation:rojo 1.6s infinite}.fx .fxr.n3 em{color:#ff3b30}
   main section,#ahora,#radar,#vecinos,#lugares,#ajustes{scroll-margin-top:70px}
   .osmb{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.6)}[data-theme="light"] .osmb{filter:none}
@@ -647,7 +650,7 @@
     <path d="M0 106h800v14H0z"/>
   </svg>
 
-  <div class="fx gl" id="fx" hidden aria-hidden="true"><span class="fxc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><b id="fxC"></b></span><span class="fxt"><b id="fxT"></b><small id="fxD"></small></span><span class="fxr n0" id="fxR"><svg aria-hidden="true"><use href="#i-ok"/></svg><em></em></span></div>
+  <div class="fx gl" id="fx" hidden aria-hidden="true"><span class="fxc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><b id="fxC"></b></span><span class="fxw" id="fxW"></span><span class="fxt"><b id="fxT"></b><small id="fxD"></small></span><span class="fxr n0" id="fxR"><svg aria-hidden="true"><use href="#i-ok"/></svg><em></em></span></div>
   <header class="top">
     <div class="wrap">
       <div class="brand">
@@ -1914,7 +1917,7 @@
     o.hidden=false});
   /* ---- barra fija arriba: lugar, hora, fecha y riesgo cuando la tarjeta principal sale de pantalla ---- */
   safe(function(){var fx=document.getElementById('fx'),ref=document.querySelector('.now h2');if(!fx||!ref)return;
-    function pinta(){document.getElementById('fxC').textContent=C.nombre;var ck=document.getElementById('bigClock'),dt=document.getElementById('bigDate');
+    function pinta(){document.getElementById('fxC').textContent=C.nombre;var okw=WX&&WX.temp!=null&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000);document.getElementById('fxW').innerHTML=okw?'<i>'+esc((WX.ahora&&WX.ahora.ico)||'🌡️')+'</i>'+Math.round(WX.temp)+'°':'';var ck=document.getElementById('bigClock'),dt=document.getElementById('bigDate');
       document.getElementById('fxT').textContent=ck?ck.textContent:'';var fd='';try{fd=new Date().toLocaleDateString(L2('es-AR','pt-BR'),{weekday:'short',day:'numeric',month:'short',timeZone:TZ[cid]})}catch(e){fd=dt?dt.textContent:''}document.getElementById('fxD').textContent=fd;
       var r=window.__RIESGO||{},n=0;FEN.forEach(function(f){n=Math.max(n,r[f[0]]||0)});var l=root.getAttribute('data-lang')==='es'?'es':'pt',e=document.getElementById('fxR');
       e.className='fxr n'+n;e.querySelector('use').setAttribute('href',n?'#i-riesgo':'#i-ok');e.querySelector('em').textContent=n?NV[l][n]:L2('Sin riesgo','Sem risco')}
