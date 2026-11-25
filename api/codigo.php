@@ -1,6 +1,6 @@
 <?php
 /* Códigos de descuento o de prueba de Premium.
-   POST {"codigo":"GRATIS24"} -> {"ok":true,"horas":24} o {"ok":false}
+   POST {"codigo":"..."} -> {"ok":true,"horas":24} o {"ok":false}
    Los códigos se pueden cambiar en datos_privados/codigos.json ({"CODIGO":{"horas":24}}); los de prueba y VIP se guardan solo como hash. */
 require __DIR__ . '/_comun.php';
 $e = entrada(); $c = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string)($e['codigo'] ?? '')));
