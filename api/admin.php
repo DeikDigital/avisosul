@@ -3,6 +3,7 @@
    Entra solo una sesión de cuenta (api/cuenta.php) cuyo email esté en ADMINS.
    POST {"acao":"estado","token"}                       -> qué está configurado (sin mostrar secretos) y últimos avisos de pago
    POST {"acao":"hotmart","token","hottok","checkout":{mensal,temporada,anual},"extra":{codigo:plan}}  -> guarda hotmart.json
+   POST {"acao":"google","token","client_id"}  -> guarda el Client ID de Google (ingreso con Google en la app)
    POST {"acao":"mp","token","access_token","webhook_secret"}                                          -> verifica y guarda mercadopago.json
    Un campo secreto vacío conserva el valor guardado. */
 require __DIR__ . '/_comun.php';
@@ -32,6 +33,7 @@ if ($acao === 'estado') {
     salir(['ok' => true, 'admin' => $admin,
         'hotmart' => ['hottok' => cola($hm['hottok'] ?? ''), 'checkout' => $hm['checkout'] ?? (object)[], 'planes' => $hm['planes'] ?? (object)[]],
         'mp' => ['access_token' => cola($mp['access_token'] ?? ''), 'webhook_secret' => cola($mp['webhook_secret'] ?? ''), 'cuenta' => $mp['cuenta'] ?? null],
+        'google' => (leer('google.json')['client_id'] ?? ''),
         'ofertas_sin_plan' => array_values(array_unique(array_map('trim', $sin))),
         'eventos_hotmart' => array_map(fn($x) => ['t' => $x['t'], 'ev' => $x['ev'], 'off' => $x['off'], 'prod' => $x['prod'], 'email' => $x['email'] ? substr($x['email'], 0, 3) . '…' : ''], $ev),
         'eventos_mp' => array_map(fn($x) => ['t' => $x['t'], 'estado' => $x['estado'], 'plan' => $x['plan'], 'monto' => $x['monto']], $evm)]);
@@ -76,5 +78,11 @@ if ($acao === 'mp') {
     $mp['promo_hasta'] = $mp['promo_hasta'] ?? '2026-12-25';
     escribir('mercadopago.json', $mp);
     salir(['ok' => true, 'cuenta' => $mp['cuenta'] ?? null]);
+}
+if ($acao === 'google') {
+    $cid = trim((string)($e['client_id'] ?? ''));
+    if (!preg_match('/^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$/', $cid)) salir(['ok' => false, 'error' => 'formato_google'], 400);
+    $g = leer('google.json'); $g['client_id'] = $cid; escribir('google.json', $g);
+    salir(['ok' => true]);
 }
 salir(['ok' => false, 'error' => 'acao'], 400);

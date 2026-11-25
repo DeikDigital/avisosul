@@ -1083,11 +1083,11 @@
 <div class="onb" id="cta" hidden role="dialog" aria-modal="true" aria-labelledby="ctaT">
   <div class="onbc gl ctac">
     <img src="/assets/logo-nube.png?v=2" alt="" width="84" height="84" style="display:block;margin:0 auto 6px">
-    <h2 id="ctaT"><span class="pt">Crie sua conta no Aviso Sul</span><span class="es">Creá tu cuenta en Aviso Sul</span></h2>
+    <h2 id="ctaT"><span class="pt">Crie sua conta no Aviso Sul em um toque</span><span class="es">Creá tu cuenta en Aviso Sul en un toque</span></h2>
     <p class="ctap"><span class="pt">Assim seus lugares, sua cidade e seus ajustes ficam guardados e você os recupera em qualquer celular.</span><span class="es">Así tus lugares, tu ciudad y tus ajustes quedan guardados y los recuperás en cualquier celular.</span></p>
     <div id="ctaG" class="ctag"></div>
-    <div class="ctao" id="ctaO"><span class="pt">ou com seu e-mail</span><span class="es">o con tu email</span></div>
-    <form id="ctaF" class="pmcod" style="border:0;margin:0;padding:0">
+    <div class="ctao" id="ctaO" hidden><span class="pt">ou com seu e-mail</span><span class="es">o con tu email</span></div>
+    <form id="ctaF" class="pmcod" style="border:0;margin:0;padding:0" hidden>
       <div id="ctaP1"><input id="ctaE" type="email" inputmode="email" autocomplete="email" placeholder="nome@email.com"><button type="submit"><span class="pt">Receber código</span><span class="es">Recibir código</span></button></div>
       <div id="ctaP2" hidden><input id="ctaC" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"><button type="submit"><span class="pt">Entrar</span><span class="es">Entrar</span></button></div>
     </form>
@@ -1940,11 +1940,12 @@
       fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'codigo',email:email})}).then(function(r){return r.json()}).then(function(j){
         if(j.ok){document.getElementById('ctaP1').hidden=true;document.getElementById('ctaP2').hidden=false;st.textContent=L2('Te mandamos un código de 6 números a ','Enviamos um código de 6 números para ')+email+L2('. Mirá también en spam.','. Veja também no spam.');document.getElementById('ctaC').focus()}
         else st.textContent=j.error==='limite'?L2('Demasiados intentos. Probá en un rato.','Muitas tentativas. Tente daqui a pouco.'):L2('No se pudo enviar el código. Probá de nuevo.','Não foi possível enviar o código. Tente de novo.')}).catch(function(){st.textContent=L2('Sin conexión.','Sem conexão.')})});
-    /* Google: el botón aparece solo cuando está cargado el Client ID en el servidor */
-    if(WEB)fetch('/api/cuenta.php?cfg=1').then(function(r){return r.json()}).then(function(j){window.__HM=j.hotmart||null;window.__MP=!!j.mp;pagoBoton();if(!j.google)return;var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;
+    /* Google es la forma de entrar; el email con código queda solo si Google no está disponible */
+    function conEmail(){document.getElementById('ctaF').hidden=false;document.getElementById('ctaO').hidden=!document.getElementById('ctaG').children.length}
+    if(WEB)fetch('/api/cuenta.php?cfg=1').then(function(r){return r.json()}).then(function(j){window.__HM=j.hotmart||null;window.__MP=!!j.mp;pagoBoton();if(!j.google){conEmail();return}var sc=document.createElement('script');sc.onerror=conEmail;sc.src='https://accounts.google.com/gsi/client';sc.async=true;
       sc.onload=function(){try{google.accounts.id.initialize({client_id:j.google,auto_select:true,cancel_on_tap_outside:false,itp_support:true,use_fedcm_for_prompt:true,context:'signup',callback:function(res){st.textContent=L2('Entrando…','Entrando…');
           fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'google',credential:res.credential})}).then(function(r){return r.json()}).then(function(k){if(k.ok){ctaEntrar(k.token,k.email);cerrar()}else st.textContent=L2('No se pudo entrar con Google.','Não foi possível entrar com o Google.')})}});
-        google.accounts.id.renderButton(document.getElementById('ctaG'),{theme:'filled_black',size:'large',shape:'pill',text:'continue_with',locale:root.getAttribute('data-lang')==='es'?'es':'pt-BR'});google.accounts.id.prompt()}catch(e){}};document.head.appendChild(sc)}).catch(function(){});
+        google.accounts.id.renderButton(document.getElementById('ctaG'),{theme:'filled_black',size:'large',shape:'pill',text:'signup_with',width:280,locale:root.getAttribute('data-lang')==='es'?'es':'pt-BR'});google.accounts.id.prompt()}catch(e){conEmail()}};document.head.appendChild(sc)}).catch(conEmail);
     var no=false;try{no=sessionStorage.getItem('avisosul-ctaNo')}catch(e){}
     if(!LS('cuenta')&&!no&&WEB){o.hidden=false;window.__ctaAbierta=true}
     if(LS('cuenta')){setInterval(ctaSubir,120000);document.addEventListener('visibilitychange',function(){if(document.hidden)ctaSubir()})}

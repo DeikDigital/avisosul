@@ -39,6 +39,12 @@
     <p class="mut">Sesión: <b id="quien"></b> · <a href="#" id="salir" style="color:var(--amber)">salir</a></p>
 
     <section class="card">
+      <h2>Ingreso con Google <span class="est" id="eGo"></span></h2>
+      <p class="mut">Con esto la app muestra solo "Registrarse con Google". El Client ID es público (no es una contraseña). Sale de Google Cloud → APIs y servicios → Credenciales → ID de cliente de OAuth (aplicación web), con el origen <code>https://avisosul.com</code>.</p>
+      <label for="gCid">Client ID <span id="gCidV" class="mut"></span></label><input id="gCid" autocomplete="off" placeholder="123456789-abc.apps.googleusercontent.com">
+      <button id="gGo">Guardar Google</button> <p id="gSt" class="mut"></p>
+    </section>
+    <section class="card">
       <h2>Brasil · Hotmart <span class="est" id="eHm"></span></h2>
       <ol class="mut">
         <li>En Hotmart, creá la suscripción "Aviso Sul Premium" con los planes Mensal (R$ 14,90) y Anual (R$ 89,90), y el producto de pago único "Passe da Temporada" (R$ 44,90). Garantía de 7 días.</li>
@@ -87,6 +93,7 @@
     var h=j.hotmart,m=j.mp,hOk=!!(h.hottok&&h.checkout&&Object.keys(h.checkout).length),mOk=!!m.access_token;
     $('eHm').textContent=hOk?'configurado':'pendiente';$('eHm').className='est '+(hOk?'si':'no');
     $('eMp').textContent=mOk?'configurado':'pendiente';$('eMp').className='est '+(mOk?'si':'no');
+    var gOk=!!j.google;$('eGo').textContent=gOk?'activo':'pendiente';$('eGo').className='est '+(gOk?'si':'no');$('gCidV').textContent=gOk?'(guardado '+j.google+')':'';
     $('hHotV').textContent=h.hottok?'(guardado '+h.hottok+')':'';$('mAtV').textContent=m.access_token?'(guardado '+m.access_token+(m.cuenta?' · '+m.cuenta:'')+')':'';$('mWsV').textContent=m.webhook_secret?'(guardada '+m.webhook_secret+')':'';
     var c=h.checkout||{};$('hM').value=c.mensal||'';$('hT').value=c.temporada||'';$('hA').value=c.anual||'';
     var s=$('sinPlan');if(j.ofertas_sin_plan&&j.ofertas_sin_plan.length){s.hidden=false;s.innerHTML='<label>Ofertas que llegaron en avisos y no tienen plan: elegí cuál es</label>'+j.ofertas_sin_plan.map(function(o){return'<p><code>'+o+'</code> <select data-o="'+o+'" style="font-size:16px"><option value="">—</option><option value="mensal">Mensal</option><option value="temporada">Temporada</option><option value="anual">Anual</option></select></p>'}).join('')}else s.hidden=true;
@@ -104,6 +111,9 @@
   $('gMp').onclick=function(){$('mSt').textContent='Verificando con Mercado Pago…';
     api('/api/admin.php',{acao:'mp',token:tok,access_token:$('mAt').value.trim(),webhook_secret:$('mWs').value.trim()}).then(function(j){
       $('mSt').innerHTML=j.ok?'<span class="ok">Guardado. Cuenta: '+(j.cuenta||'')+'</span>':'<span class="err">'+(ERR[j.error]||'No se pudo guardar.')+'</span>';if(j.ok){$('mAt').value='';$('mWs').value='';estado()}})};
+  $('gGo').onclick=function(){$('gSt').textContent='Guardando…';
+    api('/api/admin.php',{acao:'google',token:tok,client_id:$('gCid').value.trim()}).then(function(j){
+      $('gSt').innerHTML=j.ok?'<span class="ok">Guardado. La app ya muestra el botón de Google.</span>':'<span class="err">'+(j.error==='formato_google'?'Ese no parece un Client ID de Google (termina en .apps.googleusercontent.com).':'No se pudo guardar.')+'</span>';if(j.ok){$('gCid').value='';estado()}})};
   if(tok)estado();else login();
 })();
 </script>
