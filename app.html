@@ -340,8 +340,10 @@
   .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .tools .wrap{flex-wrap:nowrap!important;align-items:center;gap:6px!important}
   .tools .sp{flex:1}
+  .top .wrap{display:flex;align-items:center}.hcfg{margin-left:auto;width:38px;height:38px;padding:0!important;justify-content:center}.hcfg span{display:none}
   .wa1{border-color:rgba(37,200,102,.55)!important}.wa1 h3 svg{color:#25C866}
   .ad-top{margin:8px 0 0;min-height:60px}
+  .adl{display:inline-block;margin-top:4px;font-size:13.5px;font-weight:700;color:var(--amber);text-decoration:underline;text-underline-offset:3px}
   .gr{font-style:normal;font-size:12px;font-weight:800;vertical-align:middle;padding:3px 9px;border-radius:999px;background:#2E7D4F;color:#fff;margin-left:6px}
   .vzahora{margin:12px 0 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(142,187,224,.35);background:rgba(142,187,224,.10);font-size:14.5px}
   .vzahora b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
@@ -352,12 +354,16 @@
     background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:right 5px center,right 0 center;background-size:5px 5px;background-repeat:no-repeat}
   .selc select option{color:#16263A}
   .selc:focus-within{outline:3px solid var(--amber);outline-offset:2px}
-  .tools .prc{margin:0;height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .prc svg{width:15px;height:15px}.tools .prc i{padding:1px 5px;font-size:10px}
+  .tools .prc{margin:0;height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .prc svg{width:15px;height:15px}.tools .prc i{padding:1px 6px;font-size:9px}
   .tg.ico{width:38px;height:38px;padding:0!important;justify-content:center}
   .selc{flex:1 1 auto;max-width:none}
-  @media (max-width:440px){.tools .prc>span{display:none}.tools .prc{padding:0 9px}}
-  #bLang svg{width:24px;height:17px;border-radius:3px}
-  [data-lang="pt"] #bLang .fl-ar,[data-lang="es"] #bLang .fl-br{display:none}
+  @media (max-width:560px){.tools .wrap{flex-wrap:wrap!important;row-gap:8px!important}.selc{flex:1 1 100%}.tools .sp{display:none}.tools .prc{font-size:12.5px;padding:0 9px;gap:4px}.tools .wrap{gap:5px!important}}
+  @media (max-width:380px){.tools .prc{font-size:11.5px;padding:0 7px}.tools .prc svg{display:none}}
+  #bLang{position:relative;width:70px;height:36px;padding:0 7px!important;display:inline-flex;align-items:center;justify-content:space-between;gap:0}
+  #bLang::before{content:"";position:absolute;top:3px;left:3px;width:32px;height:28px;border-radius:999px;background:var(--amber);transition:transform .25s ease}
+  [data-lang="es"] #bLang::before{transform:translateX(32px)}
+  #bLang svg{position:relative;z-index:1;width:22px;height:16px;border-radius:3px}
+  [data-lang="pt"] #bLang .fl-ar,[data-lang="es"] #bLang .fl-br{opacity:.55}
   .tools .tg.cfg{width:38px;height:38px;padding:0!important;justify-content:center}.tools .tg.cfg span{display:none}
   @media (max-width:480px){.tools .wrap{display:flex;flex-wrap:nowrap;gap:6px;align-items:center}.tools .tg{padding:6px 8px;font-size:12px;gap:5px;margin:0;white-space:nowrap}.tools .tg.cfg svg{width:15px;height:15px}}.tg.cfg svg{width:17px;height:17px;margin:0;flex:none}
   .pmi{font-style:normal;font-size:9.500px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:2px 7px;vertical-align:middle;margin-left:6px}
@@ -492,7 +498,7 @@
     .top .wrap{gap:8px}.seg{flex:none}.seg button{padding:6px 9px;font-size:12.5px}
   }
   @media (max-width:400px){.seg button{font-size:0;padding:7px 11px}.seg button::after{content:attr(data-set);font-size:12.500px;text-transform:uppercase;font-weight:700}}
-</style><symbol id="i-riesgo" viewBox="0 0 64 64"><image href="/assets/ic/alerta.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-granizo" viewBox="0 0 64 64"><image href="/assets/ic/granizo.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><image href="/assets/ic/chuva-raio.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><image href="/assets/ic/vendaval.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><image href="/assets/ic/tempestade.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
+</style><symbol id="i-ok" viewBox="0 0 64 64"><image href="/assets/ic/ok.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-riesgo" viewBox="0 0 64 64"><image href="/assets/ic/alerta.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-granizo" viewBox="0 0 64 64"><image href="/assets/ic/granizo.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><image href="/assets/ic/chuva-raio.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><image href="/assets/ic/vendaval.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><image href="/assets/ic/tempestade.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
 <div class="hero" id="hero">
   <!-- nubes: textura generada con ruido, sin imágenes externas -->
   <div class="clouds c1" aria-hidden="true">
@@ -533,25 +539,26 @@
         <img src="/assets/logo-nube-96.png" alt="" width="34" height="34">
         Aviso Sul<span class="pl">Premium</span>
       </div>
+      <a class="tg cfg hcfg" id="bCfg" href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
     </div>
   </header>
 
   <div class="tools">
     <div class="wrap">
       <label class="selc"><span class="sr pt">Cidade</span><span class="sr es">Ciudad</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/></svg><select id="selCity"></select></label>
-      <button type="button" class="tg prc" id="bPrec" title="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span class="pt">Precisa</span><span class="es">Precisa</span><i>★</i></button>
+      <button type="button" class="tg prc" id="bPrec" title="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span class="pt">Localização precisa</span><span class="es">Ubicación precisa</span><i title="Premium">★</i></button>
       <span class="sp"></span>
-      <button type="button" class="tg ico" id="bLang" aria-label="Idioma"><svg class="fl-br" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#169B48"/><path d="M14 2.500 25.500 10 14 17.500 2.500 10z" fill="#FDD835"/><circle cx="14" cy="10" r="4.200" fill="#1A3E8C"/><path d="M10 9.200q4-1.600 8 .8" stroke="#fff" stroke-width=".9" fill="none"/></svg><svg class="fl-ar" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#74ACDF"/><rect y="6.700" width="28" height="6.600" fill="#fff"/><circle cx="14" cy="10" r="2.300" fill="#F6B40E"/></svg></button>
+      <button type="button" class="tg" id="bLang" aria-label="Idioma: português / español"><svg class="fl-br" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#169B48"/><path d="M14 2.500 25.500 10 14 17.500 2.500 10z" fill="#FDD835"/><circle cx="14" cy="10" r="4.200" fill="#1A3E8C"/><path d="M10 9.200q4-1.600 8 .8" stroke="#fff" stroke-width=".9" fill="none"/></svg><svg class="fl-ar" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#74ACDF"/><rect y="6.700" width="28" height="6.600" fill="#fff"/><circle cx="14" cy="10" r="2.300" fill="#F6B40E"/></svg></button>
       <button type="button" class="tg" id="bTheme">
         <svg class="ic-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 14.500A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z"/></svg>
         <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.500 1.500M17.500 17.500 19 19M19 5l-1.500 1.500M6.500 17.500 5 19"/></svg>
         <span class="lbl-theme sr"></span>
       </button>
-      <a class="tg cfg" id="bCfg" href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
+      
     </div>
   </div>
   <!-- PENDIENTE: bloque de Google AdSense bajo la ubicación (solo se ve en el plan gratis) -->
-  <div class="wrap"><div class="ad ad-top" data-ad="0"><small class="pt">Espaço publicitário</small><small class="es">Espacio publicitario</small><span data-k="ad"></span></div></div>
+  <div class="wrap"><div class="ad ad-top" data-ad="0"><small class="pt">Espaço publicitário</small><small class="es">Espacio publicitario</small><span data-k="ad"></span><a class="adl" href="mailto:patrocinio@avisosul.com?subject=Anunciar%20no%20Aviso%20Sul"><span class="pt">Solicitar preço e condições por e-mail</span><span class="es">Solicitar precio y condiciones por mail</span></a></div></div>
 
   <div class="hero-in">
     <div class="wrap">
@@ -579,7 +586,7 @@
       <div class="of" id="nowOf"></div>
     </div>
       <!-- PENDIENTE: pegar aca el bloque de Google AdSense (solo se ve en el plan gratis) -->
-      <div class="ad" data-ad="1"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div>
+      <div class="ad" data-ad="1"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span><a class="adl" href="mailto:patrocinio@avisosul.com?subject=Anunciar%20no%20Aviso%20Sul"><span class="pt">Solicitar preço e condições por e-mail</span><span class="es">Solicitar precio y condiciones por mail</span></a></div>
 
       <h1 class="pt">Ficou sabendo do granizo <em>quando já estava caindo?</em></h1>
       <h1 class="es">¿Te enteraste del granizo <em>cuando ya estaba cayendo?</em></h1>
@@ -848,7 +855,7 @@
 </section>
 
 <!-- PENDIENTE: segundo bloque de Google AdSense -->
-<div class="wrap"><div class="ad" data-ad="2"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span></div></div>
+<div class="wrap"><div class="ad" data-ad="2"><small class="pt">Publicidade</small><small class="es">Publicidad</small><span data-k="ad"></span><a class="adl" href="mailto:patrocinio@avisosul.com?subject=Anunciar%20no%20Aviso%20Sul"><span class="pt">Solicitar preço e condições por e-mail</span><span class="es">Solicitar precio y condiciones por mail</span></a></div></div>
 
 
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="onbT">
@@ -1251,15 +1258,16 @@
     return r}
   function pintarRiesgo(){var e=document.getElementById('rk');if(!e)return;var l=root.getAttribute('data-lang')==='es'?'es':'pt';
     var h=(WX&&WX.horas&&(Date.now()-new Date(WX.actualizado).getTime()<90*60000))?WX.horas:[],r=riesgoDe(h);
+    safe(function(){var hay=FEN.some(function(f){return (r[f[0]]||0)>0}),u=document.querySelector('.rkt .rgi use');if(u)u.setAttribute('href',hay?'#i-riesgo':'#i-ok')});
     e.innerHTML=FEN.map(function(f){var n=r[f[0]]||0;return'<div class="rki n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('');
     /* riesgo de ahora: solo la hora actual y los avisos ya vigentes; se muestran unicamente los fenomenos con nivel */
     var y=document.getElementById('rya');if(!y)return;var ra=riesgoDe(h.slice(0,1)),act=FEN.filter(function(f){return ra[f[0]]>0}).sort(function(a,b){return ra[b[0]]-ra[a[0]]});
     var bg=document.getElementById('ryBig');if(!bg){var nw=document.querySelector('.now h2');if(nw){bg=document.createElement('div');bg.id='ryBig';nw.parentNode.insertBefore(bg,nw.nextSibling)}}
     if(bg){if(!h.length&&!act.length){bg.hidden=true}else{bg.hidden=false;var f0=act[0],n0=f0?ra[f0[0]]:0;bg.className='ryB n'+n0;
-      bg.innerHTML=(f0?'<span class="ic"><svg aria-hidden="true"><use href="#i-'+f0[0]+'"/></svg></span>':'<span class="ic"><svg aria-hidden="true"><use href="#i-riesgo"/></svg></span>')+
+      bg.innerHTML=(f0?'<span class="ic"><svg aria-hidden="true"><use href="#i-'+f0[0]+'"/></svg></span>':'<span class="ic"><svg aria-hidden="true"><use href="#i-ok"/></svg></span>')+
         '<div><small>'+(l==='es'?'Riesgo climatológico ahora':'Risco climatológico agora')+'</small><b>'+(f0?esc(l==='es'?f0[2]:f0[1])+' · '+NV[l][n0]:(l==='es'?'Sin riesgo':'Sem risco'))+'</b>'+(act.length>1?'<em>+ '+act.slice(1).map(function(f){return esc(l==='es'?f[2]:f[1])}).join(', ')+'</em>':'')+'</div>'}}
     y.innerHTML=act.length?act.map(function(f){var n=ra[f[0]];return'<div class="ryi n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg><div><b>'+esc(l==='es'?f[2]:f[1])+'</b><em>'+NV[l][n]+'</em></div></div>'}).join('')
-      :'<div class="ryi n0"><div><b>'+(l==='es'?'Sin riesgo ahora':'Sem risco agora')+'</b><em>'+(l==='es'?'según avisos y pronóstico':'segundo avisos e previsão')+'</em></div></div>'}
+      :'<div class="ryi n0"><svg aria-hidden="true"><use href="#i-ok"/></svg><div><b>'+(l==='es'?'Sin riesgo ahora':'Sem risco agora')+'</b><em>'+(l==='es'?'según avisos y pronóstico':'segundo avisos e previsão')+'</em></div></div>'}
   var _pa=pintarAhora;pintarAhora=function(){_pa();safe(pintarRiesgo);safe(reloj)};
   var _pw2=pintarWx;pintarWx=function(){_pw2();safe(pintarRiesgo)};
   /* ---- pestañas inferiores ---- */
