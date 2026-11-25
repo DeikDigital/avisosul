@@ -313,6 +313,29 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -3px 0 rgba(0,0,0,.18),0 8px 18px rgba(245,179,1,.35)}
   .tab .cta svg{width:26px;height:26px;display:block;margin:0 auto 2px}
   .tab .cta:active{transform:translateY(1px)}
+  .tab .cta.wa{background:linear-gradient(160deg,#4fe089,#25D366 55%,#128C4B);color:#05351c;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -3px 0 rgba(0,0,0,.18),0 8px 18px rgba(37,211,102,.35)}
+  .tab .cta.wa .pmd{color:#05351c}
+  .waw{display:block;width:28px;height:28px;margin:0 auto 2px;border-radius:50%;background:#fff;padding:1px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .waw svg,.waw img{width:100%!important;height:100%!important;display:block;margin:0!important}.waw img+svg{display:none}
+  #bShare .waw{display:inline-block;width:22px;height:22px;margin:0 8px -5px 0;vertical-align:baseline}
+  #radar .wrap{max-width:1180px}
+  .rgrid{display:grid;gap:16px;margin-top:14px}.rgrid #radarMap{margin-top:0}
+  @media (min-width:900px){.rgrid{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:start}.rgrid #radarMap{height:520px}.nws{max-height:560px;overflow:auto}}
+  .rcapas{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}.rcapas button{font:inherit;font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--strong);cursor:pointer}
+  .rcapas button.on{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
+  .rplay{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}.rplay button{font:inherit;font-weight:800;border:1px solid var(--line);background:var(--card);color:var(--strong);border-radius:10px;padding:4px 10px;cursor:pointer}
+  .rplay input{flex:1;accent-color:#f5b301}
+  .rplay[hidden],#wyMap[hidden],#radarMap[hidden]{display:none!important}
+  #wyMap{height:340px;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:#0b1118}#wyMap iframe{width:100%;height:100%;border:0;display:block}
+  @media (min-width:900px){#wyMap{height:520px}}
+  .nws{padding:16px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+  .nws h3{font-size:17px;margin:0 0 4px;display:flex;align-items:center;gap:8px}.nws h3 svg{width:18px;height:18px}
+  .nws .ofr{margin-bottom:12px}
+  .nwi{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);text-decoration:none;color:inherit}
+  .nwi:first-of-type{border-top:0}.nwi i{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:17px;background:rgba(255,255,255,.08)}
+  .nwi b{display:block;font-size:14.5px;color:var(--strong);line-height:1.2}.nwi small{display:block;font-size:12.5px;color:var(--muted)}.nwi span.go{margin-left:auto;font-size:12px;font-weight:800;color:var(--amber);white-space:nowrap}
+  .nwt{margin-top:12px}.nwt button{width:100%;font:inherit;font-weight:700;padding:10px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--strong);cursor:pointer}
+  .nws .ofc{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
 
   /* ---------- ubicacion precisa (premium) ---------- */
   .prc{font:inherit;font-size:14px;font-weight:700;color:inherit;display:inline-flex;align-items:center;gap:6px;margin:10px 0 0;padding:8px 12px;border-radius:999px;border:1px solid rgba(245,179,1,.6);background:rgba(245,179,1,.10);cursor:pointer}
@@ -747,14 +770,27 @@
     <p class="pt">As áreas coloridas são os avisos do INMET em vigor; por cima, onde está chovendo agora. Toque numa área para ver o aviso.</p>
     <p class="es">Las zonas pintadas son los avisos del INMET vigentes; encima, dónde está lloviendo ahora. Tocá una zona para ver el aviso.</p>
     <div class="zly"><span><i style="background:#f5d000"></i><span class="pt">Amarelo</span><span class="es">Amarillo</span></span><span><i style="background:#ff8a1f"></i><span class="pt">Laranja</span><span class="es">Naranja</span></span><span><i style="background:#ff3b30"></i><span class="pt">Vermelho</span><span class="es">Rojo</span></span><span><i class="rr"></i>Radar</span></div>
-    <div id="radarMap"></div>
-    <p class="rdn" id="zonaNote"></p>
-    <p class="rdn" id="radarNote"></p>
+    <div class="rgrid">
+    <div>
+      <div class="rcapas" id="rCapas"><button type="button" data-c="radar" class="on"><span class="pt">Avisos + radar</span><span class="es">Avisos + radar</span></button><button type="button" data-c="rain"><span class="pt">Chuva</span><span class="es">Lluvia</span></button><button type="button" data-c="wind"><span class="pt">Vento</span><span class="es">Viento</span></button><button type="button" data-c="temp"><span class="pt">Temperatura</span><span class="es">Temperatura</span></button><button type="button" data-c="thunder"><span class="pt">Raios</span><span class="es">Rayos</span></button></div>
+      <div id="radarMap"></div>
+      <div id="wyMap" hidden></div>
+      <div class="rplay" id="rPlay" hidden><button type="button" id="rPb">▶</button><input type="range" id="rPr" min="0" max="0" value="0" aria-label="Radar"><span id="rPt"></span></div>
+      <p class="rdn" id="zonaNote"></p>
+      <p class="rdn" id="radarNote"></p>
+    </div>
+    <aside class="nws" id="nws">
+      <h3><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.3L5.3 21H2.2l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3zm-1.1 16.2h1.7L7.3 4.7H5.5l11.2 14.5z"/></svg><span class="pt">Notícias oficiais da região</span><span class="es">Noticias oficiales de la zona</span></h3>
+      <p class="ofr"><span class="pt">Perfis oficiais no X: Defesa Civil, meteorologia, polícia e prefeitura.</span><span class="es">Cuentas oficiales en X: Defensa Civil, meteorología, policía y municipio.</span></p>
+      <div id="nwList"></div>
+      <div class="nwt" id="nwT"></div>
     <div class="ofc" id="ofBox">
       <h3><span class="pt">Texto oficial dos avisos que te atingem</span><span class="es">Texto oficial de los avisos que te tocan</span></h3>
       <p class="ofr" id="ofRef"></p>
       <div id="ofList"></div>
       <details class="ofall" id="ofAllBox" hidden><summary id="ofAllSum"></summary><div id="ofAll"></div></details>
+    </div>
+    </aside>
     </div>
   </div>
 </section>
@@ -767,7 +803,7 @@
     <p class="es">El aviso oficial, una sugerencia práctica y un botón para avisarle a quien quieras.</p>
     <div class="msg gl"><span class="ej pt">Exemplo</span><span class="ej es">Ejemplo</span>
 <span data-k="ej"></span><small data-k="ejpie"></small></div>
-    <div class="share"><a class="btn btn-wa" id="bShare" href="#" target="_blank" rel="noopener"><span class="pt">Avisar alguém agora</span><span class="es">Avisarle a alguien ahora</span></a></div>
+    <div class="share"><a class="btn btn-wa" id="bShare" href="#" target="_blank" rel="noopener"><span class="waw"><img class="walogo" src="/assets/whatsapp.svg" alt="" width="22" height="22" onerror="this.remove()"><svg class="waic" viewBox="0 0 32 32" aria-hidden="true"><path fill="#25D366" d="M16 3C8.8 3 3 8.6 3 15.6c0 2.5.8 4.9 2.1 6.9L3.6 28.6l6.3-1.6c1.9 1 4 1.6 6.1 1.6 7.2 0 13-5.6 13-12.6S23.2 3 16 3z"/><path fill="#fff" d="M11.6 9.6c.3 0 .6 0 .8.6l1.1 2.6c.1.3 0 .6-.1.8l-.8 1c-.2.2-.2.5 0 .8.9 1.6 2.3 2.9 4 3.7.3.1.6.1.8-.1l1-1.2c.2-.3.6-.3.9-.2l2.5 1.2c.3.2.5.4.4.8-.2 1.5-1.6 2.6-3.1 2.6-4.3-.3-8.8-4.6-9.3-8.7-.1-1.6.9-3.9 1.8-3.9z"/></svg></span><span class="pt">Avisar pelo WhatsApp</span><span class="es">Avisar por WhatsApp</span></a></div>
   </div>
 </section>
 
@@ -1028,8 +1064,8 @@
 
 <nav class="tab" aria-label="Navegación">
   <a href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg><span class="pt">Início</span><span class="es">Inicio</span></a>
-  <a href="#vecinos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><circle cx="17" cy="9" r="2.700"/><path d="M16.500 14.200c2.800.2 5 2.100 5 5.300"/></svg><span class="pt">Alerta vizinhos</span><span class="es">Alerta vecinos</span></a>
-  <button type="button" class="cta" id="tabShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg><span class="pt">Compartilhar alerta</span><span class="es">Compartir alerta</span><i class="pmd" aria-hidden="true">★</i></button>
+  <a href="#vecinos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><circle cx="17" cy="9" r="2.700"/><path d="M16.500 14.200c2.800.2 5 2.100 5 5.300"/></svg><span class="pt">Alertar vizinhos</span><span class="es">Alertar a vecinos</span></a>
+  <button type="button" class="cta wa" id="tabShare"><span class="waw"><img class="walogo" src="/assets/whatsapp.svg" alt="" width="26" height="26" onerror="this.remove()"><svg class="waic" viewBox="0 0 32 32" aria-hidden="true"><path fill="#25D366" d="M16 3C8.8 3 3 8.6 3 15.6c0 2.5.8 4.9 2.1 6.9L3.6 28.6l6.3-1.6c1.9 1 4 1.6 6.1 1.6 7.2 0 13-5.6 13-12.6S23.2 3 16 3z"/><path fill="#fff" d="M11.6 9.6c.3 0 .6 0 .8.6l1.1 2.6c.1.3 0 .6-.1.8l-.8 1c-.2.2-.2.5 0 .8.9 1.6 2.3 2.9 4 3.7.3.1.6.1.8-.1l1-1.2c.2-.3.6-.3.9-.2l2.5 1.2c.3.2.5.4.4.8-.2 1.5-1.6 2.6-3.1 2.6-4.3-.3-8.8-4.6-9.3-8.7-.1-1.6.9-3.9 1.8-3.9z"/></svg></span><span class="pt">Avisar no WhatsApp</span><span class="es">Avisar por WhatsApp</span><i class="pmd" aria-hidden="true">★</i></button>
   <a href="#premium" id="tabPrem" class="tprem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.500 4L12 5l4.500 7L21 8l-2 11H5z"/><path d="M5 19h14"/></svg><span class="pt">Premium</span><span class="es">Premium</span></a>
   <a href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
 </nav>
@@ -1053,7 +1089,7 @@
   function langAuto(){var ls=(navigator.languages||[navigator.language||'']).map(function(x){return String(x).toLowerCase()});
     for(var i=0;i<ls.length;i++){if(ls[i].indexOf('pt')===0)return 'pt';if(ls[i].indexOf('es')===0)return 'es'}
     var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}return /Argentina|Montevideo|Asuncion|Santiago|Lima|Bogota|La_Paz/.test(tz)?'es':'pt'}
-  function setLang(l){root.setAttribute('data-lang',l);root.setAttribute('lang',l==='es'?'es':'pt-BR');LS('lang',l);labelTheme();safe(pintar)}
+  function setLang(l){root.setAttribute('data-lang',l);root.setAttribute('lang',l==='es'?'es':'pt-BR');LS('lang',l);labelTheme();safe(pintar);safe(nwsPintar)}
   /* ---- tema ---- */
   var T={pt:{night:'Modo noite',light:'Versão clara'},es:{night:'Modo noche',light:'Versión clara'}};
   function labelTheme(){var el=document.querySelector('.lbl-theme');if(!el)return;
@@ -1185,12 +1221,47 @@
   function radarCapa(){
     var l=root.getAttribute('data-lang')==='es'?'es':'pt';
     fetch('https://api.rainviewer.com/public/weather-maps.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
-      var p=j.radar&&j.radar.past||[];if(!p.length)throw 0;var f=p[p.length-1];
-      if(RADAR.capa)RADAR.map.removeLayer(RADAR.capa);
-      RADAR.capa=L.tileLayer(j.host+f.path+'/256/{z}/{x}/{y}/2/1_1.png',{opacity:.75,maxNativeZoom:7,maxZoom:10,attribution:'Radar: <a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a>'}).addTo(RADAR.map);
-      radarNota((l==='es'?'Imagen de las ':'Imagem das ')+hhmm(new Date(f.time*1000).toISOString())+(l==='es'?'. Fuente: RainViewer. No reemplaza los avisos oficiales.':'. Fonte: RainViewer. Não substitui os avisos oficiais.'));
+      var p=j.radar&&j.radar.past||[];if(!p.length)throw 0;p=p.slice(-12);
+      if(RADAR.capas)RADAR.capas.forEach(function(c){RADAR.map.removeLayer(c)});
+      RADAR.capas=p.map(function(f,i){return L.tileLayer(j.host+f.path+'/256/{z}/{x}/{y}/4/1_1.png',{opacity:i===p.length-1?.8:0,maxNativeZoom:7,maxZoom:10,attribution:i?'':'Radar: <a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a>'}).addTo(RADAR.map)});
+      RADAR.frames=p;RADAR.fi=p.length-1;
+      var pr=document.getElementById('rPr'),pb=document.getElementById('rPb');document.getElementById('rPlay').hidden=false;pr.max=p.length-1;radarFrame(p.length-1);
+      if(!RADAR.pl){RADAR.pl=1;pr.addEventListener('input',function(){radarStop();radarFrame(+pr.value)});
+        pb.addEventListener('click',function(){if(RADAR.t)radarStop();else{pb.textContent='❚❚';RADAR.t=setInterval(function(){radarFrame((RADAR.fi+1)%RADAR.frames.length)},700)}})}
+      radarNota(l==='es'?'Radar de las últimas 2 horas: tocá ▶ para ver hacia dónde se mueve la lluvia. Fuente: RainViewer. No reemplaza los avisos oficiales.':'Radar das últimas 2 horas: toque ▶ para ver para onde a chuva vai. Fonte: RainViewer. Não substitui os avisos oficiais.');
     }).catch(function(){radarNota(l==='es'?'Radar no disponible en este momento.':'Radar indisponível neste momento.')});
   }
+  function radarStop(){if(RADAR&&RADAR.t){clearInterval(RADAR.t);RADAR.t=0;document.getElementById('rPb').textContent='▶'}}
+  function radarFrame(i){if(!RADAR||!RADAR.capas)return;RADAR.capas.forEach(function(c,k){c.setOpacity(k===i?.8:0)});RADAR.fi=i;document.getElementById('rPr').value=i;
+    document.getElementById('rPt').textContent=hhmm(new Date(RADAR.frames[i].time*1000).toISOString())}
+  /* ---- capas meteorologicas de Windy (embed gratis), se cargan solo al tocarlas ---- */
+  safe(function(){var cs=document.getElementById('rCapas');if(!cs)return;
+    cs.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var c=b.getAttribute('data-c');
+      [].forEach.call(cs.children,function(x){x.classList.toggle('on',x===b)});
+      var rm=document.getElementById('radarMap'),wy=document.getElementById('wyMap'),pl=document.getElementById('rPlay');
+      if(c==='radar'){wy.hidden=true;rm.hidden=false;pl.hidden=!(RADAR&&RADAR.capas);if(RADAR&&RADAR.map)RADAR.map.invalidateSize();return}
+      radarStop();rm.hidden=true;pl.hidden=true;wy.hidden=false;var g=refPunto?refPunto():C.geo;g=g||C.geo;
+      wy.innerHTML='<iframe loading="lazy" title="Windy" src="https://embed.windy.com/embed2.html?lat='+g[0].toFixed(3)+'&lon='+g[1].toFixed(3)+'&detailLat='+g[0].toFixed(3)+'&detailLon='+g[1].toFixed(3)+'&zoom=6&level=surface&overlay='+c+'&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"></iframe>';
+      var l=root.getAttribute('data-lang')==='es';radarNota(l?'Mapa interactivo de Windy (modelo ECMWF). Para ver los avisos oficiales, volvé a "Avisos + radar".':'Mapa interativo do Windy (modelo ECMWF). Para ver os avisos oficiais, volte para "Avisos + radar".')})});
+  /* ---- noticias oficiales: perfiles institucionales en X por zona ---- */
+  var NWS={
+    _br:[['🌦️','INMET','inmet_'],['🛡️','Defesa Civil Nacional','defesacivilbr']],
+    _rs:[['🛡️','Defesa Civil RS','defesacivilrs']],_sc:[['🛡️','Defesa Civil SC','defesacivilsc']],_pr:[['🛡️','Defesa Civil Paraná',null,'Defesa Civil Paraná']],
+    portoalegre:['_rs',['🛡️','Defesa Civil Porto Alegre','defesacivilpoa'],['🏛️','Prefeitura de Porto Alegre',null,'Prefeitura de Porto Alegre'],['🚓','Brigada Militar',null,'Brigada Militar RS'],'_br'],
+    florianopolis:['_sc',['🏛️','Prefeitura de Florianópolis',null,'Prefeitura de Florianópolis'],['🚓','Polícia Militar SC',null,'PMSC Polícia Militar Santa Catarina'],'_br'],
+    chapeco:['_sc',['🏛️','Prefeitura de Chapecó',null,'Prefeitura de Chapecó'],['🛡️','Defesa Civil Chapecó',null,'Defesa Civil Chapecó'],['🚓','Polícia Militar SC',null,'PMSC Polícia Militar Santa Catarina'],'_br'],
+    curitiba:['_pr',['🏛️','Prefeitura de Curitiba',null,'Prefeitura de Curitiba'],['🛡️','Defesa Civil Curitiba',null,'Defesa Civil Curitiba'],['🚓','Polícia Militar PR',null,'Polícia Militar Paraná'],'_br'],
+    foz:['_pr',['🏛️','Prefeitura de Foz do Iguaçu',null,'Prefeitura Foz do Iguaçu'],['🛡️','Defesa Civil Foz do Iguaçu',null,'Defesa Civil Foz do Iguaçu'],['🚓','Polícia Militar PR',null,'Polícia Militar Paraná'],'_br'],
+    cordoba:[['🌦️','Servicio Meteorológico Nacional','SMN_Argentina'],['🛡️','Defensa Civil Córdoba',null,'Defensa Civil Córdoba'],['🚓','Policía de Córdoba','PoliciaCbaOf'],['🏛️','Municipalidad de Córdoba',null,'Municipalidad de Córdoba']]};
+  function nwsPintar(){var box=document.getElementById('nwList');if(!box)return;var es=root.getAttribute('data-lang')==='es',L0=NWS[cid]||(CIUDAD[cid]&&CIUDAD[cid].lang==='es'?NWS.cordoba:['_br']),out=[];
+    L0.forEach(function(x){if(typeof x==='string')out=out.concat(NWS[x]);else out.push(x)});
+    box.innerHTML=out.map(function(x){var u=x[2]?'https://x.com/'+x[2]:'https://x.com/search?q='+encodeURIComponent('"'+x[3]+'"')+'&f=live';
+      return'<a class="nwi" href="'+u+'" target="_blank" rel="noopener"><i>'+x[0]+'</i><div><b>'+esc(x[1])+'</b><small>'+(x[2]?'@'+esc(x[2]):(es?'Últimas publicaciones':'Últimas publicações'))+'</small></div><span class="go">'+(es?'Ver en X':'Ver no X')+' ↗</span></a>'}).join('');
+    var t=document.getElementById('nwT'),pri=out.filter(function(x){return x[2]})[0];if(!t||!pri)return;
+    t.innerHTML='<button type="button">'+(es?'Mostrar acá lo último de ':'Mostrar aqui o último de ')+esc(pri[1])+'</button>';
+    t.firstChild.addEventListener('click',function(){t.innerHTML='<a class="twitter-timeline" data-height="420" data-theme="'+(root.getAttribute('data-theme')==='light'?'light':'dark')+'" data-chrome="noheader nofooter transparent" href="https://twitter.com/'+pri[2]+'">'+(es?'Abrir ':'Abrir ')+esc(pri[1])+' ↗</a>';
+      var sc=document.createElement('script');sc.async=true;sc.src='https://platform.twitter.com/widgets.js';document.body.appendChild(sc)})}
+  safe(nwsPintar);
   /* ---- ciudad e idioma segun desde donde se usa (ubicacion aproximada por IP, sin pedir permiso) ---- */
   safe(function(){if(!WEB||LS('geoip'))return;LS('geoip','1');
     var ok=function(lat,lon,pais){if(!LS('langM')&&!/[?&]lang=/.test(location.search)&&(pais==='BR'||pais==='AR'||pais==='UY'||pais==='PY')){var l2=pais==='BR'?'pt':'es';if(root.getAttribute('data-lang')!==l2)setLang(l2)}
@@ -1427,7 +1498,7 @@
     var j=document.createElement('script');j.src='/lib/leaflet/leaflet.js';
     j.onload=function(){safe(function(){
       RADAR.map=L.map('radarMap',{scrollWheelZoom:false,zoomControl:true}).setView(C.geo,6);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(RADAR.map);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/'+(root.getAttribute('data-theme')==='light'?'light_all':'dark_all')+'/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:10,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'}).addTo(RADAR.map);
       L.circleMarker(C.geo,{radius:7,color:'#f5b301',weight:3,fillColor:'#f5b301',fillOpacity:.9}).addTo(RADAR.map).bindTooltip(C.nombre);
       RADAR.map.on('click',function(e){if(LUGPICK)lugAgregar([e.latlng.lat,e.latlng.lng])});
       zonasCapa();lugCapa();yoCapa();safe(vzCapa);radarCapa();setInterval(function(){safe(radarCapa)},10*60000)})};
@@ -1656,7 +1727,7 @@
   function ctaPintar(){var b=document.getElementById('ctaAj');if(!b)return;var em=LS('cuentaEmail');
     b.innerHTML=em?'<span>'+L2('Cuenta: ','Conta: ')+'<b>'+esc(em)+'</b></span><button type="button" class="pb" id="ctaSalir">'+L2('Cerrar sesión','Sair')+'</button>'
       :'<span>'+L2('Sin cuenta: tus ajustes quedan solo en este celular.','Sem conta: seus ajustes ficam só neste celular.')+'</span><button type="button" class="pb" id="ctaAbrir">'+L2('Crear cuenta o entrar','Criar conta ou entrar')+'</button>';
-    var x=document.getElementById('ctaSalir');if(x)x.addEventListener('click',function(){fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'salir',token:LS('cuenta')})}).catch(function(){});
+    var x=document.getElementById('ctaSalir');if(x)x.addEventListener('click',function(){try{google.accounts.id.disableAutoSelect()}catch(e){}fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'salir',token:LS('cuenta')})}).catch(function(){});
       try{localStorage.removeItem('avisosul-cuenta');localStorage.removeItem('avisosul-cuentaEmail')}catch(e){}ctaPintar()});
     var y=document.getElementById('ctaAbrir');if(y)y.addEventListener('click',function(){document.getElementById('cta').hidden=false})}
   safe(function(){var o=document.getElementById('cta');if(!o)return;var st=document.getElementById('ctaSt'),email='';
@@ -1673,9 +1744,9 @@
         else st.textContent=j.error==='limite'?L2('Demasiados intentos. Probá en un rato.','Muitas tentativas. Tente daqui a pouco.'):L2('No se pudo enviar el código. Probá de nuevo.','Não foi possível enviar o código. Tente de novo.')}).catch(function(){st.textContent=L2('Sin conexión.','Sem conexão.')})});
     /* Google: el botón aparece solo cuando está cargado el Client ID en el servidor */
     if(WEB)fetch('/api/cuenta.php?cfg=1').then(function(r){return r.json()}).then(function(j){if(!j.google)return;var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;
-      sc.onload=function(){try{google.accounts.id.initialize({client_id:j.google,callback:function(res){st.textContent=L2('Entrando…','Entrando…');
+      sc.onload=function(){try{google.accounts.id.initialize({client_id:j.google,auto_select:true,cancel_on_tap_outside:false,itp_support:true,use_fedcm_for_prompt:true,context:'signup',callback:function(res){st.textContent=L2('Entrando…','Entrando…');
           fetch('/api/cuenta.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'google',credential:res.credential})}).then(function(r){return r.json()}).then(function(k){if(k.ok){ctaEntrar(k.token,k.email);cerrar()}else st.textContent=L2('No se pudo entrar con Google.','Não foi possível entrar com o Google.')})}});
-        google.accounts.id.renderButton(document.getElementById('ctaG'),{theme:'filled_black',size:'large',shape:'pill',text:'continue_with',locale:root.getAttribute('data-lang')==='es'?'es':'pt-BR'})}catch(e){}};document.head.appendChild(sc)}).catch(function(){});
+        google.accounts.id.renderButton(document.getElementById('ctaG'),{theme:'filled_black',size:'large',shape:'pill',text:'continue_with',locale:root.getAttribute('data-lang')==='es'?'es':'pt-BR'});google.accounts.id.prompt()}catch(e){}};document.head.appendChild(sc)}).catch(function(){});
     var no=false;try{no=sessionStorage.getItem('avisosul-ctaNo')}catch(e){}
     if(!LS('cuenta')&&!no&&WEB){o.hidden=false;window.__ctaAbierta=true}
     if(LS('cuenta')){setInterval(ctaSubir,120000);document.addEventListener('visibilitychange',function(){if(document.hidden)ctaSubir()})}
