@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Configuración de cobros · Aviso Sul / Alerta Sur</title>
+<style>
+  :root{--bg:#142235;--card:#1F3350;--line:#2E4A6B;--txt:#e8eef5;--mut:#9fb2c7;--amber:#FFB238;--ok:#3ddc84;--err:#ff6b5e}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:720px;margin:0 auto;padding:20px 16px 60px}h1{font-size:22px;margin:0 0 4px}h2{font-size:18px;margin:0 0 6px}p{margin:6px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:14px 0}
+  label{display:block;font-size:13px;font-weight:700;margin:12px 0 4px;color:var(--mut)}
+  input{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:6px;border:1px solid var(--line);background:#0f1b2b;color:var(--txt)}
+  button{font:inherit;font-weight:700;padding:11px 16px;border:0;border-radius:6px;background:var(--amber);color:#2e2000;cursor:pointer;margin-top:12px}
+  button.sec{background:transparent;border:1px solid var(--line);color:var(--txt)}
+  small,.mut{color:var(--mut);font-size:13px}.ok{color:var(--ok)}.err{color:var(--err)}
+  ol{padding-left:20px;margin:6px 0}li{margin:4px 0}code{background:#0f1b2b;padding:1px 5px;border-radius:4px;font-size:13px;word-break:break-all}
+  .est{display:inline-block;font-size:12px;font-weight:800;padding:2px 8px;border-radius:4px;margin-left:6px}.est.si{background:var(--ok);color:#05351c}.est.no{background:#5a2a2a;color:#ffd0cc}
+  table{width:100%;border-collapse:collapse;font-size:13px}td{padding:4px 6px;border-top:1px solid var(--line)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <h1>Configuración de cobros</h1>
+  <p class="mut">Hotmart (Brasil) y Mercado Pago (Argentina). Lo que pegues acá se guarda en el servidor, fuera de la web pública, y nunca se vuelve a mostrar completo.</p>
+
+  <section class="card" id="login" hidden>
+    <h2>Entrá con tu email de administrador</h2>
+    <p class="mut">Te mandamos un código de 6 números.</p>
+    <label for="em">Email</label><input id="em" type="email" autocomplete="email" placeholder="deikdigital@gmail.com">
+    <button id="bCod">Enviarme el código</button>
+    <div id="pCod" hidden><label for="cod">Código</label><input id="cod" inputmode="numeric" maxlength="6"><button id="bVer">Entrar</button></div>
+    <p id="lSt" class="mut"></p>
+  </section>
+
+  <div id="panel" hidden>
+    <p class="mut">Sesión: <b id="quien"></b> · <a href="#" id="salir" style="color:var(--amber)">salir</a></p>
+
+    <section class="card">
+      <h2>Brasil · Hotmart <span class="est" id="eHm"></span></h2>
+      <ol class="mut">
+        <li>En Hotmart, creá la suscripción "Aviso Sul Premium" con los planes Mensal (R$ 14,90) y Anual (R$ 89,90), y el producto de pago único "Passe da Temporada" (R$ 44,90). Garantía de 7 días.</li>
+        <li>En cada producto, poné como página de agradecimiento <code>https://avisosul.com/app/?pago=ok</code></li>
+        <li>En Ferramentas → Webhook → Cadastrar, cargá la URL <code>https://avisosul.com/api/hotmart.php</code>, versión 2.0, con todos los eventos de compra y de suscripción.</li>
+        <li>En Webhook → Autenticação, copiá el <b>Hottok</b> y pegalo abajo.</li>
+        <li>En cada producto → Ofertas, copiá el enlace de pago de cada oferta (lleva <code>?off=</code>) y pegalo en su plan.</li>
+        <li>Guardá y después tocá "Enviar teste" en el Webhook de Hotmart: el aviso tiene que aparecer en "Últimos avisos".</li>
+      </ol>
+      <label for="hHot">Hottok <span id="hHotV" class="mut"></span></label><input id="hHot" autocomplete="off" placeholder="Dejalo vacío para conservar el guardado">
+      <label for="hM">Enlace de pago · Mensal</label><input id="hM" placeholder="https://pay.hotmart.com/XXXX?off=xxxx">
+      <label for="hT">Enlace de pago · Passe da Temporada</label><input id="hT" placeholder="https://pay.hotmart.com/YYYY?off=yyyy">
+      <label for="hA">Enlace de pago · Anual</label><input id="hA" placeholder="https://pay.hotmart.com/XXXX?off=zzzz">
+      <div id="sinPlan" hidden></div>
+      <button id="gHm">Guardar Hotmart</button> <p id="hSt" class="mut"></p>
+      <h2 style="margin-top:16px;font-size:15px">Últimos avisos de Hotmart</h2><table id="tHm"></table>
+    </section>
+
+    <section class="card">
+      <h2>Argentina · Mercado Pago <span class="est" id="eMp"></span></h2>
+      <ol class="mut">
+        <li>Entrá a <a href="https://www.mercadopago.com.ar/developers/panel/app" target="_blank" rel="noopener" style="color:var(--amber)">Mercado Pago Developers</a> con la cuenta que va a cobrar y creá la aplicación "Alerta Sur" (Checkout Pro / pagos online).</li>
+        <li>En Credenciales de producción, completá los datos que pida y copiá el <b>Access Token</b> (empieza con <code>APP_USR-</code>).</li>
+        <li>Opcional, recomendado: en Webhooks, cargá <code>https://avisosul.com/api/mercadopago.php?hook=1</code> con el evento Pagos y copiá la <b>clave secreta</b>.</li>
+        <li>Pegá todo abajo y guardá: comprobamos el token con Mercado Pago antes de guardarlo.</li>
+      </ol>
+      <label for="mAt">Access Token de producción <span id="mAtV" class="mut"></span></label><input id="mAt" autocomplete="off" placeholder="APP_USR-…  (vacío = conservar el guardado)">
+      <label for="mWs">Clave secreta de Webhooks (opcional) <span id="mWsV" class="mut"></span></label><input id="mWs" autocomplete="off" placeholder="vacío = conservar la guardada">
+      <button id="gMp">Verificar y guardar Mercado Pago</button> <p id="mSt" class="mut"></p>
+      <h2 style="margin-top:16px;font-size:15px">Últimos pagos de Mercado Pago</h2><table id="tMp"></table>
+    </section>
+    <p class="mut">Precios: promo de Navidad 50 % hasta el 25/12/2026. Mercado Pago pasa solo al precio regular después de esa fecha; en Hotmart hay que cambiarlo a mano.</p>
+  </div>
+</main>
+<script>
+(function(){
+  var K='avisosul-cuenta',tok=null;try{tok=localStorage.getItem(K)}catch(e){}
+  var $=function(id){return document.getElementById(id)};
+  function api(u,b){return fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json().then(function(j){j._s=r.status;return j})})}
+  function fecha(t){var d=new Date(t*1000);return d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}
+  var ERR={no_admin:'Ese email no es administrador.',falta_hottok:'Falta el Hottok.',token_invalido:'Mercado Pago rechazó el token: revisá que sea el de producción.',formato_token:'El token tiene que empezar con APP_USR-.',falta_token:'Falta el Access Token.',url_mensal:'El enlace Mensal no es de Hotmart.',url_temporada:'El enlace de Temporada no es de Hotmart.',url_anual:'El enlace Anual no es de Hotmart.'};
+  function login(){$('login').hidden=false;$('panel').hidden=true}
+  function estado(){api('/api/admin.php',{acao:'estado',token:tok}).then(function(j){
+    if(!j.ok){if(j.error==='no_admin'){$('lSt').textContent='Tu sesión no es de administrador. Entrá con el email de administrador.'}login();return}
+    $('login').hidden=true;$('panel').hidden=false;$('quien').textContent=j.admin;
+    var h=j.hotmart,m=j.mp,hOk=!!(h.hottok&&h.checkout&&Object.keys(h.checkout).length),mOk=!!m.access_token;
+    $('eHm').textContent=hOk?'configurado':'pendiente';$('eHm').className='est '+(hOk?'si':'no');
+    $('eMp').textContent=mOk?'configurado':'pendiente';$('eMp').className='est '+(mOk?'si':'no');
+    $('hHotV').textContent=h.hottok?'(guardado '+h.hottok+')':'';$('mAtV').textContent=m.access_token?'(guardado '+m.access_token+(m.cuenta?' · '+m.cuenta:'')+')':'';$('mWsV').textContent=m.webhook_secret?'(guardada '+m.webhook_secret+')':'';
+    var c=h.checkout||{};$('hM').value=c.mensal||'';$('hT').value=c.temporada||'';$('hA').value=c.anual||'';
+    var s=$('sinPlan');if(j.ofertas_sin_plan&&j.ofertas_sin_plan.length){s.hidden=false;s.innerHTML='<label>Ofertas que llegaron en avisos y no tienen plan: elegí cuál es</label>'+j.ofertas_sin_plan.map(function(o){return'<p><code>'+o+'</code> <select data-o="'+o+'" style="font-size:16px"><option value="">—</option><option value="mensal">Mensal</option><option value="temporada">Temporada</option><option value="anual">Anual</option></select></p>'}).join('')}else s.hidden=true;
+    $('tHm').innerHTML=(j.eventos_hotmart||[]).reverse().map(function(x){return'<tr><td>'+fecha(x.t)+'</td><td>'+x.ev+'</td><td>off '+(x.off||'—')+'</td><td>'+(x.email||'')+'</td></tr>'}).join('')||'<tr><td class="mut">Todavía no llegó ningún aviso.</td></tr>';
+    $('tMp').innerHTML=(j.eventos_mp||[]).reverse().map(function(x){return'<tr><td>'+fecha(x.t)+'</td><td>'+x.estado+'</td><td>'+x.plan+'</td><td>$ '+(x.monto||'')+'</td></tr>'}).join('')||'<tr><td class="mut">Todavía no llegó ningún pago.</td></tr>';
+  }).catch(function(){$('lSt').textContent='Sin conexión.';login()})}
+  $('bCod').onclick=function(){var em=$('em').value.trim();if(!em)return;$('lSt').textContent='Enviando…';
+    api('/api/cuenta.php',{acao:'codigo',email:em}).then(function(j){$('lSt').textContent=j.ok?'Listo: revisá tu correo (y la carpeta de spam).':'No se pudo enviar el código ('+(j.error||j._s)+').';if(j.ok)$('pCod').hidden=false})};
+  $('bVer').onclick=function(){api('/api/cuenta.php',{acao:'verificar',email:$('em').value.trim(),codigo:$('cod').value.trim()}).then(function(j){
+    if(!j.ok){$('lSt').textContent='Código incorrecto o vencido.';return}tok=j.token;try{localStorage.setItem(K,tok);localStorage.setItem('avisosul-cuentaEmail',j.email)}catch(e){}estado()})};
+  $('salir').onclick=function(e){e.preventDefault();try{localStorage.removeItem(K)}catch(x){}tok=null;login()};
+  $('gHm').onclick=function(){var ex={};document.querySelectorAll('#sinPlan select').forEach(function(s){if(s.value)ex[s.dataset.o]=s.value});$('hSt').textContent='Guardando…';
+    api('/api/admin.php',{acao:'hotmart',token:tok,hottok:$('hHot').value.trim(),checkout:{mensal:$('hM').value.trim(),temporada:$('hT').value.trim(),anual:$('hA').value.trim()},extra:ex}).then(function(j){
+      $('hSt').innerHTML=j.ok?'<span class="ok">Guardado. Códigos reconocidos: '+Object.keys(j.planes||{}).join(', ')+'</span>':'<span class="err">'+(ERR[j.error]||'No se pudo guardar.')+'</span>';if(j.ok){$('hHot').value='';estado()}})};
+  $('gMp').onclick=function(){$('mSt').textContent='Verificando con Mercado Pago…';
+    api('/api/admin.php',{acao:'mp',token:tok,access_token:$('mAt').value.trim(),webhook_secret:$('mWs').value.trim()}).then(function(j){
+      $('mSt').innerHTML=j.ok?'<span class="ok">Guardado. Cuenta: '+(j.cuenta||'')+'</span>':'<span class="err">'+(ERR[j.error]||'No se pudo guardar.')+'</span>';if(j.ok){$('mAt').value='';$('mWs').value='';estado()}})};
+  if(tok)estado();else login();
+})();
+</script>
+</body>
+</html>
