@@ -84,15 +84,46 @@ def compacto(el):
     return x
 
 
+def urls_se():
+    """Pide al catalogo de datos abiertos (CKAN) la direccion actual del CSV de precios vigentes; si no, usa la conocida."""
+    out = []
+    for api in ("http://datos.energia.gob.ar/api/3/action/package_show?id=precios-en-surtidor",
+                "https://datos.gob.ar/api/3/action/package_show?id=energia-precios-surtidor---resolucion-3142016"):
+        try:
+            j = json.loads(urllib.request.urlopen(urllib.request.Request(api, headers={"User-Agent": "AvisoSul/1.0"}), timeout=40).read().decode("utf-8"))
+            for r in j.get("result", {}).get("resources", []):
+                u = r.get("url", ""); n = (r.get("name", "") + " " + u).lower()
+                if u.lower().endswith(".csv") and "vigente" in n and u not in out:
+                    out.insert(0, u)
+                elif u.lower().endswith(".csv") and "surtidor" in n and u not in out:
+                    out.append(u)
+        except Exception as e:
+            print("  SE: catalogo", api.split("/")[2], str(e)[:60])
+    if SE_URL not in out:
+        out.append(SE_URL)
+    return out[:4]
+
+
 def argentina():
     """Baja el CSV oficial y arma los cuadros de Argentina. Devuelve la cantidad de cuadros escritos (0 si falla)."""
-    if os.path.exists(SE_MARCA) and time.time() - os.path.getmtime(SE_MARCA) < 86400:
-        return 0
-    try:
-        req = urllib.request.Request(SE_URL, headers={"User-Agent": "AvisoSul/1.0 (+https://avisosul.com)"})
-        raw = urllib.request.urlopen(req, timeout=120).read().decode("utf-8", "replace")
-    except Exception as e:
-        print("  SE: sin respuesta", str(e)[:80]); json.dump({"t": int(time.time()), "ok": False}, open(SE_MARCA, "w")); return 0
+    if os.path.exists(SE_MARCA):
+        try:
+            m = json.load(open(SE_MARCA))
+        except Exception:
+            m = {}
+        if time.time() - m.get("t", 0) < (86400 if m.get("ok") else 7200):
+            return 0
+    raw, usada = None, None
+    for u in urls_se():
+        try:
+            req = urllib.request.Request(u, headers={"User-Agent": "AvisoSul/1.0 (+https://avisosul.com)"})
+            raw = urllib.request.urlopen(req, timeout=120).read().decode("utf-8", "replace"); usada = u
+            if raw.count("\n") > 500:
+                break
+        except Exception as e:
+            print("  SE: falla", u[:70], str(e)[:60])
+    if not raw:
+        json.dump({"t": int(time.time()), "ok": False}, open(SE_MARCA, "w")); return 0
     filas = csv.DictReader(io.StringIO(raw.lstrip("\ufeff")))
     est = {}
     for f in filas:
@@ -132,7 +163,7 @@ def argentina():
         json.dump({"t": int(time.time()), "fuente": "SE", "e": lista}, open(viejo, "w"), ensure_ascii=False, separators=(",", ":"))
         estado[k] = int(time.time())
     json.dump(estado, open(ESTADO, "w"))
-    json.dump({"t": int(time.time()), "ok": True, "estaciones": len(est), "cuadros": len(por)}, open(SE_MARCA, "w"))
+    json.dump({"t": int(time.time()), "ok": True, "estaciones": len(est), "cuadros": len(por), "url": usada}, open(SE_MARCA, "w"))
     print("  SE: %d estaciones en %d cuadros" % (len(est), len(por)))
     return len(por)
 
