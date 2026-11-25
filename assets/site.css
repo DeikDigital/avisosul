@@ -277,13 +277,14 @@ html[lang="es"] .historia .pt,html:not([lang="es"]) .historia .es{display:none}
 .hero .escena .pvhero{position:relative;z-index:1;width:min(270px,calc((100vh - 230px) * 9 / 16));min-width:190px}
 .hero .escena .logo3d{position:absolute;z-index:2;width:170px;aspect-ratio:1/1;top:-14px;right:calc(50% - min(135px,calc((100vh - 230px) * 9 / 32)) - 120px)}
 .hero .wrap.franjaw{display:block;margin-top:34px}
-.vivo.franja{display:grid;grid-template-columns:auto auto 1fr auto;grid-template-areas:"t n x niv" "t n c at";align-items:center;gap:4px 22px;padding:16px 22px;margin:0}
+.vivo.franja{display:grid;grid-template-columns:auto auto 1fr auto;grid-template-areas:"t n x niv" "t n at niv" "c c c c";align-items:center;gap:4px 22px;padding:16px 22px;margin:0}
 .vivo.franja .t{grid-area:t;padding-right:22px;border-right:1px solid rgba(142,187,224,.25);align-self:stretch}
 .vivo.franja .n{grid-area:n;font-size:46px;margin:0}
 .vivo.franja #vTxt{grid-area:x}
 .vivo.franja .niv{grid-area:niv;margin:0;justify-content:flex-end}
-.vivo.franja .cids{grid-area:c;margin:0}
-.vivo.franja #vAt{grid-area:at;margin:0;text-align:right}
+.vivo.franja .cids{grid-area:c;margin:10px 0 0;display:flex;flex-wrap:wrap;gap:8px;padding-top:12px;border-top:1px solid rgba(142,187,224,.18)}
+.vivo.franja .cid{padding:6px 12px;border-radius:999px;gap:8px}.vivo.franja .cid b{font-size:14px}.vivo.franja .cid span{margin-left:2px;font-size:12px;font-weight:700;color:var(--muted)}
+.vivo.franja #vAt{grid-area:at;margin:0}
 @media (max-width:860px){
 .hero .wrap{display:grid;grid-template-columns:1fr;gap:8px}
 .hero .wrap>div{order:2}.hero .escena{order:1;padding:8px 0 4px}
@@ -292,5 +293,5 @@ html[lang="es"] .historia .pt,html:not([lang="es"]) .historia .es{display:none}
 .hero .escena .halo{width:300px;height:300px}
 .hero .wrap.franjaw{display:block;margin-top:22px}
 .vivo.franja{grid-template-columns:auto 1fr;grid-template-areas:"t t" "n x" "niv niv" "c c" "at at";gap:8px 14px}
-.vivo.franja .t{border:0;padding:0}.vivo.franja .niv{justify-content:flex-start}.vivo.franja #vAt{text-align:left}}
+.vivo.franja .t{border:0;padding:0}.vivo.franja .niv{justify-content:flex-start}}
 @media (max-width:420px){.hero .escena .logo3d{right:4px}}
