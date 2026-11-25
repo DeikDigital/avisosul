@@ -519,6 +519,13 @@
   .lgb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.lgb button{font:inherit;font-weight:700;padding:10px 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--strong);cursor:pointer}
   #lgSt{display:block;margin-top:6px;color:var(--muted)}.lgp,.lge{font-size:13px;color:var(--muted);margin:8px 0 0}
   .lgtip{font-weight:700;font-size:12px}
+  .lgh{font-size:22px;letter-spacing:.01em}
+  .lgpb .lgw{width:24px;height:24px;margin:0;flex:none}
+  .lgacc{display:grid;gap:8px;margin-top:12px}
+  .lgpb{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;font-weight:700;font-size:15px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--strong);cursor:pointer}
+  .lgpb.wa{background:linear-gradient(160deg,#4fe089,#25D366 60%,#128C4B);color:#05351c;border-color:#25D366}
+  .lgpb .lk{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:800;color:#2e2000;background:#f5b301;border-radius:999px;padding:3px 9px;white-space:nowrap}
+  [data-plan="premium"] .lgpb .lk{background:transparent;color:inherit;opacity:.7}[data-plan="premium"] .lgpb .lk::before{content:"✓ "}
   #radarMap{position:relative;z-index:0;isolation:isolate}
 .ofc{margin-top:18px}.ofc h3{font-size:19px;margin:0 0 4px}.ofr{font-size:13.5px;color:var(--muted);margin:0 0 10px}
   .ofa{border-left:5px solid #f5d000;background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:10px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -698,12 +705,16 @@
 <main>
 <section id="lugares">
   <div class="wrap">
-    <h2 class="pt">Meus lugares</h2>
-    <h2 class="es">Mis lugares</h2>
-    <p class="pt">Avisamos se um aviso oficial chegar à sua casa, ao trabalho ou ao campo.</p>
-    <p class="es">Te avisamos si un aviso oficial toca tu casa, tu trabajo o tu campo.</p>
+    <h2 class="pt lgh">TE AVISO DOS ALERTAS PELO WHATSAPP?</h2>
+    <h2 class="es lgh">¿TE AVISO DE ALERTAS POR WHATSAPP?</h2>
+    <p class="pt">Mandamos um WhatsApp quando um aviso oficial chegar à sua casa, ao trabalho ou ao campo.</p>
+    <p class="es">Te mandamos un WhatsApp cuando un aviso oficial toca tu casa, tu trabajo o tu campo.</p>
     <div id="lgList"></div>
-    <button type="button" class="lgnew" id="lgNew">＋ <span class="pt">Adicionar lugar</span><span class="es">Agregar lugar</span></button>
+    <div class="lgacc">
+      <button type="button" class="lgpb" id="lgAqui">📍 <span class="pt">Minha localização atual</span><span class="es">Mi ubicación actual</span><i class="lk">★ Premium</i></button>
+      <button type="button" class="lgpb" id="lgNew">🗺️ <span class="pt">Outras localizações</span><span class="es">Otras ubicaciones</span><i class="lk">★ Premium</i></button>
+      <button type="button" class="lgpb wa" id="lgWa"><span class="waw lgw"><img class="walogo" src="/assets/whatsapp.svg" alt="" width="22" height="22" onerror="this.remove()"><svg class="waic" viewBox="0 0 32 32" aria-hidden="true"><path fill="#25D366" d="M16 3C8.8 3 3 8.6 3 15.6c0 2.5.8 4.9 2.1 6.9L3.6 28.6l6.3-1.6c1.9 1 4 1.6 6.1 1.6 7.2 0 13-5.6 13-12.6S23.2 3 16 3z"/><path fill="#fff" d="M11.6 9.6c.3 0 .6 0 .8.6l1.1 2.6c.1.3 0 .6-.1.8l-.8 1c-.2.2-.2.5 0 .8.9 1.6 2.3 2.9 4 3.7.3.1.6.1.8-.1l1-1.2c.2-.3.6-.3.9-.2l2.5 1.2c.3.2.5.4.4.8-.2 1.5-1.6 2.6-3.1 2.6-4.3-.3-8.8-4.6-9.3-8.7-.1-1.6.9-3.9 1.8-3.9z"/></svg></span><span class="pt">Adicionar número de WhatsApp</span><span class="es">Agregar número de WhatsApp</span><i class="lk">★ Premium</i></button>
+    </div>
     <div class="lgf" id="lgForm" hidden>
       <input type="text" id="lgName" maxlength="30" autocomplete="off" aria-label="Nombre">
       <div class="lgb">
@@ -712,7 +723,7 @@
       </div>
       <small id="lgSt"></small>
     </div>
-    <p class="lgp"><span class="pt">Grátis: 1 lugar. Premium: até 10.</span><span class="es">Gratis: 1 lugar. Premium: hasta 10.</span></p>
+    <p class="lgp"><span class="pt">Alertas pelo WhatsApp e até 10 lugares são Premium.</span><span class="es">Alertas por WhatsApp y hasta 10 lugares son Premium.</span></p>
   </div>
 </section>
 <div class="wrap"><a class="spon" id="spon" href="mailto:patrocinio@avisosul.com?subject=Patroc%C3%ADnio%20Aviso%20Sul">
@@ -1762,6 +1773,10 @@
   /* ---- funciones premium: en el plan gratis muestran un aviso en lugar de abrirse ---- */
   function esPremium(){return root.getAttribute('data-plan')==='premium'}
   function bloqueo(){var o=document.getElementById('pmo');if(o)o.hidden=false}
+  safe(function(){var esP=function(){return root.getAttribute('data-plan')==='premium'};
+    ['lgAqui','lgNew','lgWa'].forEach(function(id){var b=document.getElementById(id);if(b)b.addEventListener('click',function(e){if(!esP()){e.stopImmediatePropagation();e.preventDefault();bloqueo()}},true)});
+    var a=document.getElementById('lgAqui');if(a)a.addEventListener('click',function(){var f=document.getElementById('lgForm');if(f)f.hidden=false;var g=document.getElementById('lgGps');if(g)g.click()});
+    var w=document.getElementById('lgWa');if(w)w.addEventListener('click',function(){location.hash='#ajustes';setTimeout(function(){var x=document.getElementById('waBox');if(x){x.scrollIntoView({behavior:'smooth',block:'center'});var t=x.querySelector('input[type=tel]');if(t)t.focus()}},350)})});
   safe(function(){var o=document.getElementById('pmo');if(!o)return;var st=document.getElementById('pmoSt'),plan='temporada';
     function cerrar(){o.hidden=true;if(location.hash==='#premium')history.replaceState(null,'',location.pathname+location.search)}
     document.getElementById('pmoX').addEventListener('click',cerrar);o.addEventListener('click',function(e){if(e.target===o)cerrar()});
