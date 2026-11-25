@@ -1696,7 +1696,7 @@
     st('pGeo',L2('Para abrir directo la ciudad más cercana. No guardamos tu ubicación.','Para abrir direto a cidade mais próxima. Não guardamos sua localização.'));
     n.addEventListener('click',function(){
       if(!('Notification' in window)){st('pNotif',L2('Este navegador no admite notificaciones. En iPhone, primero instalá la página en la pantalla de inicio.','Este navegador não permite notificações. No iPhone, instale a página na tela inicial primeiro.'));return}
-      Notification.requestPermission().then(function(p){if(p==='granted'){LS('notif','on');st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);notificar(MARCA,L2('Notificaciones activadas para ','Notificações ativadas para ')+C.nombre)}
+      Notification.requestPermission().then(function(p){if(p==='granted'){LS('notif','on');pushSuscribir(true);st('pNotif',L2('Activadas en este dispositivo.','Ativadas neste dispositivo.'),true);notificar(MARCA,L2('Notificaciones activadas para ','Notificações ativadas para ')+C.nombre)}
         else st('pNotif',L2('Permiso no concedido. Se puede cambiar en los ajustes del navegador.','Permissão não concedida. Dá para mudar nos ajustes do navegador.'),false)})});
     g.addEventListener('click',function(){
       if(!navigator.geolocation){st('pGeo',L2('Este navegador no admite ubicación.','Este navegador não permite localização.'));return}
@@ -1935,7 +1935,7 @@
     if(/[?&]pago=ok\b/.test(location.search)||(+LS('pagoEspera')||0)>Date.now()-3600000)setTimeout(function(){pagoVerificar(false)},1200);
     else if(LS('cuenta')&&WEB)fetch('/api/cuenta.php?token='+encodeURIComponent(LS('cuenta')),{cache:'no-store'}).then(function(r){return r.json()}).then(premSync).catch(function(){})});
   function planGratis(){LS('plan','gratis');LS('planHasta','');LS('planFuente','');LS('planCodEmail','');root.setAttribute('data-plan','gratis');try{carMarca()}catch(e){}safe(trTxt)}
-  function ctaEntrar(tok,email,nv){var prev=LS('cuentaEmail')||LS('cuentaUlt')||'';if(prev&&prev!==email)planGratis();else if(LS('plan')==='premium'&&LS('planFuente')!=='hotmart'&&!LS('planCodEmail'))LS('planCodEmail',email);LS('cuentaUlt',email);LS('cuenta',tok);LS('cuentaEmail',email);LS('cuentaNv',nv?'1':'');
+  function ctaEntrar(tok,email,nv){var prev=LS('cuentaEmail')||LS('cuentaUlt')||'';if(prev&&prev!==email)planGratis();else if(LS('plan')==='premium'&&LS('planFuente')!=='hotmart'&&!LS('planCodEmail'))LS('planCodEmail',email);LS('cuentaUlt',email);LS('cuenta',tok);setTimeout(function(){pushSuscribir(true)},1500);LS('cuentaEmail',email);LS('cuentaNv',nv?'1':'');
     fetch('/api/cuenta.php?token='+encodeURIComponent(tok),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){premSync(j);if(LS('pagoPend')){var pp=LS('pagoPend');LS('pagoPend','');irPago(pp);return}var aj=j.ajustes||{},n=0;
       for(var k in aj){if(CTA_K.indexOf(k)>=0&&!LS(k)){LS(k,aj[k]);n++}}if(n)location.reload();else ctaSubir()}).catch(function(){});ctaPintar()}
   function ctaPintar(){var b=document.getElementById('ctaAj');if(!b)return;var em=LS('cuentaEmail');
@@ -1976,8 +1976,19 @@
     document.getElementById('onbOk').addEventListener('click',function(){cerrar();
       var pedirUb=function(){safe(function(){precPedir(false)})};
       if('Notification' in window&&Notification.permission==='default'){var p;try{p=Notification.requestPermission()}catch(e){p=null}
-        if(p&&p.then)p.then(function(r){if(r==='granted'){LS('notif','on');safe(txtFijos)}pedirUb()},pedirUb);else pedirUb()}
+        if(p&&p.then)p.then(function(r){if(r==='granted'){LS('notif','on');safe(txtFijos);pushSuscribir(true)}pedirUb()},pedirUb);else pedirUb()}
       else{if('Notification' in window&&Notification.permission==='granted')LS('notif','on');pedirUb()}})});
+  /* ---- push: avisos con la app cerrada. Sigue la ciudad elegida y, en Premium, la más cercana a cada lugar guardado ---- */
+  function cercana(g){var b=null,bd=1e9;for(var k in CIUDAD){var c=CIUDAD[k].geo,d=Math.pow(c[0]-g[0],2)+Math.pow((c[1]-g[1])*Math.cos(g[0]*Math.PI/180),2);if(d<bd){bd=d;b=k}}return Math.sqrt(bd)*111<120?b:null}
+  function pushSuscribir(forzar){try{if(!WEB||!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window)||Notification.permission!=='granted')return;
+    var sl=[cid];if(esPremium())LUG.forEach(function(u){var c=u.g&&cercana(u.g);if(c&&sl.indexOf(c)<0)sl.push(c)});
+    var firma=sl.join(',')+'|'+(LS('cuenta')||'').slice(0,8)+'|'+(root.getAttribute('data-lang')||'')+'|'+new Date().toISOString().slice(0,10);
+    if(!forzar&&LS('pushFirma')===firma)return;
+    navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription().then(function(s){if(s)return s;
+      return fetch('/api/push.php?clave=1').then(function(r){return r.json()}).then(function(j){var b=j.key.replace(/-/g,'+').replace(/_/g,'/'),raw=atob(b+'==='.slice((b.length+3)%4)),u=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)u[i]=raw.charCodeAt(i);
+        return reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u})})})}).then(function(s){
+      return fetch('/api/push.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'suscribir',sub:s.toJSON(),slugs:sl,lang:root.getAttribute('data-lang')==='es'?'es':'pt',pais:PAISM,token:LS('cuenta')||null})})}).then(function(r){if(r&&r.ok)LS('pushFirma',firma)}).catch(function(){})}catch(e){}}
+  setTimeout(function(){pushSuscribir(false)},2500);
   /* ---- funciones premium: en el plan gratis muestran un aviso en lugar de abrirse ---- */
   function esPremium(){return root.getAttribute('data-plan')==='premium'}
   function bloqueo(){var o=document.getElementById('pmo');if(o)o.hidden=false}

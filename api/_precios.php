@@ -44,7 +44,8 @@ function hoy_ar() { return (new DateTime('now', new DateTimeZone('America/Argent
 function hay_temporal($slug, $cfg) {
     $slug = preg_replace('/[^a-z0-9_-]/', '', strtolower((string)$slug)); if (!$slug) return false;
     $raiz = dirname(__DIR__);
-    $a = @json_decode(@file_get_contents("$raiz/datos/$slug.json") ?: '', true);
+    $dd = is_dir("$raiz/vivo/datos") ? "$raiz/vivo/datos" : "$raiz/datos";   // los agentes escriben en vivo/
+    $a = @json_decode(@file_get_contents("$dd/$slug.json") ?: '', true);
     foreach (($a['avisos'] ?? []) as $x) { $h = strtotime($x['hasta'] ?? ''); $d = strtotime($x['desde'] ?? '') ?: 0; if ($h && $h > time() && $d <= time()) return true; }
     $ciu = null; foreach ((@json_decode(@file_get_contents("$raiz/ciudades.json") ?: '[]', true) ?: []) as $c) if (($c['slug'] ?? '') === $slug) $ciu = $c;
     $vf = dir_privado() . '/vecinos.json';

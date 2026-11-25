@@ -59,6 +59,11 @@
       <button id="gPx">Guardar precios</button> <p id="pxSt" class="mut"></p>
     </section>
     <section class="card">
+      <h2>Notificaciones push</h2>
+      <p class="mut">Los avisos oficiales llegan al celular aunque la app esté cerrada. Para probar: abrí la app en tu celular con tu cuenta (deikdigital@gmail.com), aceptá las notificaciones, cerrala y tocá el botón.</p>
+      <button id="gPush">Enviarme una notificación de prueba</button> <p id="pushSt" class="mut"></p>
+    </section>
+    <section class="card">
       <h2>Ingreso con Google <span class="est" id="eGo"></span></h2>
       <p class="mut">Con esto la app muestra solo "Registrarse con Google". El Client ID es público (no es una contraseña). Sale de Google Cloud → APIs y servicios → Credenciales → ID de cliente de OAuth (aplicación web), con el origen <code>https://avisosul.com</code>.</p>
       <label for="gCid">Client ID <span id="gCidV" class="mut"></span></label><input id="gCid" autocomplete="off" placeholder="123456789-abc.apps.googleusercontent.com">
@@ -135,6 +140,8 @@
   $('gGo').onclick=function(){$('gSt').textContent='Guardando…';
     api('/api/admin.php',{acao:'google',token:tok,client_id:$('gCid').value.trim()}).then(function(j){
       $('gSt').innerHTML=j.ok?'<span class="ok">Guardado. La app ya muestra el botón de Google.</span>':'<span class="err">'+(j.error==='formato_google'?'Ese no parece un Client ID de Google (termina en .apps.googleusercontent.com).':'No se pudo guardar.')+'</span>';if(j.ok){$('gCid').value='';estado()}})};
+  $('gPush').onclick=function(){$('pushSt').textContent='Enviando…';api('/api/push.php',{acao:'prueba',token:tok}).then(function(j){
+    $('pushSt').innerHTML=j.ok?(j.dispositivos?'<span class="ok">Enviada a '+j.enviadas+' de '+j.dispositivos+' dispositivos tuyos.</span>':'<span class="err">Todavía no hay ningún dispositivo tuyo suscripto: abrí la app con tu cuenta y aceptá las notificaciones.</span>'):'<span class="err">No se pudo enviar.</span>'})};
   /* ---- precios ---- */
   var PLS=['mensal','temporada','anual'],PN={mensal:'Mensual',temporada:'Temporada',anual:'Anual'};
   function pxEsc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]})}
