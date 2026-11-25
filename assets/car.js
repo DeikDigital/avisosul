@@ -54,6 +54,8 @@
     '#car .stc h3{margin:0 44px 4px 0;font-size:20px}#car .stc .sd{font-size:14px;opacity:.85;margin:0 0 10px}#car .stc ul{margin:0 0 10px;padding:0;list-style:none;display:grid;gap:4px;font-size:14px}#car .stc iframe{width:100%;height:280px;border:0;border-radius:12px;background:#fff}' +
     '#car .stc .sb{display:flex;gap:8px;margin-top:10px}#car .stc .sb button{flex:1;font:inherit;font-weight:800;padding:10px;border:0;border-radius:10px;cursor:pointer;background:#f5b301;color:#2e2000}#car .stc .sb button.s2{background:rgba(255,255,255,.14);color:#fff}' +
     '#car .est .nm{background:none;border:0;padding:0;color:#fff;font:inherit;font-weight:700;text-align:left;cursor:pointer}' +
+    '#car .dest{display:block;width:100%;margin:0 0 10px;padding:12px 14px;border:0;border-radius:14px;font:inherit;font-size:20px;font-weight:800;text-align:left;cursor:pointer;color:#05351c;background:linear-gradient(160deg,#5ff0a0,#3ddc84 60%,#1fae5f);box-shadow:0 6px 18px rgba(61,220,132,.35)}#car .dest small{display:block;font-size:12.5px;font-weight:600;opacity:.8}#car .dest[hidden]{display:none}' +
+    '#car .est .mas{background:none;border:0;color:#f5b301;font:inherit;font-size:13px;font-weight:800;padding:2px 0;cursor:pointer;text-align:left}' +
     '#car .pin{font-size:22px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}#car .pin.f{font-size:26px}' +
     '#car .yo{width:22px;height:22px;border-radius:50%;background:#f5b301;border:3px solid #fff;box-shadow:0 0 0 6px rgba(245,179,1,.3)}' +
     '#car .leaflet-control-attribution{font-size:9px;background:rgba(0,0,0,.5);color:#ccc}#car .leaflet-control-attribution a{color:#ddd}';
@@ -71,6 +73,7 @@
       '<button type="button" class="gls" id="cRuta" title="' + L2('¿A dónde vas?', 'Para onde vai?') + '">🧭</button>' +
       '<button type="button" class="gls" id="cEst" title="' + L2('Buscar estaciones', 'Buscar postos') + '">⛽</button></div>' +
       '<div class="gls bot"><div class="au"><span>🛢️</span><b id="cAut">– km</b><div class="bar"><i id="cBar" style="width:0"></i></div><button type="button" id="cCfg">' + L2('Mi auto', 'Meu carro') + '</button></div>' +
+      '<button type="button" class="dest" id="cDest">🧭 ' + L2('¿A dónde vas?', 'Para onde vai?') + '<small>' + L2('Tocá para armar el viaje', 'Toque para montar a viagem') + '</small></button>' +
       '<div class="rt" id="cRt" hidden></div><div class="est" id="cList"></div><div class="nt" id="cNt">' + L2('Configurá antes de salir. No uses el celular mientras manejás.', 'Configure antes de sair. Não use o celular enquanto dirige.') + '</div></div>' +
       '<div class="dlg" id="cSt" hidden><div class="gls stc"><button type="button" class="stx" id="cStX" aria-label="' + L2('Cerrar', 'Fechar') + '">✕</button><div id="cStB"></div></div></div>' +
       '<div class="dlg" id="cDst" hidden><form class="gls" id="cDstF"><h3>🧭 ' + L2('¿A dónde vas?', 'Para onde vai?') + '</h3>' +
@@ -112,6 +115,7 @@
     $('cAuto').onclick = $('cCfg').onclick = dlg;
     $('cCn').onclick = function () { $('cDlg').hidden = true; CAR.el.classList.remove('dlgon') };
     $('cEst').onclick = function () { if (CAR.ruta) estRuta(); else estaciones(CAR.pos || A.ref(), true) };
+    $('cDest').onclick = function () { $('cRuta').onclick() };
     $('cRuta').onclick = function () { $('cDst').hidden = false; CAR.el.classList.add('dlgon'); setTimeout(function () { $('cDstF').q.focus() }, 50) };
     $('cDstNo').onclick = function () { $('cDst').hidden = true; CAR.el.classList.remove('dlgon') };
     $('cDstF').onsubmit = function (e) {
@@ -290,6 +294,7 @@
           ci = bi; pasos.push({ i: bi, t: st.maneuver.type, m: st.maneuver.modifier || '', x: st.maneuver.exit, n: st.name || st.ref || '' });
         });
         quitarRuta(true);
+        document.getElementById('cDest').hidden = true;
         CAR.ruta = { dest: dest, n: nombre, co: co, cum: cum, km: r0.distance / 1000, seg: r0.duration, idx: 0, av: [], pasos: pasos, dicho: {} };
         CAR.linea = L.polyline(co, { color: '#f5b301', weight: 6, opacity: .9 }).addTo(CAR.map);
         CAR.meta = L.marker(dest, { icon: L.divIcon({ className: '', html: '<div class="pin f">🏁</div>', iconSize: [28, 28], iconAnchor: [6, 26] }) }).addTo(CAR.map);
@@ -301,7 +306,7 @@
   function quitarRuta(silencio) {
     if (CAR.linea) CAR.map.removeLayer(CAR.linea); if (CAR.meta) CAR.map.removeLayer(CAR.meta); CAR.linea = CAR.meta = null; CAR.ruta = null; CAR.estR = null; CAR.sug = null;
     CAR.nav = false; CAR.el.classList.remove('navon'); document.getElementById('cGui').hidden = true;
-    if (!silencio) { document.getElementById('cRt').hidden = true; avisos(CAR.pos || A.ref()); estaciones(CAR.pos || A.ref(), true) }
+    if (!silencio) { document.getElementById('cDest').hidden = false; document.getElementById('cRt').hidden = true; avisos(CAR.pos || A.ref()); estaciones(CAR.pos || A.ref(), true) }
   }
   function falta() { var R = CAR.ruta; return Math.max(0, R.km - R.cum[R.idx]) }
   function tarjeta() {
@@ -359,18 +364,30 @@
     if (!('speechSynthesis' in window) || LS('carVoz') === 'no') return;
     try { var u = new SpeechSynthesisUtterance(t); u.lang = L2('es-AR', 'pt-BR'); u.rate = 1; speechSynthesis.cancel(); speechSynthesis.speak(u) } catch (e) { }
   }
+  function dSeg(p, a, b) {
+    var k = Math.cos(p[0] * Math.PI / 180), ax = (a[1] - p[1]) * k * 111.32, ay = (a[0] - p[0]) * 110.57, bx = (b[1] - p[1]) * k * 111.32, by = (b[0] - p[0]) * 110.57;
+    var dx = bx - ax, dy = by - ay, l = dx * dx + dy * dy, t = l ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / l)) : 0, x = ax + t * dx, y = ay + t * dy;
+    return [Math.sqrt(x * x + y * y), t];
+  }
   function estRuta() {
-    var R = CAR.ruta; if (!R) return; var c = cfg(), tag = ev(c) ? 'charging_station' : 'fuel', paso = Math.max(1, Math.ceil(R.co.length / 110)), pts = [];
-    for (var i = 0; i < R.co.length; i += paso) pts.push(R.co[i][0].toFixed(4) + ',' + R.co[i][1].toFixed(4));
-    var q = '[out:json][timeout:25];(node["amenity"="' + tag + '"](around:900,' + pts.join(',') + ');way["amenity"="' + tag + '"](around:900,' + pts.join(',') + '););out center 150;';
-    document.getElementById('cList').innerHTML = '<small>' + L2('Buscando estaciones en el camino…', 'Buscando postos no caminho…') + '</small>';
+    var R = CAR.ruta; if (!R) return; var c = cfg(), tag = ev(c) ? 'charging_station' : 'fuel';
+    var esp = Math.max(1.2, R.km / 350), pts = [], ult = -1e9;
+    for (var i = 0; i < R.co.length; i++) if (R.cum[i] - ult >= esp || i === R.co.length - 1) { pts.push(R.co[i][0].toFixed(4) + ',' + R.co[i][1].toFixed(4)); ult = R.cum[i] }
+    var rad = Math.round(1000 + esp * 500);
+    var q = '[out:json][timeout:40];(node["amenity"="' + tag + '"](around:' + rad + ',' + pts.join(',') + ');way["amenity"="' + tag + '"](around:' + rad + ',' + pts.join(',') + '););out center 400;';
+    document.getElementById('cList').innerHTML = '<small>' + L2('Buscando estaciones a 1 km de tu camino…', 'Buscando postos a 1 km do seu caminho…') + '</small>';
     fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
       .then(function (r) { return r.json() }).then(function (j) {
         CAR.est = (j.elements || []).map(function (x) { var t = x.tags || {}, p = x.center ? [x.center.lat, x.center.lon] : [x.lat, x.lon]; return { id: x.type[0] + x.id, n: t.brand || t.name || t.operator || L2('Estación', 'Posto'), nom: t.name && t.brand && t.name !== t.brand ? t.name : '', p: p, t: t } });
-        CAR.estR = CAR.est.map(function (x) { var bi = 0, bd = 1e9; for (var i = 0; i < R.co.length; i += 2) { var d = km(x.p, R.co[i]); if (d < bd) { bd = d; bi = i } } x.al = R.cum[bi]; return x }).sort(function (a, b) { return a.al - b.al });
+        CAR.estR = CAR.est.map(function (x) {
+          var bd = 1e9, bi = 0, bt = 0;
+          for (var i = 0; i < R.co.length - 1; i++) { if (Math.abs(R.co[i][0] - x.p[0]) > 0.05 && Math.abs(R.co[i + 1][0] - x.p[0]) > 0.05) continue; var r = dSeg(x.p, R.co[i], R.co[i + 1]); if (r[0] < bd) { bd = r[0]; bi = i; bt = r[1] } }
+          x.dr = bd; x.al = R.cum[bi] + (R.cum[bi + 1] - R.cum[bi]) * bt; return x;
+        }).filter(function (x) { return x.dr <= 1 }).sort(function (a, b) { return a.al - b.al });
         pintarEst(); listaRuta();
       }).catch(function () { CAR.estR = []; document.getElementById('cList').innerHTML = '<small>' + L2('No se pudieron buscar estaciones en el camino. Tocá ⛽ para reintentar.', 'Não foi possível buscar postos no caminho. Toque ⛽ para tentar de novo.') + '</small>' });
   }
+
   function listaRuta() {
     var R = CAR.ruta, box = document.getElementById('cList'); if (!R || !CAR.estR) return;
     var aqui = R.cum[R.idx], a = autonomia(cfg()), F = favs(), ade = CAR.estR.filter(function (x) { return x.al >= aqui - 0.3 });
@@ -378,10 +395,12 @@
     var cambio = (sug && sug.id) !== (CAR.sug && CAR.sug.id); CAR.sug = sug; if (cambio) tarjeta();
     if (!ade.length) { box.innerHTML = '<small>' + L2('No hay más estaciones cargadas sobre tu camino.', 'Não há mais postos cadastrados no seu caminho.') + '</small>'; return }
     var x = ade[0], d = x.al - aqui, f = !!F[x.id], lejos = a != null && d > a;
-    box.innerHTML = '<div><button type="button" class="fv' + (f ? '' : ' no') + '" data-f="' + esc(x.id) + '">' + (f ? '★' : '☆') + '</button><span><small>' + L2('Próxima: ', 'Próximo: ') + '</small><button type="button" class="nm" data-s="' + esc(x.id) + '">' + esc(x.n) + '</button> <small>' + L2('a ', 'a ') + d.toFixed(d < 10 ? 1 : 0) + ' km' + (x === sug ? ' · ' + L2('cargá acá', 'abasteça aqui') : lejos ? ' · ' + L2('no llegás', 'não chega') : '') + '</small></span><button type="button" class="gg" data-s="' + esc(x.id) + '">Info</button></div>' +
+    var fila = function (x) { var d = x.al - aqui, f = !!F[x.id], lejos = a != null && d > a; return '<div><button type="button" class="fv' + (f ? '' : ' no') + '" data-f="' + esc(x.id) + '">' + (f ? '★' : '☆') + '</button><span><button type="button" class="nm" data-s="' + esc(x.id) + '">' + esc(x.n) + '</button> <small>' + L2('a ', 'a ') + d.toFixed(d < 10 ? 1 : 0) + ' km' + (x.dr > 0.15 ? ' · ' + Math.round(x.dr * 1000 / 50) * 50 + ' m ' + L2('del camino', 'do caminho') : '') + (x === sug ? ' · ' + L2('cargá acá', 'abasteça aqui') : lejos ? ' · ' + L2('no llegás', 'não chega') : '') + '</small></span><button type="button" class="gg" data-s="' + esc(x.id) + '">Info</button></div>' };
+    box.innerHTML = '<small>' + ade.length + L2(' estaciones a 1 km de tu camino · próxima:', ' postos a 1 km do seu caminho · próximo:') + '</small>' + (CAR.verTodas ? ade.map(fila).join('') : fila(x)) + (ade.length > 1 ? '<button type="button" class="mas" id="cMas">' + (CAR.verTodas ? L2('Ver solo la próxima', 'Ver só o próximo') : L2('Ver las ', 'Ver os ') + ade.length) + '</button>' : '') + '' +
       (sug && sug !== x ? '<small>⛽ ' + L2('Para cargar: ', 'Para abastecer: ') + esc(sug.n) + ' ' + L2('a ', 'a ') + (sug.al - aqui).toFixed(0) + ' km</small>' : '');
     box.querySelectorAll('[data-s]').forEach(function (b) { b.onclick = function () { var y = CAR.porId && CAR.porId[b.getAttribute('data-s')] || x; ficha(y) } });
-    box.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-f'), F2 = favs(); if (F2[id]) delete F2[id]; else F2[id] = { n: x.n, p: x.p }; guardarFavs(F2); pintarEst(); listaRuta() } });
+    box.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-f'), F2 = favs(), y = CAR.porId && CAR.porId[id] || x; if (F2[id]) delete F2[id]; else F2[id] = { n: y.n, p: y.p }; guardarFavs(F2); pintarEst(); listaRuta() } });
+    var ms = document.getElementById('cMas'); if (ms) ms.onclick = function () { CAR.verTodas = !CAR.verTodas; listaRuta() };
   }
   /* ---- ficha de la estacion: datos de OpenStreetMap + mapa de Google embebido, sin salir de la app ---- */
   function ficha(x) {
