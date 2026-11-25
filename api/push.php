@@ -96,9 +96,9 @@ if ($acao === 'prueba') {   // solo el administrador: manda una notificación de
     [$em, $nv] = email_de_token($e['token'] ?? null);
     if (!$em || $nv || $em !== 'deikdigital@gmail.com') salir(['ok' => false, 'error' => 'sesion'], 401);
     $f = dir_privado() . '/push.json'; $d = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : [];
-    $n = 0; $r = [];
-    foreach ($d as $s) if (($s['email'] ?? '') === $em) { $c = push_enviar($s['sub'], ['title' => '⚠️ Prueba de aviso · ' . ($s['slugs'][0] ?? ''), 'body' => 'Si ves esto con la app cerrada, las notificaciones funcionan. Con Premium te llega también por WhatsApp.', 'url' => '/app/', 'tag' => 'prueba', 'premium' => '/app/#premium', 'accion' => 'Ver Premium'], 600); $r[] = $c; if ($c >= 200 && $c < 300) $n++; }
-    salir(['ok' => true, 'dispositivos' => count($r), 'enviadas' => $n, 'codigos' => $r]);
+    $n = 0; $r = []; $tipo = [];
+    foreach ($d as $s) if (($s['email'] ?? '') === $em) { $c = push_enviar($s['sub'], ['title' => '⚠️ Prueba de aviso · ' . ($s['slugs'][0] ?? ''), 'body' => 'Si ves esto con la app cerrada, las notificaciones funcionan. Con Premium te llega también por WhatsApp.', 'url' => '/app/', 'tag' => 'prueba', 'premium' => '/app/#premium', 'accion' => 'Ver Premium'], 600); $r[] = $c; $h = parse_url($s['sub']['endpoint'], PHP_URL_HOST); $tipo[] = strpos($h, 'apple') !== false ? 'iPhone/Safari' : (strpos($h, 'mozilla') !== false ? 'Firefox' : (strpos($h, 'windows') !== false || strpos($h, 'notify') !== false ? 'Edge' : 'Chrome (Android o PC)')); if ($c >= 200 && $c < 300) $n++; }
+    salir(['ok' => true, 'dispositivos' => count($r), 'enviadas' => $n, 'codigos' => $r, 'tipos' => $tipo]);
 }
 if ($acao === 'baja') {
     $id = sha1((string)($e['endpoint'] ?? ''));
