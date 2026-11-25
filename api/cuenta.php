@@ -12,8 +12,6 @@
 require __DIR__ . '/_comun.php';
 require __DIR__ . '/_precios.php';
 function cfg_google() { $f = dir_privado() . '/google.json'; $c = file_exists($f) ? json_decode(file_get_contents($f), true) : null; return $c['client_id'] ?? GOOGLE_CLIENT_ID; }
-/* Client ID público del proyecto "Aviso Sul" en Google Cloud (se puede reemplazar desde /admin/). */
-const GOOGLE_CLIENT_ID = '483433790554-bqvpjs90f02q8tnakbg6uj77hf443m1r.apps.googleusercontent.com';
 function premium_de($em) {
     $f = dir_privado() . '/premium.json'; if (!file_exists($f)) return null;
     $p = json_decode(file_get_contents($f), true); $x = $p[$em] ?? null; if (!$x) return null;

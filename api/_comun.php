@@ -5,6 +5,8 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
 
+/* Client ID público del proyecto "Aviso Sul" en Google Cloud (se puede reemplazar desde /admin/). */
+const GOOGLE_CLIENT_ID = '483433790554-bqvpjs90f02q8tnakbg6uj77hf443m1r.apps.googleusercontent.com';
 function dir_privado() {
     $d = dirname(__DIR__, 2) . '/datos_privados';
     if (getenv('AVISOSUL_DATOS')) $d = getenv('AVISOSUL_DATOS');   // para pruebas locales
