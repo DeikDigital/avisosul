@@ -340,6 +340,7 @@
   .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .tools .wrap{flex-wrap:nowrap!important;align-items:center;gap:6px!important}
   .tools .sp{flex:1}
+  .wa1{border-color:rgba(37,200,102,.55)!important}.wa1 h3 svg{color:#25C866}
   .ad-top{margin:8px 0 0;min-height:60px}
   .gr{font-style:normal;font-size:12px;font-weight:800;vertical-align:middle;padding:3px 9px;border-radius:999px;background:#2E7D4F;color:#fff;margin-left:6px}
   .vzahora{margin:12px 0 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(142,187,224,.35);background:rgba(142,187,224,.10);font-size:14.5px}
@@ -822,6 +823,18 @@
 <section class="alt" id="ajustes">
   <div class="wrap" data-rv>
     <div class="cfgh"><span class="cfgi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg></span><div><h2><span class="pt">Ajustes</span><span class="es">Ajustes</span></h2><p><span class="pt">Permissões deste aparelho.</span><span class="es">Permisos de este dispositivo.</span></p></div></div>
+    <div class="cfgg wa1" id="waBox">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.500a8.400 8.400 0 0 1-12.400 7.400L3 21l2.100-5.400A8.400 8.400 0 1 1 21 11.500z"/></svg><span class="pt">Cadastre seu WhatsApp para receber alertas</span><span class="es">Agendá tu WhatsApp para recibir alertas</span> <i class="pmd2">Premium</i></h3>
+      <p class="pt">Deixe seu número e, quando sair um aviso oficial para o seu ponto, a mensagem chega direto no seu WhatsApp. Uma por aviso, sem propaganda. Para parar, escreva PARAR.</p>
+      <p class="es">Dejá tu número y, cuando salga un aviso oficial para tu punto, el mensaje te llega directo al WhatsApp. Uno por aviso, sin publicidad. Para dejar de recibirlos, escribí PARAR.</p>
+      <div id="waForm">
+        <input type="tel" id="waTel" inputmode="tel" autocomplete="tel" placeholder="(45) 99999-9999" aria-label="WhatsApp">
+        <label class="wack"><input type="checkbox" id="waOk"> <span class="pt">Aceito receber avisos do Aviso Sul no WhatsApp. Posso parar quando quiser escrevendo PARAR.</span><span class="es">Acepto recibir avisos de Aviso Sul por WhatsApp. Puedo dejar de recibirlos cuando quiera escribiendo PARAR.</span></label>
+        <button type="button" class="btn btn-wa" id="waGo"><span class="pt">Cadastrar meu WhatsApp</span><span class="es">Agendar mi WhatsApp</span></button>
+      </div>
+      <div id="waEst" hidden></div>
+      <small class="vzst" id="waSt"></small>
+    </div>
     <div class="cfgg">
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="pt">Permissões</span><span class="es">Permisos</span></h3>
       <p class="pt">Cada permissão é pedida só quando você toca no botão. Dá para usar o Aviso Sul sem nenhuma.</p>
@@ -830,18 +843,6 @@
         <button type="button" class="pb pbi" id="pNotif"><i class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.700 21a2 2 0 0 1-3.400 0"/></svg></i><b><span class="pt">Ativar notificações</span><span class="es">Activar notificaciones</span></b><small id="pNotifS"></small></button>
         <button type="button" class="pb pbi" id="pGeo"><i class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></i><b><span class="pt">Usar minha localização</span><span class="es">Usar mi ubicación</span></b><small id="pGeoS"></small></button>
       </div>
-    </div>
-    <div class="cfgg" id="waBox">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.500a8.400 8.400 0 0 1-12.400 7.400L3 21l2.100-5.400A8.400 8.400 0 1 1 21 11.500z"/></svg><span class="pt">Alertas no WhatsApp</span><span class="es">Alertas por WhatsApp</span> <i class="pmd2">Premium</i></h3>
-      <p class="pt">Quando sair um aviso oficial para o seu ponto, mandamos uma mensagem no seu WhatsApp. Uma por aviso, sem propaganda.</p>
-      <p class="es">Cuando salga un aviso oficial para tu punto, te mandamos un mensaje a tu WhatsApp. Uno por aviso, sin publicidad.</p>
-      <div id="waForm">
-        <input type="tel" id="waTel" inputmode="tel" autocomplete="tel" placeholder="(45) 99999-9999" aria-label="WhatsApp">
-        <label class="wack"><input type="checkbox" id="waOk"> <span class="pt">Aceito receber avisos do Aviso Sul no WhatsApp. Posso parar quando quiser escrevendo PARAR.</span><span class="es">Acepto recibir avisos de Aviso Sul por WhatsApp. Puedo dejar de recibirlos cuando quiera escribiendo PARAR.</span></label>
-        <button type="button" class="btn btn-wa" id="waGo"><span class="pt">Ativar no WhatsApp</span><span class="es">Activar en WhatsApp</span></button>
-      </div>
-      <div id="waEst" hidden></div>
-      <small class="vzst" id="waSt"></small>
     </div>
   </div>
 </section>
