@@ -357,13 +357,18 @@
   .cqs{max-width:440px;position:relative}.cqr{display:grid;gap:6px;margin-top:10px;text-align:left}
   .cqr button{font:inherit;text-align:left;color:inherit;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer}.cqr button small{display:block;opacity:.7;font-size:12px}
   .cqsrc{display:block;margin-top:10px;font-size:11px;opacity:.6}
-  .cqp{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:60;max-width:520px;margin:0 auto;max-height:62vh;overflow:auto;padding:16px 16px 14px;border-radius:20px;background:#142235;box-shadow:0 12px 40px rgba(0,0,0,.5)!important;border:1px solid rgba(142,187,224,.35);color:#E9F1F8}
-  [data-theme="light"] .cqp{background:#fff;color:#16263A;border-color:#C6D4E2}
+  .cqp{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:60;max-width:520px;margin:0 auto;max-height:62vh;overflow:auto;padding:16px 16px 14px;border-radius:20px;background:rgba(20,34,53,.62);-webkit-backdrop-filter:blur(18px) saturate(1.3)!important;backdrop-filter:blur(18px) saturate(1.3)!important;box-shadow:0 12px 40px rgba(0,0,0,.45)!important;border:1px solid rgba(142,187,224,.35);color:#E9F1F8}
+  [data-theme="light"] .cqp{background:rgba(255,255,255,.66);color:#16263A;border-color:#C6D4E2}
   .cqp h3{margin:0 34px 2px 0;font-size:18px}.cqp .cqsub{font-size:12.5px;opacity:.75;margin:0 0 10px}
   .cqnow{display:flex;align-items:center;gap:12px;margin-bottom:10px}.cqnow b{font-size:34px;line-height:1}.cqnow span{font-size:14px}
   .cqh{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}.cqh div{flex:none;text-align:center;font-size:12px;padding:6px 8px;border-radius:10px;background:rgba(142,187,224,.12);min-width:54px}.cqh b{display:block;font-size:14px}
   .cqk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}.cqk div{text-align:center;font-size:12px;padding:6px 4px;border-radius:12px;background:rgba(142,187,224,.10);border:1px solid transparent}
   .cqk svg{width:34px;height:34px;display:block;margin:0 auto 2px}.cqk em{display:block;font-style:normal;font-weight:800;font-size:11px}.cqk .n1{border-color:#FFD23F}.cqk .n2{border-color:#FF8A1F}.cqk .n3{border-color:#E8452C}
+  .cqmini[hidden],.cqp[hidden]{display:none!important}
+  .cqbig{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;margin:0 0 10px;background:rgba(46,158,91,.18);border:1.5px solid #2E9E5B}
+  .cqbig.n1{background:rgba(255,210,63,.16);border-color:#FFD23F}.cqbig.n2{background:rgba(255,138,31,.18);border-color:#FF8A1F}.cqbig.n3{background:rgba(232,69,44,.2);border-color:#E8452C}
+  .cqbig svg{width:56px;height:56px;flex:none}.cqbig small{display:block;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.8}.cqbig b{display:block;font-size:19px}.cqbig em{display:block;font-style:normal;font-size:13px;opacity:.85}
+  .cqotro{width:100%;margin-top:10px;font:inherit;font-weight:800;min-height:44px;border-radius:12px;border:1.5px solid rgba(142,187,224,.5);background:rgba(142,187,224,.12);color:inherit;cursor:pointer}
   .cqav{font-size:13.5px;padding:8px 10px;border-radius:10px;margin-top:6px;border-left:5px solid #FFD23F;background:rgba(255,210,63,.10)}.cqav.naranja{border-left-color:#FF8A1F}.cqav.rojo{border-left-color:#E8452C}
   .cqmini{position:fixed;right:14px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:59;display:inline-flex;align-items:center;gap:6px;max-width:60vw;padding:9px 13px;border-radius:999px;border:0;background:var(--amber);color:var(--amber-ink);font:inherit;font-size:13px;font-weight:800;cursor:pointer}
   .cqmini svg{width:16px;height:16px;flex:none}.cqmini span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1205,10 +1210,10 @@
   function vzPintar(){var box=document.getElementById('vzList');if(!box)return;var l=root.getAttribute('data-lang')==='es'?1:0;
     safe(function(){var n=document.getElementById('vzNow');if(!n)return;var rec=VZ.lista.filter(function(x){return x.km<=30&&x.min<=180}).sort(function(a,b){return (b.conf-a.conf)||(a.min-b.min)}).slice(0,3);
       if(!rec.length){n.hidden=true;return}n.hidden=false;
-      n.innerHTML='<b>'+L2('Reportes de vecinos · últimas 3 h','Relatos dos vizinhos · últimas 3 h')+'</b>'+rec.map(function(x){return '<div>'+(x.conf>=2?'✓ ':'• ')+esc(VZT[x.tipo][l]+(x.tam?' ('+VZZ[x.tam][l]+')':''))+(x.texto?' — “'+esc(x.texto.slice(0,60))+(x.texto.length>60?'…':'')+'”':'')+' · '+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzFecha(x.ts)+(x.conf>=2?' · '+L2('confirmado','confirmado'):'')+'</div>'}).join('')});
+      n.innerHTML='<b>'+L2('Reportes de vecinos · últimas 3 h','Relatos dos vizinhos · últimas 3 h')+'</b>'+rec.map(function(x){return '<div>'+(x.conf>=2?'✓ ':'• ')+esc(VZT[x.tipo][l]+(x.tam?' ('+VZZ[x.tam][l]+')':''))+(x.texto?' — “'+esc(x.texto.slice(0,60))+(x.texto.length>60?'…':'')+'”':'')+' · '+(x.km<.2?L2('aquí mismo','aqui mesmo'):x.km<1?L2('a ','a ')+Math.round(x.km*1000/50)*50+' m':L2('a ','a ')+x.km+' km')+' · '+vzFecha(x.ts)+(x.conf>=2?' · '+L2('confirmado','confirmado'):'')+'</div>'}).join('')});
     if(!VZ.lista.length){box.innerHTML='<p class="vzn">'+L2('Nadie reportó nada en este radio en los últimos 3 días.','Ninguém relatou nada neste raio nos últimos 3 dias.')+'</p>';return}
     box.innerHTML='';VZ.lista.forEach(function(x){var d=document.createElement('div');d.className='vzc'+(x.conf>=2?' ok':'');
-      var tit=VZT[x.tipo][l]+(x.tam?' · '+L2('tamaño ','tamanho ')+VZZ[x.tam][l]:''),sub=(x.tam?VZZ[x.tam][2]+' · ':'')+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzFecha(x.ts)+' ('+vzHace(x.min)+')';
+      var tit=VZT[x.tipo][l]+(x.tam?' · '+L2('tamaño ','tamanho ')+VZZ[x.tam][l]:'')+(x.meu?' · '+L2('tu reporte','seu relato'):''),dist=x.km<.2?L2('aquí mismo','aqui mesmo'):x.km<1?L2('a ','a ')+Math.round(x.km*1000/50)*50+' m':L2('a ','a ')+x.km+' km',sub=(x.tam?VZZ[x.tam][2]+' · ':'')+dist+' · '+vzFecha(x.ts)+' ('+vzHace(x.min)+')';
       var med=x.media==='foto'?'<a class="vzimg" href="/api/media.php?id='+esc(x.id)+'" target="_blank" rel="noopener"><img src="/api/media.php?id='+esc(x.id)+'" alt="" loading="lazy"></a>':x.media==='video'?'<video class="vzimg" src="/api/media.php?id='+esc(x.id)+'" controls preload="none" playsinline></video>':'';
       d.innerHTML='<div class="vzr1"><i class="vzi"><svg aria-hidden="true"><use href="#i-'+VZI[x.tipo]+'"/></svg></i><div class="vzt2"><b>'+esc(tit)+'</b><span>'+esc(sub)+'</span>'+
         (x.conf>=2?'<em>✓ '+L2('Confirmado','Confirmado')+' · '+x.conf+'</em>':x.conf?'<em class="p">'+x.conf+L2(' vecino lo confirma',' vizinho confirma')+'</em>':'')+'</div>'+
@@ -1216,7 +1221,13 @@
         (x.texto?'<p class="vztx">'+esc(x.texto)+'</p>':'')+med;box.appendChild(d)});
     box.querySelectorAll('[data-c]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
       fetch('/api/reportes.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'confirmar',id:b.getAttribute('data-c')})}).then(function(r){return r.json()}).then(function(){vzCargar()}).catch(function(){b.disabled=false})})})}
-  function vzCargar(){if(!WEB)return;var g=refPunto();
+  var VZPOS=null;
+  function vzPos(){return new Promise(function(ok){if(VZPOS){ok(VZPOS);return}if(YO){ok(YO);return}
+    if(!navigator.permissions||!navigator.geolocation){ok(null);return}
+    navigator.permissions.query({name:'geolocation'}).then(function(p){if(p.state!=='granted'){ok(null);return}
+      navigator.geolocation.getCurrentPosition(function(q){VZPOS=[q.coords.latitude,q.coords.longitude];ok(VZPOS)},function(){ok(null)},{maximumAge:300000,timeout:6000})}).catch(function(){ok(null)})})}
+  function vzCargar(){if(!WEB)return;vzPos().then(function(gp){vzCargar2(gp||refPunto())})}
+  function vzCargar2(g){
     fetch('/api/reportes.php?lat='+g[0].toFixed(3)+'&lon='+g[1].toFixed(3)+'&r='+VZ.r,{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j.ok){VZ.lista=j.reportes||[];vzPintar();safe(vzCapa)}}).catch(function(){var b=document.getElementById('vzList');if(b&&!VZ.lista.length)b.innerHTML='<p class="vzn">'+L2('No se pudieron cargar los reportes.','Não foi possível carregar os relatos.')+'</p>'})}
   function vzCapa(){if(!RADAR||!RADAR.map||!window.L)return;if(RADAR.vz)RADAR.map.removeLayer(RADAR.vz);var g=L.featureGroup(),l=root.getAttribute('data-lang')==='es'?1:0;
     VZ.lista.forEach(function(x){L.circleMarker([x.lat,x.lon],{radius:6,color:'#fff',weight:2,fillColor:x.conf>=2?'#c0392b':'#7a8794',fillOpacity:1}).bindTooltip(VZT[x.tipo][l]+(x.tam?' · '+VZZ[x.tam][l]:'')+' · '+vzFecha(x.ts)).addTo(g)});g.addTo(RADAR.map);RADAR.vz=g}
@@ -1245,7 +1256,7 @@
     document.getElementById('vzBVid').addEventListener('click',function(){document.getElementById('vzVid').click()});
     snd.addEventListener('click',function(){if(!navigator.geolocation){st.textContent=L2('Para reportar hace falta la ubicación del celular.','Para relatar é preciso a localização do celular.');return}
       snd.disabled=true;st.textContent=L2('Buscando tu ubicación precisa…','Buscando sua localização precisa…');
-      navigator.geolocation.getCurrentPosition(function(p){
+      navigator.geolocation.getCurrentPosition(function(p){VZPOS=[p.coords.latitude,p.coords.longitude];
         var fd=new FormData();fd.append('acao','novo');fd.append('tipo',VZ.tipo);if(VZ.tipo==='granizo')fd.append('tam',VZ.tam);fd.append('texto',tx.value.trim());
         fd.append('lat',p.coords.latitude);fd.append('lon',p.coords.longitude);
         (VZ.file?vzAchicar(VZ.file):Promise.resolve(null)).then(function(m){if(m)fd.append('media',m,(VZ.file.name||'media'));st.textContent=m?L2('Subiendo…','Enviando…'):st.textContent;
@@ -1282,12 +1293,16 @@
         if(w.current){var cw=wmo(w.current.weather_code);now='<div class="cqnow"><b>'+Math.round(w.current.temperature_2m)+'°</b><span>'+cw[0]+' '+esc(cw[li])+'<br>'+L2('Ráfagas ','Rajadas ')+Math.round(w.current.wind_gusts_10m||0)+' km/h</span></div>'}}
       var av=lugAvisos([lg.lat,lg.lon]);av.forEach(function(a){var t=((a.titulo_pt||'')+' '+(a.titulo_es||'')).toLowerCase(),n=a.nivel==='rojo'?3:a.nivel==='naranja'?2:1;
         if(/tempest|tormenta/.test(t)){up('chuva',n);up('vendaval',n);up('raios',n);up('granizo',n)}if(/chuva|lluvia/.test(t))up('chuva',n);if(/vent|vient|vendaval/.test(t))up('vendaval',n);if(/granizo/.test(t))up('granizo',n)});
-      var hay=FEN.some(function(f){return (r[f[0]]||0)>0});
-      box.innerHTML='<h3>'+esc(lg.n)+'</h3><p class="cqsub">'+esc(lg.d||'')+'</p>'+now+(h?'<div class="cqh">'+h+'</div>':'<p class="cqsub">'+L2('Pronóstico no disponible ahora.','Previsão indisponível agora.')+'</p>')+
+      var hay=FEN.some(function(f){return (r[f[0]]||0)>0}),orden=FEN.filter(function(f){return (r[f[0]]||0)>0}).sort(function(a,b){return r[b[0]]-r[a[0]]}),f0=orden[0],n0=f0?r[f0[0]]:0;
+      var big='<div class="cqbig n'+n0+'"><svg aria-hidden="true"><use href="#i-'+(f0?f0[0]:'ok')+'"/></svg><div><small>'+L2('Riesgo climatológico en este lugar','Risco climatológico neste lugar')+'</small><b>'+(f0?esc(l==='es'?f0[2]:f0[1])+' · '+NV[l][n0]:L2('Sin riesgo','Sem risco'))+'</b>'+
+        (orden.length>1?'<em>+ '+orden.slice(1).map(function(f){return esc(l==='es'?f[2]:f[1])}).join(', ')+'</em>':'<em>'+L2('Próximas 12 horas, con avisos oficiales','Próximas 12 horas, com avisos oficiais')+'</em>')+'</div></div>';
+      box.innerHTML='<h3>'+esc(lg.n)+'</h3><p class="cqsub">'+esc(lg.d||'')+'</p>'+big+now+(h?'<div class="cqh">'+h+'</div>':'<p class="cqsub">'+L2('Pronóstico no disponible ahora.','Previsão indisponível agora.')+'</p>')+
         '<p class="cqsub" style="margin:0 0 6px"><svg aria-hidden="true" style="width:18px;height:18px;vertical-align:-4px"><use href="#i-'+(hay?'riesgo':'ok')+'"/></svg> '+L2('Riesgo climatológico · 12 h','Risco climatológico · 12 h')+'</p>'+
         '<div class="cqk">'+FEN.map(function(f){var n=r[f[0]]||0;return '<div class="n'+n+'"><svg aria-hidden="true"><use href="#i-'+f[0]+'"/></svg>'+esc(l==='es'?f[2]:f[1])+'<em>'+NV[l][n]+'</em></div>'}).join('')+'</div>'+
         (av.length?av.map(function(a){return '<div class="cqav '+esc(a.nivel)+'"><b>'+esc(l==='es'?a.titulo_es:a.titulo_pt)+'</b></div>'}).join(''):'<p class="cqsub">'+L2('Sin avisos oficiales del INMET para este punto ahora.','Sem avisos oficiais do INMET para este ponto agora.')+'</p>')+
-        '<p class="cqsub" style="margin-top:8px">'+L2('Pronóstico: Open-Meteo. Avisos: INMET. Estimación propia, no reemplaza a los avisos oficiales.','Previsão: Open-Meteo. Avisos: INMET. Estimativa própria, não substitui os avisos oficiais.')+'</p>';
+        '<p class="cqsub" style="margin-top:8px">'+L2('Pronóstico: Open-Meteo. Avisos: INMET. Estimación propia, no reemplaza a los avisos oficiales.','Previsão: Open-Meteo. Avisos: INMET. Estimativa própria, não substitui os avisos oficiais.')+'</p>'+
+        '<button type="button" class="cqotro" id="cqOtro">🔎 '+L2('Consultar otro lugar','Consultar outro lugar')+'</button>';
+      document.getElementById('cqOtro').addEventListener('click',function(){P.hidden=true;M.hidden=false;abrirBusqueda()});
       document.getElementById('cqMN').textContent=lg.n}
     document.getElementById('cqPX').addEventListener('click',function(){P.hidden=true;M.hidden=false});
     M.addEventListener('click',function(){if(ult){consultar(ult)}});
