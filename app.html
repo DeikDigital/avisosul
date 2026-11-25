@@ -47,6 +47,7 @@
   .hero{position:relative;overflow:hidden;color:#fff;isolation:isolate;
     background:url("/assets/cielo.svg") center/cover,linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 48%,var(--sky-3) 100%);
     transition:background .6s}
+  [data-theme="night"] .hero{background:url("/assets/cielo-noite.svg") center/cover,linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 48%,var(--sky-3) 100%)}
   .clouds{position:absolute;inset:-8% -30% auto -30%;height:78%;z-index:-4;pointer-events:none;
     filter:brightness(var(--cloud-b));opacity:var(--cloud-o);will-change:transform}
   .clouds svg{width:100%;height:100%;display:block}
