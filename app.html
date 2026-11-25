@@ -528,7 +528,10 @@
   .pmpg{font-size:13px;color:var(--muted);margin:8px 0 10px;text-align:center}
   .insl{margin:8px 0;padding-left:20px;display:grid;gap:6px}.insn{font-size:14px;color:var(--muted)}
   #insS{z-index:79}#insS li b{display:inline;color:#fff}#insS [hidden]{display:none!important}#insS h2{font-size:21px}#insS .btn{margin-top:8px}
-  .tools .car{height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .car i{font-style:normal;font-size:9px;font-weight:800;padding:1px 6px;border-radius:999px;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000}
+  .tools .car{opacity:.75;height:38px;padding:0 9px;font-size:13px;gap:5px;white-space:nowrap}.tools .car i{font-style:normal;font-size:9px;font-weight:800;padding:1px 6px;border-radius:999px;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000}
+  @keyframes nop{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}.tools .car.nop{animation:nop .4s}
+  @media (max-width:480px){.tools .car,.tools .prc,.tools .cq{padding:0 7px!important;gap:3px!important;font-size:11.5px!important;letter-spacing:-.01em}.tools .car i{padding:1px 4px;font-size:8.5px}.tools .cq i,.tools .prc i{background:none!important;padding:0!important}.tools .cq svg:first-child,.tools .prc svg:first-child{width:13px!important;height:13px!important}.tools .wrap{gap:4px!important}}
+  .osmb{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.6)}[data-theme="light"] .osmb{filter:none}
   .lgh{font-size:22px;letter-spacing:.01em}
   .lgpb .lgw{width:24px;height:24px;margin:0;flex:none}
   .lgacc{display:grid;gap:8px;margin-top:12px}
@@ -651,7 +654,7 @@
       <label class="selc"><span class="sr pt">Cidade</span><span class="sr es">Ciudad</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/></svg><select id="selCity"></select></label>
       <button type="button" class="tg cq" id="bCq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="pt">Outro lugar</span><span class="es">Otro lugar</span><i title="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></i></button>
       <button type="button" class="tg prc" id="bPrec" title="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span class="pt">Localização precisa</span><span class="es">Ubicación precisa</span><i title="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></i></button>
-      <button type="button" class="tg car" id="bCar" title="Premium"><span aria-hidden="true">🚗</span><span class="pt">Modo Car</span><span class="es">Modo Car</span><i title="Premium"><svg class="crw" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor" stroke="#5a3d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 19h14" stroke="#5a3d00" stroke-width="1.6"/></svg></i></button>
+      <button type="button" class="tg car" id="bCar" title="Premium · próximamente"><span aria-hidden="true">🚗</span>Car<i class="pr"><span class="pt">Em breve</span><span class="es">Pronto</span></i></button>
       <span class="tag rgn" data-k="tag"></span>
       
     </div>
@@ -796,7 +799,7 @@
     <div class="zly"><span><i style="background:#f5d000"></i><span class="pt">Amarelo</span><span class="es">Amarillo</span></span><span><i style="background:#ff8a1f"></i><span class="pt">Laranja</span><span class="es">Naranja</span></span><span><i style="background:#ff3b30"></i><span class="pt">Vermelho</span><span class="es">Rojo</span></span><span><i class="rr"></i>Radar</span></div>
     <div class="rgrid">
     <div>
-      <div class="rcapas" id="rCapas"><button type="button" data-c="radar" class="on"><span class="pt">Avisos + radar</span><span class="es">Avisos + radar</span></button><button type="button" data-c="rain"><span class="pt">Chuva</span><span class="es">Lluvia</span></button><button type="button" data-c="wind"><span class="pt">Vento</span><span class="es">Viento</span></button><button type="button" data-c="temp"><span class="pt">Temperatura</span><span class="es">Temperatura</span></button><button type="button" data-c="thunder"><span class="pt">Raios</span><span class="es">Rayos</span></button></div>
+      <div class="rcapas" id="rCapas"><button type="button" data-c="radar" class="on"><span class="pt">Avisos + radar</span><span class="es">Avisos + radar</span></button><button type="button" data-c="rain" hidden><span class="pt">Chuva</span><span class="es">Lluvia</span></button><button type="button" data-c="wind" hidden><span class="pt">Vento</span><span class="es">Viento</span></button><button type="button" data-c="temp" hidden><span class="pt">Temperatura</span><span class="es">Temperatura</span></button><button type="button" data-c="thunder" hidden><span class="pt">Raios</span><span class="es">Rayos</span></button></div>
       <div id="radarMap"></div>
       <div id="wyMap" hidden></div>
       <div class="rplay" id="rPlay" hidden><button type="button" id="rPb">▶</button><input type="range" id="rPr" min="0" max="0" value="0" aria-label="Radar"><span id="rPt"></span></div>
@@ -1540,7 +1543,7 @@
     var j=document.createElement('script');j.src='/lib/leaflet/leaflet.js';
     j.onload=function(){safe(function(){
       RADAR.map=L.map('radarMap',{scrollWheelZoom:false,zoomControl:true}).setView(C.geo,6);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/'+(root.getAttribute('data-theme')==='light'?'light_all':'dark_all')+'/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:10,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'}).addTo(RADAR.map);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,className:'osmb',attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(RADAR.map);
       L.circleMarker(C.geo,{radius:7,color:'#f5b301',weight:3,fillColor:'#f5b301',fillOpacity:.9}).addTo(RADAR.map).bindTooltip(C.nombre);
       RADAR.map.on('click',function(e){if(LUGPICK)lugAgregar([e.latlng.lat,e.latlng.lng])});
       zonasCapa();lugCapa();yoCapa();safe(vzCapa);radarCapa();setInterval(function(){safe(radarCapa)},10*60000)})};
@@ -1806,8 +1809,10 @@
   function bloqueo(){var o=document.getElementById('pmo');if(o)o.hidden=false}
   /* ---- Modo Car (Premium): se carga aparte, recien al abrirlo ---- */
   window.__AS={LS:LS,L2:L2,esc:esc,hhmm:hhmm,ref:function(){return refPunto()},avisos:function(g){return lugAvisos(g)}};
-  function carAbrir(){if(root.getAttribute('data-plan')!=='premium'){bloqueo();return}
-    var go=function(){if(window.__carAbrir){window.__carAbrir();return}var j=document.createElement('script');j.src='/assets/car.js?v=2';j.onload=function(){window.__carAbrir()};document.head.appendChild(j)};
+  if(/[?&]car=beta\b/.test(location.search))LS('carBeta','1');
+  function carAbrir(){if(!LS('carBeta')){var t=document.getElementById('bCar');if(t){t.classList.remove('nop');void t.offsetWidth;t.classList.add('nop')}return}
+    if(root.getAttribute('data-plan')!=='premium'){bloqueo();return}
+    var go=function(){if(window.__carAbrir){window.__carAbrir();return}var j=document.createElement('script');j.src='/assets/car.js?v=3';j.onload=function(){window.__carAbrir()};document.head.appendChild(j)};
     if(window.L){go();return}var c=document.createElement('link');c.rel='stylesheet';c.href='/lib/leaflet/leaflet.css';document.head.appendChild(c);
     var l=document.createElement('script');l.src='/lib/leaflet/leaflet.js';l.onload=go;document.head.appendChild(l)}
   safe(function(){var b=document.getElementById('bCar');if(b)b.addEventListener('click',carAbrir);if(/[?&]modo=car\b/.test(location.search))setTimeout(carAbrir,800)});

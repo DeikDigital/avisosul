@@ -25,10 +25,11 @@
     '#car .top{position:absolute;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;display:flex;gap:8px;align-items:stretch}' +
     '#car .vel{padding:8px 14px;text-align:center;min-width:92px}#car .vel b{display:block;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}#car .vel small{font-size:11px;opacity:.75}' +
     '#car .wx{flex:1;padding:8px 12px;display:flex;gap:10px;align-items:center;min-width:0}#car .wx i{font-style:normal;font-size:28px}#car .wx b{font-size:22px}#car .wx div{min-width:0}#car .wx small{display:block;font-size:12px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    '#car .x{width:48px;font:inherit;font-size:22px;font-weight:800;color:#fff;cursor:pointer}' +
+    '#car .x{width:58px;display:grid;place-items:center;font:inherit;font-size:22px;line-height:1;font-weight:800;color:#fff;cursor:pointer}' +
     '#car .av{position:absolute;top:calc(max(10px,env(safe-area-inset-top)) + 70px);left:10px;right:10px;padding:8px 12px;font-weight:700;font-size:14px;border-left:6px solid #f5d000}' +
     '#car .av.naranja{border-left-color:#ff8a1f}#car .av.rojo{border-left-color:#ff3b30;animation:carRojo 1.4s infinite}#car .av.ok{border-left-color:#3ddc84;font-weight:600}' +
     '@keyframes carRojo{50%{box-shadow:0 0 0 4px rgba(255,59,48,.45)}}' +
+    '#car .x small{font-size:11px;font-weight:700}#car .osmb{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9) saturate(.6)}' +
     '#car .side{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}' +
     '#car .side button{width:52px;height:52px;font-size:22px;color:#fff;cursor:pointer}' +
     '#car .bot{position:absolute;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));padding:10px 12px}' +
@@ -49,7 +50,7 @@
     return '<div id="carMap"></div><div class="cf"></div>' +
       '<div class="top"><div class="gls vel"><b id="cVel">–</b><small>km/h <span id="cRum"></span></small></div>' +
       '<div class="gls wx"><i id="cWi">⛅</i><div><b id="cWt">–°</b><small id="cWd">' + L2('Buscando el clima…', 'Buscando o tempo…') + '</small></div></div>' +
-      '<button type="button" class="gls x" id="cX" aria-label="' + L2('Salir del modo Car', 'Sair do modo Car') + '">✕</button></div>' +
+      '<button type="button" class="gls x" id="cX" aria-label="' + L2('Volver a Casa', 'Voltar para Casa') + '">🏠<small>' + L2('Casa', 'Casa') + '</small></button></div>' +
       '<div class="gls av ok" id="cAv">' + L2('Buscando avisos oficiales…', 'Buscando avisos oficiais…') + '</div>' +
       '<div class="side"><button type="button" class="gls" id="cCen" title="' + L2('Centrar', 'Centralizar') + '">◎</button>' +
       '<button type="button" class="gls" id="cAuto" title="' + L2('Mi auto', 'Meu carro') + '">🚗</button>' +
@@ -74,7 +75,7 @@
     CAR = { el: el, pos: null, est: [], ult: null, wxEn: null, estEn: null };
     var g = A.ref();
     CAR.map = L.map('carMap', { zoomControl: false, attributionControl: true }).setView(g, 13);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19, attribution: '&copy; OpenStreetMap &copy; CARTO' }).addTo(CAR.map);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, className: 'osmb', attribution: '&copy; OpenStreetMap' }).addTo(CAR.map);
     CAR.capaEst = L.layerGroup().addTo(CAR.map);
     CAR.yo = L.marker(g, { icon: L.divIcon({ className: '', html: '<div class="yo"></div>', iconSize: [22, 22], iconAnchor: [11, 11] }) }).addTo(CAR.map);
     eventos(); pintarAuto(); pintarPark(); vigilar(); clima(g); avisos(g); estaciones(g);
