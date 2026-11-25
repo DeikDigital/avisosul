@@ -68,7 +68,7 @@
   .top{position:relative;z-index:2}
   .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:14px;padding-bottom:6px}
   .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.02em;font-size:18px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
-  .brand svg{width:26px;height:26px;flex:none}.brand img{width:30px;height:30px;border-radius:8px;flex:none}.brand{font-family:'IBM Plex Sans',inherit}
+  .brand svg{width:26px;height:26px;flex:none}.brand img{width:34px;height:34px;flex:none}.brand{font-family:'IBM Plex Sans',inherit}
   .seg{display:flex;border:1px solid rgba(255,255,255,.35);border-radius:999px;overflow:hidden;background:rgba(0,0,0,.28);backdrop-filter:blur(6px)}
   .seg button{background:none;border:0;color:#e3eaf1;font:inherit;font-size:13.5px;font-weight:700;padding:7px 12px;cursor:pointer}
   [data-lang="pt"] .seg button[data-set="pt"],[data-lang="es"] .seg button[data-set="es"]{background:var(--amber);color:var(--amber-ink)}
@@ -337,6 +337,22 @@
 
   /* ---------- ajustes junto al sonido, insignias premium, encuesta emergente ---------- */
   .tg.cfg{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+  .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .tools .wrap{flex-wrap:nowrap!important;align-items:center;gap:6px!important}
+  .tools .sp{flex:1}
+  .selc{position:relative;display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:52%;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.28);border-radius:999px;padding:0 10px;height:38px;color:#fff}
+  .selc svg{width:16px;height:16px;flex:none}
+  .selc select{appearance:none;-webkit-appearance:none;background:transparent;border:0;color:inherit;font:inherit;font-size:14px;font-weight:700;padding:0 16px 0 0;min-width:0;width:100%;text-overflow:ellipsis;cursor:pointer;
+    background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:right 5px center,right 0 center;background-size:5px 5px;background-repeat:no-repeat}
+  .selc select option{color:#16263A}
+  .selc:focus-within{outline:3px solid var(--amber);outline-offset:2px}
+  .tools .prc{margin:0;height:38px;padding:0 10px;font-size:13px;gap:5px;white-space:nowrap}.tools .prc svg{width:15px;height:15px}.tools .prc i{padding:1px 5px;font-size:10px}
+  .tg.ico{width:38px;height:38px;padding:0!important;justify-content:center}
+  .selc{flex:1 1 auto;max-width:none}
+  @media (max-width:440px){.tools .prc>span{display:none}.tools .prc{padding:0 9px}}
+  #bLang svg{width:24px;height:17px;border-radius:3px}
+  [data-lang="pt"] #bLang .fl-ar,[data-lang="es"] #bLang .fl-br{display:none}
+  .tools .tg.cfg{width:38px;height:38px;padding:0!important;justify-content:center}.tools .tg.cfg span{display:none}
   @media (max-width:480px){.tools .wrap{display:flex;flex-wrap:nowrap;gap:6px;align-items:center}.tools .tg{padding:6px 8px;font-size:12px;gap:5px;margin:0;white-space:nowrap}.tools .tg.cfg svg{width:15px;height:15px}}.tg.cfg svg{width:17px;height:17px;margin:0;flex:none}
   .pmi{font-style:normal;font-size:9.500px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:linear-gradient(160deg,#ffd24a,#c98a00);color:#2e2000;border-radius:999px;padding:2px 7px;vertical-align:middle;margin-left:6px}
   .tab a,.tab .cta{position:relative}
@@ -470,7 +486,7 @@
     .top .wrap{gap:8px}.seg{flex:none}.seg button{padding:6px 9px;font-size:12.5px}
   }
   @media (max-width:400px){.seg button{font-size:0;padding:7px 11px}.seg button::after{content:attr(data-set);font-size:12.500px;text-transform:uppercase;font-weight:700}}
-</style><symbol id="i-riesgo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5l22 8v16c0 14-9.500 25-22 30C19.500 54 10 43 10 29V13z"/><path d="M23 33h17a6 6 0 0 0 1-11.900A9 9 0 0 0 24 22.500 5.500 5.500 0 0 0 23 33z"/><path class="f" d="M33 35l-6 9h5l-2 8 8-11h-5l2-6z"/></g></symbol><symbol id="i-granizo" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><circle class="f" cx="22" cy="46" r="3.500"/><circle class="f" cx="34" cy="50" r="3.500"/><circle class="f" cx="44" cy="45" r="3.500"/><circle class="f" cx="27" cy="57" r="3.500"/><circle class="f" cx="41" cy="57" r="3.500"/></g></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M17 36h30a9 9 0 0 0 1.500-17.900A13 13 0 0 0 23.500 20.500 8 8 0 0 0 17 36z"/><path d="M22 43l-3 8M32 43l-3 8M42 43l-3 8M26 54l-2 6M36 54l-2 6"/></g></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h30a7 7 0 1 0-7-7M8 35h42a7 7 0 1 1-7 7M8 46h20a6 6 0 1 1-6 6"/></g></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path class="f" d="M37 5 16 34h13l-6 25 25-33H35l7-21z"/></g></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
+</style><symbol id="i-riesgo" viewBox="0 0 64 64"><image href="/assets/ic/alerta.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-granizo" viewBox="0 0 64 64"><image href="/assets/ic/granizo.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-chuva" viewBox="0 0 64 64"><image href="/assets/ic/chuva-raio.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-vendaval" viewBox="0 0 64 64"><image href="/assets/ic/vendaval.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-calor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="25" r="8"/><path d="M23 9v4M23 37v4M7 25h4M35 25h3M12 14l3 3M12 36l3-3M34 14l-3 3"/><rect x="43" y="10" width="9" height="32" rx="4.500"/><circle class="f" cx="47.500" cy="49" r="7"/></g></symbol><symbol id="i-frio" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="8" width="9" height="34" rx="4.500"/><circle class="f" cx="20.500" cy="49" r="7.500"/><path d="M44 12v36M35 39l9 10 9-10"/></g></symbol><symbol id="i-geada" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8v48M11 20l42 24M53 20 11 44M26 12l6 6 6-6M26 52l6-6 6 6M12 28l8-2-2-8M52 36l-8 2 2 8M52 28l-8-2 2-8M12 36l8 2-2 8"/></g></symbol><symbol id="i-raios" viewBox="0 0 64 64"><image href="/assets/ic/tempestade.png" x="0" y="0" width="64" height="64"/></symbol><symbol id="i-seca" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="4.200" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="18" r="8"/><path d="M32 3v3M17 18h3M44 18h3M21 7l2 2M43 7l-2 2"/><path d="M6 44h52M6 58h52"/><path d="M22 44l-4 7 5 7M40 44l5 6-4 8M31 44l2 14"/></g></symbol></svg>
 <div class="hero" id="hero">
   <!-- nubes: textura generada con ruido, sin imágenes externas -->
   <div class="clouds c1" aria-hidden="true">
@@ -508,22 +524,22 @@
   <header class="top">
     <div class="wrap">
       <div class="brand">
-        <img src="/assets/logo-96.png" alt="" width="30" height="30">
+        <img src="/assets/logo-nube-96.png" alt="" width="34" height="34">
         Aviso Sul<span class="pl">Premium</span>
-      </div>
-      <div class="seg" role="group" aria-label="Idioma">
-        <button type="button" data-set="pt">Português</button>
-        <button type="button" data-set="es">Español</button>
       </div>
     </div>
   </header>
 
   <div class="tools">
     <div class="wrap">
+      <label class="selc"><span class="sr pt">Cidade</span><span class="sr es">Ciudad</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/></svg><select id="selCity"></select></label>
+      <button type="button" class="tg prc" id="bPrec" title="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span class="pt">Precisa</span><span class="es">Precisa</span><i>★</i></button>
+      <span class="sp"></span>
+      <button type="button" class="tg ico" id="bLang" aria-label="Idioma"><svg class="fl-br" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#169B48"/><path d="M14 2.500 25.500 10 14 17.500 2.500 10z" fill="#FDD835"/><circle cx="14" cy="10" r="4.200" fill="#1A3E8C"/><path d="M10 9.200q4-1.600 8 .8" stroke="#fff" stroke-width=".9" fill="none"/></svg><svg class="fl-ar" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="3" fill="#74ACDF"/><rect y="6.700" width="28" height="6.600" fill="#fff"/><circle cx="14" cy="10" r="2.300" fill="#F6B40E"/></svg></button>
       <button type="button" class="tg" id="bTheme">
         <svg class="ic-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 14.500A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500z"/></svg>
         <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.500 1.500M17.500 17.500 19 19M19 5l-1.500 1.500M6.500 17.500 5 19"/></svg>
-        <span class="lbl-theme"></span>
+        <span class="lbl-theme sr"></span>
       </button>
       <a class="tg cfg" id="bCfg" href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
     </div>
@@ -532,8 +548,8 @@
   <div class="hero-in">
     <div class="wrap">
       <span class="tag" data-k="tag"></span>
-      <span class="cities" id="cities"></span>
-      <button type="button" class="prc" id="bPrec"><span aria-hidden="true">📍</span> <span class="pt">Minha localização precisa</span><span class="es">Mi ubicación precisa</span><i>Premium</i></button>
+      
+      
       <div class="now gl" aria-live="polite">
       <h2><i class="dot off" id="nowDot"></i><span data-k="now"></span><b class="clk" id="bigClock"></b></h2>
       <p class="fecha" id="bigDate"></p>
@@ -968,6 +984,8 @@
     e=document.querySelectorAll('[data-k]');for(i=0;i<e.length;i++){var k=e[i].getAttribute('data-k');if(t[k])e[i].textContent=t[k]}
     e=document.getElementById('fontes');if(e){e.innerHTML=C.fontes.map(function(f){return'<li>'+esc(f)+'</li>'}).join('')}
     e=document.getElementById('tels');if(e){e.innerHTML=C.tels.map(function(x){return'<a href="tel:'+x[0]+'">'+x[0]+' <small>'+esc(l==='es'?x[2]:x[1])+'</small></a>'}).join('')}
+    e=document.getElementById('selCity');if(e&&!e.options.length){var oh='';for(var id2 in CIUDAD){if(OCULTAS[id2]&&id2!==cid)continue;oh+='<option value="'+id2+'"'+(id2===cid?' selected':'')+'>'+esc(CIUDAD[id2].nombre)+'</option>'}e.innerHTML=oh;
+      e.addEventListener('change',function(){LS('c',this.value);LS('cM','1');location.href=WEB?'/'+this.value+'/':'?c='+this.value})}
     e=document.getElementById('cities');if(e){var h='';for(var id in CIUDAD){if(OCULTAS[id]&&id!==cid)continue;h+='<a href="'+(WEB?'/'+id+'/':'?c='+id)+'"'+(id===cid?' aria-current="true"':'')+'>'+esc(CIUDAD[id].nombre)+'</a>'}e.innerHTML=h}
     document.title='Aviso Sul — '+C.nombre;
     e=document.getElementById('bShare');if(e){e.href='https://wa.me/?text='+encodeURIComponent(t.ej+'\n\n'+(l==='es'?'Avisos gratis en tu WhatsApp: ':'Avisos grátis no seu WhatsApp: ')+'https://avisosul.com/'+cid+'/')}
@@ -1357,7 +1375,7 @@
         ahora:{pt:w[1],es:w[2],ico:w[3]},prox:{pt:w1[1],es:w1[2],ico:w1[3],mm:h.precipitation[1],temp:Math.round(h.temperature_2m[1])},
         horas:h.time.slice(0,12).map(function(t,i){return{h:t.slice(11,13)+'h',temp:Math.round(h.temperature_2m[i]),prob:h.precipitation_probability[i],racha:Math.round(h.wind_gusts_10m[i]),ico:wmo(h.weather_code[i])[3]}})};
       safe(pintarWx)}).catch(function(){})}
-  function precUI(){var b=document.getElementById('bPrec');if(b)b.className='prc'+(PREC?' on':'');
+  function precUI(){var b=document.getElementById('bPrec');if(b)b.className='tg prc'+(PREC?' on':'');
     var n=document.querySelector('.now [data-k=now]');if(n&&PREC)n.textContent=L2('Ahora en tu ubicación','Agora na sua localização');
     var c=document.querySelector('.now .wxc');if(c&&PREC)c.textContent=L2('Tu punto exacto por GPS. Pronóstico: Open-Meteo. Los avisos oficiales son los de ','Seu ponto exato por GPS. Previsão: Open-Meteo. Os avisos oficiais são os de ')+C.nombre+'.'}
   function precPedir(silencio){if(!navigator.geolocation||!esPremium())return;
@@ -1407,6 +1425,7 @@
     else if(sl==='es'||sl==='pt')setLang(sl);
     else setLang(langAuto());
     var b=document.querySelectorAll('.seg button');
+    document.getElementById('bLang').addEventListener('click',function(){LS('langM','1');setLang(root.getAttribute('data-lang')==='es'?'pt':'es')});
     for(var i=0;i<b.length;i++)b[i].addEventListener('click',function(){LS('langM','1');setLang(this.getAttribute('data-set'))});
     document.getElementById('bTheme').addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='night'?'light':'night',true)});
   });

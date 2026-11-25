@@ -3,7 +3,7 @@ Uso: python3 assets/armar.py  (desde la raiz del repositorio)"""
 import os, re
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 app = open(os.path.join(R, "app.html"), encoding="utf-8").read()
-LOGO = '<img src="/assets/logo-96.png" alt="" width="36" height="36">'
+LOGO = '<img src="/assets/logo-nube-96.png" alt="" width="40" height="40">'
 SYM = "".join(re.findall(r'<symbol id="i-(?:riesgo|granizo|chuva|vendaval|raios)".*?</symbol>', app, re.S))
 PIE = open(os.path.join(R, "assets", "pie.src.html"), encoding="utf-8").read().replace("{{LOGO}}", LOGO)
 CAB = open(os.path.join(R, "assets", "cab.src.html"), encoding="utf-8").read().replace("{{LOGO}}", LOGO)
