@@ -223,8 +223,7 @@
     if (CAR.cargando && !forzar) return; CAR.cargando = 1; CAR.estEn = g;
     var q = '[out:json][timeout:20];(node["amenity"="' + tag + '"](around:' + r + ',' + g[0].toFixed(4) + ',' + g[1].toFixed(4) + ');way["amenity"="' + tag + '"](around:' + r + ',' + g[0].toFixed(4) + ',' + g[1].toFixed(4) + '););out center 80;';
     document.getElementById('cList').innerHTML = '<small>' + L2('Buscando estaciones…', 'Buscando postos…') + '</small>';
-    fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
-      .then(function (r) { return r.json() }).then(function (j) {
+    overpass(q).then(function (j) {
         CAR.est = (j.elements || []).map(function (x) {
           var t = x.tags || {}, p = x.center ? [x.center.lat, x.center.lon] : [x.lat, x.lon];
           return { id: x.type[0] + x.id, n: t.brand || t.name || t.operator || L2('Estación', 'Posto'), nom: t.name && t.brand && t.name !== t.brand ? t.name : '', p: p, t: t };
@@ -267,6 +266,14 @@
     });
   }
 
+  /* Overpass: primero por nuestro servidor (prueba varios espejos y guarda 6 h); si falla, directo a los espejos publicos. */
+  var OVP = ['/api/estaciones.php', 'https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
+  function overpass(q, k) {
+    k = k || 0; var ctl = window.AbortController ? new AbortController() : null, t = ctl ? setTimeout(function () { ctl.abort() }, 30000) : 0;
+    return fetch(OVP[k], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { clearTimeout(t); if (!r.ok) throw 0; return r.json() }).then(function (j) { if (!j || !j.elements) throw 0; return j })
+      .catch(function (e) { clearTimeout(t); if (k + 1 < OVP.length) return overpass(q, k + 1); throw e });
+  }
   /* ---- catalogo de autos (valores de referencia, editables) ---- */
   function catalogo() { if (CAR.cat) return Promise.resolve(); return fetch('/assets/autos.json?v=2').then(function (r) { return r.json() }).then(function (j) { CAR.cat = j.autos }).catch(function () { CAR.cat = [] }) }
   function catModelos(m) {
@@ -376,8 +383,7 @@
     var rad = Math.round(1000 + esp * 500);
     var q = '[out:json][timeout:40];(node["amenity"="' + tag + '"](around:' + rad + ',' + pts.join(',') + ');way["amenity"="' + tag + '"](around:' + rad + ',' + pts.join(',') + '););out center 400;';
     document.getElementById('cList').innerHTML = '<small>' + L2('Buscando estaciones a 1 km de tu camino…', 'Buscando postos a 1 km do seu caminho…') + '</small>';
-    fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
-      .then(function (r) { return r.json() }).then(function (j) {
+    overpass(q).then(function (j) {
         CAR.est = (j.elements || []).map(function (x) { var t = x.tags || {}, p = x.center ? [x.center.lat, x.center.lon] : [x.lat, x.lon]; return { id: x.type[0] + x.id, n: t.brand || t.name || t.operator || L2('Estación', 'Posto'), nom: t.name && t.brand && t.name !== t.brand ? t.name : '', p: p, t: t } });
         CAR.estR = CAR.est.map(function (x) {
           var bd = 1e9, bi = 0, bt = 0;
