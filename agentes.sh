@@ -8,4 +8,5 @@ python3 ../agente_inmet.py nuevos 2>&1 | tail -2
 python3 ../agente_smn.py nuevos 2>&1 | tail -2
 python3 ../agente_tiempo.py 2>&1 | tail -2
 python3 ../agente_whatsapp.py 2>&1 | tail -2
+python3 ../agente_estaciones.py 2>&1 | tail -3
 ls datos | wc -l; date
