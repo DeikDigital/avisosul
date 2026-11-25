@@ -80,6 +80,6 @@
   /* "Quero": cuenta el interes por cada plan (validacion de precio, sin datos personales) */
   document.querySelectorAll('[data-plano]').forEach(function(b){b.addEventListener('click',function(){
     fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:b.dataset.plano})}).catch(function(){});
-    b.disabled=true;var m=T('Anotado, obrigado! O pagamento abre em breve.','¡Anotado, gracias! El pago abre pronto.');b.textContent=m;b.dataset.pt='Anotado, obrigado! O pagamento abre em breve.';b.dataset.es='¡Anotado, gracias! El pago abre pronto.'})});
+    b.disabled=true;setTimeout(function(){location.href='/app/?plan='+encodeURIComponent(b.dataset.plano)+'#premium'},150)})});
   aplicarIdioma();cargar();setInterval(cargar,10*60000);
 })();

@@ -10,6 +10,12 @@
    Datos fuera de public_html. El Client ID de Google va en datos_privados/google.json {"client_id":"..."}. */
 require __DIR__ . '/_comun.php';
 function cfg_google() { $f = dir_privado() . '/google.json'; $c = file_exists($f) ? json_decode(file_get_contents($f), true) : null; return $c['client_id'] ?? null; }
+function premium_de($em) {
+    $f = dir_privado() . '/premium.json'; if (!file_exists($f)) return null;
+    $p = json_decode(file_get_contents($f), true); $x = $p[$em] ?? null; if (!$x) return null;
+    return ['hasta' => (int)($x['hasta'] ?? 0), 'plan' => $x['plan'] ?? 'premium', 'estado' => $x['estado'] ?? '', 'pendiente' => $x['pendiente'] ?? null];
+}
+function checkout_br() { $f = dir_privado() . '/hotmart.json'; $c = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : []; $o = []; foreach (($c['checkout'] ?? []) as $k => $u) if (preg_match('#^https://(pay|go)\.hotmart\.com/#', (string)$u)) $o[$k] = $u; return $o ?: null; }
 function email_ok($e) { $e = strtolower(trim((string)$e)); return filter_var($e, FILTER_VALIDATE_EMAIL) && strlen($e) <= 120 ? $e : null; }
 function nueva_sesion($email) {
     $tok = bin2hex(random_bytes(24));
@@ -31,10 +37,10 @@ function cuenta_de($tok) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($_GET['cfg'])) { $gf = dir_privado() . '/google.json'; $gc = file_exists($gf) ? json_decode(file_get_contents($gf), true) : []; salir(['ok' => true, 'google' => cfg_google(), 'maps' => $gc['maps_key'] ?? null]); }
+    if (isset($_GET['cfg'])) { $gf = dir_privado() . '/google.json'; $gc = file_exists($gf) ? json_decode(file_get_contents($gf), true) : []; salir(['ok' => true, 'google' => cfg_google(), 'maps' => $gc['maps_key'] ?? null, 'hotmart' => checkout_br()]); }
     $c = cuenta_de($_GET['token'] ?? '');
     if (!$c) salir(['ok' => false, 'error' => 'sesion'], 401);
-    salir(['ok' => true, 'email' => $c[0], 'ajustes' => $c[1]['ajustes'] ?? (object)[]]);
+    salir(['ok' => true, 'email' => $c[0], 'ajustes' => $c[1]['ajustes'] ?? (object)[], 'premium' => premium_de($c[0])]);
 }
 $e = entrada(); $acao = $e['acao'] ?? '';
 
@@ -64,7 +70,7 @@ if ($acao === 'verificar') {
         unset($d[$em]); return [$d, true];
     });
     if (!$ok) salir(['ok' => false, 'error' => 'codigo']);
-    salir(['ok' => true, 'token' => nueva_sesion($em), 'email' => $em]);
+    salir(['ok' => true, 'token' => nueva_sesion($em), 'email' => $em, 'premium' => premium_de($em)]);
 }
 if ($acao === 'google') {
     $cid = cfg_google(); if (!$cid) salir(['ok' => false, 'error' => 'sin_google'], 400);
@@ -74,7 +80,7 @@ if ($acao === 'google') {
     $j = json_decode(curl_exec($ch) ?: '', true); curl_close($ch);
     if (!$j || ($j['aud'] ?? '') !== $cid || ($j['email_verified'] ?? '') !== 'true' || !in_array($j['iss'] ?? '', ['accounts.google.com', 'https://accounts.google.com'])) salir(['ok' => false, 'error' => 'google'], 401);
     $em = email_ok($j['email'] ?? ''); if (!$em) salir(['ok' => false, 'error' => 'google'], 401);
-    salir(['ok' => true, 'token' => nueva_sesion($em), 'email' => $em]);
+    salir(['ok' => true, 'token' => nueva_sesion($em), 'email' => $em, 'premium' => premium_de($em)]);
 }
 if ($acao === 'guardar') {
     $aj = $e['ajustes'] ?? null; if (!is_array($aj) || strlen(json_encode($aj)) > 20000) salir(['ok' => false, 'error' => 'ajustes'], 400);
