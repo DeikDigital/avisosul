@@ -216,3 +216,12 @@ a{color:var(--sol2)}
 .pie{background:#101C2C;border-top-color:var(--line)}
 .lista li::before{background-color:var(--sol)}
 #mapa{background:#16263A}
+
+/* destacado: avisar a la familia por WhatsApp (Premium) */
+.destaque{background:linear-gradient(90deg,#1F3350,#243A52);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.destaque .wrap{display:flex;align-items:center;gap:20px;padding-top:26px;padding-bottom:26px}
+.destaque img{flex:none;width:72px;height:72px}
+.destaque h2{font-size:clamp(22px,3.2vw,30px);margin:0 0 6px}
+.destaque p{margin:0;color:#CFDCE8}
+.destaque .btn{flex:none;margin-left:auto}
+@media (max-width:760px){.destaque .wrap{flex-wrap:wrap}.destaque .btn{margin-left:0;width:100%}.destaque img{width:56px;height:56px}}

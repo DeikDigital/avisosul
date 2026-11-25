@@ -340,6 +340,11 @@
   .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .tools .wrap{flex-wrap:nowrap!important;align-items:center;gap:6px!important}
   .tools .sp{flex:1}
+  .ad-top{margin:8px 0 0;min-height:60px}
+  .gr{font-style:normal;font-size:12px;font-weight:800;vertical-align:middle;padding:3px 9px;border-radius:999px;background:#2E7D4F;color:#fff;margin-left:6px}
+  .vzahora{margin:12px 0 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(142,187,224,.35);background:rgba(142,187,224,.10);font-size:14.5px}
+  .vzahora b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .vzahora div{margin-top:3px}
   .selc{position:relative;display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:52%;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.28);border-radius:999px;padding:0 10px;height:38px;color:#fff}
   .selc svg{width:16px;height:16px;flex:none}
   .selc select{appearance:none;-webkit-appearance:none;background:transparent;border:0;color:inherit;font:inherit;font-size:14px;font-weight:700;padding:0 16px 0 0;min-width:0;width:100%;text-overflow:ellipsis;cursor:pointer;
@@ -544,6 +549,8 @@
       <a class="tg cfg" id="bCfg" href="#ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.650 1.650 0 0 0 .33 1.820l.06.06a2 2 0 0 1 0 2.830 2 2 0 0 1-2.830 0l-.06-.06a1.650 1.650 0 0 0-1.820-.33 1.650 1.650 0 0 0-1 1.510V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.650 1.650 0 0 0 9 19.400a1.650 1.650 0 0 0-1.820.33l-.06.06a2 2 0 0 1-2.830 0 2 2 0 0 1 0-2.830l.06-.06a1.650 1.650 0 0 0 .33-1.820 1.650 1.650 0 0 0-1.510-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.650 1.650 0 0 0 4.600 9a1.650 1.650 0 0 0-.33-1.820l-.06-.06a2 2 0 0 1 0-2.830 2 2 0 0 1 2.830 0l.06.06a1.650 1.650 0 0 0 1.820.33H9a1.650 1.650 0 0 0 1-1.510V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.650 1.650 0 0 0 1 1.510 1.650 1.650 0 0 0 1.820-.33l.06-.06a2 2 0 0 1 2.830 0 2 2 0 0 1 0 2.830l-.06.06a1.650 1.650 0 0 0-.33 1.820V9a1.650 1.650 0 0 0 1.510 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.650 1.650 0 0 0-1.510 1z"/></svg><span class="pt">Ajustes</span><span class="es">Ajustes</span></a>
     </div>
   </div>
+  <!-- PENDIENTE: bloque de Google AdSense bajo la ubicación (solo se ve en el plan gratis) -->
+  <div class="wrap"><div class="ad ad-top" data-ad="0"><small class="pt">Espaço publicitário</small><small class="es">Espacio publicitario</small><span data-k="ad"></span></div></div>
 
   <div class="hero-in">
     <div class="wrap">
@@ -566,6 +573,7 @@
       <div class="rk" id="rk"></div>
       <p class="wxc2"><span class="pt">Estimativa própria a partir da previsão e dos avisos oficiais em vigor. Não substitui os avisos oficiais.</span><span class="es">Estimación propia a partir del pronóstico y de los avisos oficiales vigentes. No reemplaza los avisos oficiales.</span></p>
       <div id="nowList"></div>
+      <div class="vzahora" id="vzNow" hidden></div>
       <p class="up" id="nowUp"></p>
       <div class="of" id="nowOf"></div>
     </div>
@@ -627,10 +635,10 @@
 </a></div>
 <section id="vecinos">
   <div class="wrap">
-    <h2 class="pt">Alerta dos vizinhos</h2>
-    <h2 class="es">Alerta de vecinos</h2>
-    <p class="pt">O que estão relatando perto de você agora.</p>
-    <p class="es">Lo que están reportando cerca tuyo ahora.</p>
+    <h2 class="pt">Alerta dos vizinhos <i class="gr">Grátis</i></h2>
+    <h2 class="es">Alerta de vecinos <i class="gr">Gratis</i></h2>
+    <p class="pt">Relate o que você vê e confirme o relato do vizinho. É grátis: os relatos confirmados aparecem no painel quando o fenômeno está acontecendo.</p>
+    <p class="es">Reportá lo que ves y confirmá el reporte del vecino. Es gratis: los reportes confirmados aparecen en el panel cuando el fenómeno está pasando.</p>
     <div class="vzr" id="vzR" role="group" aria-label="Distancia"><button type="button" data-r="30" aria-pressed="true">30 km</button><button type="button" data-r="100" aria-pressed="false">100 km</button><button type="button" data-r="300" aria-pressed="false">300 km</button></div>
     <button type="button" class="vzrep" id="vzRep"><span class="pt">Relatar o que está acontecendo</span><span class="es">Reportar lo que está pasando</span></button>
     <div class="vzf" id="vzForm" hidden>
@@ -858,8 +866,8 @@
 <div class="onb" id="pmo" hidden role="dialog" aria-modal="true">
   <div class="onbc gl">
     <h2><span class="pt">Função Premium</span><span class="es">Función Premium</span></h2>
-    <p class="pt" style="color:#b9c6d3">Alertas no WhatsApp, avisar com foto e vídeo e a localização precisa fazem parte do plano Premium.</p>
-    <p class="es" style="color:#b9c6d3">Las alertas por WhatsApp, avisar con foto y video y la ubicación precisa son parte del plan Premium.</p>
+    <p class="pt" style="color:#b9c6d3">Compartilhar alertas com a família e os amigos (WhatsApp, foto e vídeo), os alertas no WhatsApp e a localização precisa fazem parte do plano Premium. Relatar e confirmar no Alerta dos vizinhos é grátis.</p>
+    <p class="es" style="color:#b9c6d3">Compartir alertas con tu familia y amigos (WhatsApp, foto y video), las alertas por WhatsApp y la ubicación precisa son parte del plan Premium. Reportar y confirmar en Alerta de vecinos es gratis.</p>
     <button type="button" class="btn btn-wa" id="pmoOk"><span class="pt">Entendi</span><span class="es">Entendido</span></button>
   </div>
 </div>
@@ -868,7 +876,7 @@
     <h2 id="trT"></h2>
     <p id="trX"></p>
     <ul>
-      <li>📷 <span class="pt">Avisar com foto, vídeo e mensagem</span><span class="es">Avisar con foto, video y mensaje</span></li>
+      <li>📷 <span class="pt">Compartilhar alertas com família e amigos</span><span class="es">Compartir alertas con familia y amigos</span></li>
       <li>📍 <span class="pt">Minha localização precisa</span><span class="es">Mi ubicación precisa</span></li>
       <li>🚫 <span class="pt">Uso sem publicidade</span><span class="es">Uso sin publicidad</span></li>
     </ul>
@@ -1108,6 +1116,9 @@
   var VZZ={ervilha:['ervilha','arveja','~0,5 cm'],gude:['bola de gude','bolita','~1,5 cm'],noz:['noz','nuez','~2,5 cm'],ovo:['ovo','huevo','~5 cm']};
   function vzHace(m){return m<1?L2('recién','agora'):m<60?L2('hace ','há ')+m+' min':m<1440?L2('hace ','há ')+Math.floor(m/60)+' h':L2('hace ','há ')+Math.floor(m/1440)+L2(' d',' d')}
   function vzPintar(){var box=document.getElementById('vzList');if(!box)return;var l=root.getAttribute('data-lang')==='es'?1:0;
+    safe(function(){var n=document.getElementById('vzNow');if(!n)return;var rec=VZ.lista.filter(function(x){return x.km<=30&&x.min<=180}).sort(function(a,b){return (b.conf-a.conf)||(a.min-b.min)}).slice(0,3);
+      if(!rec.length){n.hidden=true;return}n.hidden=false;
+      n.innerHTML='<b>'+L2('Reportes de vecinos · últimas 3 h','Relatos dos vizinhos · últimas 3 h')+'</b>'+rec.map(function(x){return '<div>'+(x.conf>=2?'✓ ':'• ')+esc(VZT[x.tipo][l]+(x.tam?' ('+VZZ[x.tam][l]+')':''))+' · '+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzHace(x.min)+(x.conf>=2?' · '+L2('confirmado','confirmado'):'')+'</div>'}).join('')});
     if(!VZ.lista.length){box.innerHTML='<p class="vzn">'+L2('Nadie reportó nada en este radio en los últimos 3 días.','Ninguém relatou nada neste raio nos últimos 3 dias.')+'</p>';return}
     box.innerHTML='';VZ.lista.forEach(function(x){var d=document.createElement('div');d.className='vzc'+(x.conf>=2?' ok':'');
       var tit=VZT[x.tipo][l]+(x.tam?' · '+L2('tamaño ','tamanho ')+VZZ[x.tam][l]:''),sub=(x.tam?VZZ[x.tam][2]+' · ':'')+(x.km<1?L2('a menos de 1 km','a menos de 1 km'):L2('a ','a ')+x.km+' km')+' · '+vzHace(x.min);
