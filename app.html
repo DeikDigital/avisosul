@@ -1121,7 +1121,7 @@
       <button type="button" role="radio" aria-checked="true" data-p="temporada"><b><span class="pt">Temporada</span><span class="es">Temporada</span></b><span><em class="prb"><s class="preg">R$ 89,80</s><span class="p50">-50%</span>R$ 44,90</em><em class="pra"><s class="preg">$ 29.980</s><span class="p50">-50%</span>$ 14.990</em><small><span class="pt">até 31/03</span><span class="es">hasta 31/03</span></small></span><i><span class="pt">Ideal para o verão</span><span class="es">Ideal para el verano</span></i></button>
       <button type="button" role="radio" aria-checked="false" data-p="anual"><b><span class="pt">Anual</span><span class="es">Anual</span></b><span><em class="prb"><s class="preg">R$ 179,80</s><span class="p50">-50%</span>R$ 89,90</em><em class="pra"><s class="preg">$ 59.980</s><span class="p50">-50%</span>$ 29.990</em><small><span class="pt">/ano</span><span class="es">/año</span></small></span></button>
     </div>
-    <p class="pmpg"><span class="prb"><span class="pt"><b>Preço de lançamento: 50% de desconto.</b> Pagamento seguro pela Hotmart: Pix, cartão ou boleto. Garantia de 7 dias. Use o mesmo e-mail da sua conta.</span><span class="es"><b>Precio de lanzamiento: 50 % de descuento.</b> Pago seguro por Hotmart: Pix, tarjeta o boleto. 7 días de garantía. Usá el mismo email de tu cuenta.</span></span><span class="pra"><b>Precio de lanzamiento: 50 % de descuento.</b> Pagás con Mercado Pago: dinero en cuenta, débito o tarjeta, en pesos. Cada plan es un pago único por el período: no se renueva solo.</span></p>
+    <p class="pmpg"><span class="prb"><span class="pt"><b class="promo">🎄 Promoção de Natal: 50% de desconto até 25/12.</b> Pagamento seguro pela Hotmart: Pix, cartão ou boleto. Garantia de 7 dias. Use o mesmo e-mail da sua conta.</span><span class="es"><b class="promo">🎄 Promo de Navidad: 50 % de descuento hasta el 25/12.</b> Pago seguro por Hotmart: Pix, tarjeta o boleto. 7 días de garantía. Usá el mismo email de tu cuenta.</span></span><span class="pra"><b class="promo">🎄 Promo de Navidad: 50 % de descuento hasta el 25/12.</b> Pagás con Mercado Pago: dinero en cuenta, débito o tarjeta, en pesos. Cada plan es un pago único por el período: no se renueva solo.</span></p>
     <button type="button" class="btn btn-wa" id="pmoGo"><span class="pt">Quero este plano</span><span class="es">Quiero este plan</span></button>
     <p class="pmvf" id="pmoVf" hidden><button type="button" class="lnk" id="pmoYa"><span class="pt">Já paguei: verificar meu Premium</span><span class="es">Ya pagué: verificar mi Premium</span></button></p>
     <p class="pmst" id="pmoSt"></p>
@@ -1873,6 +1873,10 @@
     document.getElementById('avTema').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;LS('temaModo',b.dataset.v);
       if(b.dataset.v==='auto'){LS('tema','');setTheme(temaHora())}else setTheme(b.dataset.v);pinta()});
     window.__avPinta=pinta;pinta()});
+  /* ---- promo de Navidad: 50 % hasta el 25/12/2026 23:59 (hora argentina). Despues se muestran solos los precios regulares. ---- */
+  safe(function(){var fin=new Date('2026-12-25T23:59:59-03:00').getTime(),q=Math.ceil((fin-Date.now())/864e5);
+    if(Date.now()>fin){document.querySelectorAll('.pmp em').forEach(function(em){var s=em.querySelector('.preg');if(s)em.textContent=s.textContent});document.querySelectorAll('.promo').forEach(function(b){b.remove()});return}
+    document.querySelectorAll('.promo').forEach(function(b){if(q<=10)b.textContent+=' '+(q<=1?L2('¡Último día!','Último dia!'):L2('Quedan '+q+' días.','Faltam '+q+' dias.'))})});
   /* ---- Premium pagado con Hotmart (Brasil): la cuenta y el pago usan el mismo email ---- */
   function toast(t,ok,ms){var e=document.getElementById('toast');if(!e)return;e.textContent=t;e.className='toast'+(ok?' ok':'');e.hidden=false;clearTimeout(toast.t);if(ms)toast.t=setTimeout(function(){e.hidden=true},ms)}
   function premSync(j){var p=j&&j.premium,ahora=Date.now();

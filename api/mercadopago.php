@@ -78,6 +78,8 @@ $plan = (string)($e['plan'] ?? ''); if (!isset($PLANES[$plan])) salir(['ok' => f
 $email = cuenta_email($e['token'] ?? ''); if (!$email) salir(['ok' => false, 'error' => 'sesion'], 401);
 $precios = array_merge(['mensal' => 4990, 'temporada' => 14990, 'anual' => 29990], $cfg['precios'] ?? []);
 $monto = (float)$precios[$plan];
+$finPromo = strtotime(($cfg['promo_hasta'] ?? '2026-12-25') . ' 23:59:59 America/Argentina/Cordoba');
+if (time() > $finPromo) $monto = (float)(($cfg['precios_regulares'] ?? [])[$plan] ?? $monto * 2);   // termina la promo del 50 %
 $pref = [
     'items' => [['id' => 'premium-' . $plan, 'title' => 'Alerta Sur Premium — ' . $PLANES[$plan]['nombre'], 'quantity' => 1, 'unit_price' => $monto, 'currency_id' => 'ARS']],
     'payer' => ['email' => $email],

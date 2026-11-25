@@ -81,5 +81,7 @@
   document.querySelectorAll('[data-plano]').forEach(function(b){b.addEventListener('click',function(){
     fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:b.dataset.plano})}).catch(function(){});
     b.disabled=true;setTimeout(function(){location.href='/app/?plan='+encodeURIComponent(b.dataset.plano)+'#premium'},150)})});
+  /* promo de Navidad hasta el 25/12/2026: despues quedan solo los precios regulares */
+  if(Date.now()>new Date('2026-12-25T23:59:59-03:00').getTime()){document.querySelectorAll('.preco').forEach(function(p){var r=p.querySelector('.preg');if(!r)return;var sm=p.querySelector('small');p.textContent=r.textContent;if(sm)p.appendChild(sm)});document.querySelectorAll('.promo-t').forEach(function(x){x.remove()})}
   aplicarIdioma();cargar();setInterval(cargar,10*60000);
 })();
