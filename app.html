@@ -18,6 +18,7 @@
   El sonido se genera en el navegador (sin archivos de audio) y arranca apagado.
 -->
 <style>
+  #cta{z-index:95!important}
   :root{
     --amber:#FFB238; --amber-ink:#1E1404; --wa:#1f8f4e;
     /* modo noche (por defecto) */
@@ -1907,7 +1908,7 @@
     else{if(!window.__HM)return;b.innerHTML='<span class="pt">Assinar com Pix ou cartão</span><span class="es">Pagar con Pix o tarjeta</span>'}
     document.getElementById('pmoVf').hidden=false}
   /* el código se pide solo para pagar o activar Premium */
-  function ctaVerificar(plan){var o=document.getElementById('cta');if(!o)return;if(plan)LS('pagoPend',plan);window.__ctaVerif=true;
+  function ctaVerificar(plan){var o=document.getElementById('cta');if(!o)return;var pm=document.getElementById('pmo');if(pm)pm.hidden=true;if(plan)LS('pagoPend',plan);window.__ctaVerif=true;
     document.getElementById('ctaE').value=LS('cuentaEmail')||'';document.getElementById('ctaP1').hidden=false;document.getElementById('ctaP2').hidden=true;document.getElementById('ctaNo').hidden=false;var cp=document.querySelector('#cta .ctap');if(cp)cp.hidden=true;
     document.getElementById('ctaT').innerHTML='<span class="pt">Confirme seu e-mail</span><span class="es">Confirmá tu email</span>';
     document.getElementById('ctaB1').innerHTML='<span class="pt">Receber código</span><span class="es">Recibir código</span>';
