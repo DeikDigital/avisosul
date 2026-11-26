@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tu opinión sobre Alerta Sur</title>
+<link rel="icon" href="/favicon-48.png">
+<style>
+  :root{--bg:#142235;--card:#1F3350;--line:#2E4A6B;--txt:#e8eef5;--mut:#9fb2c7;--amber:#FFB238;--ok:#3ddc84;--err:#ff6b5e}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:560px;margin:0 auto;padding:24px 16px 60px}h1{font-size:22px;margin:0 0 6px}p{margin:6px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+  label{display:block;font-weight:700;margin:0 0 8px}.mut{color:var(--mut);font-size:14px}
+  input,textarea,select{width:100%;font:inherit;padding:10px;border-radius:8px;border:1px solid var(--line);background:#0f1b2b;color:var(--txt)}
+  textarea{min-height:90px}.op{display:flex;gap:8px;flex-wrap:wrap}.op label{font-weight:400;display:flex;align-items:center;gap:6px;background:#0f1b2b;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:0}
+  .op input{width:auto}button{font:inherit;font-weight:700;padding:13px 18px;border:0;border-radius:8px;background:var(--amber);color:#2e2000;width:100%;cursor:pointer}
+  .ok{color:var(--ok)}.err{color:var(--err)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Tu opinión sobre Alerta Sur</h1>
+  <p class="mut">Gracias por probar la app. Son 3 minutos y nos ayudan muchísimo, sobre todo lo que no te gustó. Todas las preguntas son opcionales.</p>
+  <form id="f">
+    <div class="card"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" autocomplete="name"></div>
+    <div class="card"><label>1. ¿Pudiste instalarla sin ayuda?</label>
+      <div class="op"><label><input type="radio" name="instalo" value="Sí">Sí</label><label><input type="radio" name="instalo" value="Con ayuda">Con ayuda</label><label><input type="radio" name="instalo" value="No">No</label></div></div>
+    <div class="card"><label>2. Del 1 al 5, ¿qué tan claro es lo que muestra la pantalla principal?</label>
+      <div class="op"><label><input type="radio" name="claridad" value="1">1</label><label><input type="radio" name="claridad" value="2">2</label><label><input type="radio" name="claridad" value="3">3</label><label><input type="radio" name="claridad" value="4">4</label><label><input type="radio" name="claridad" value="5">5</label></div></div>
+    <div class="card"><label for="notif">3. ¿Te llegó alguna notificación? ¿Llegó a tiempo?</label><textarea id="notif" name="notif"></textarea></div>
+    <div class="card"><label for="fallo">4. ¿Qué no entendiste o qué falló?</label><p class="mut">Si podés, mandale la captura a Deik por WhatsApp.</p><textarea id="fallo" name="fallo"></textarea></div>
+    <div class="card"><label for="sirvio">5. ¿Qué es lo que más te sirvió?</label><textarea id="sirvio" name="sirvio"></textarea></div>
+    <div class="card"><label for="pagaria">6. ¿Pagarías por Premium? ¿Qué tendría que tener para que lo pagues?</label><textarea id="pagaria" name="pagaria"></textarea></div>
+    <div class="card"><label for="recomienda">7. ¿Se la recomendarías a alguien? ¿A quién?</label><textarea id="recomienda" name="recomienda"></textarea></div>
+    <div class="card"><label for="dispositivo">Tu celular (marca y modelo, opcional)</label><input id="dispositivo" name="dispositivo"></div>
+    <button type="submit">Enviar mi opinión</button>
+    <p id="st" class="mut" role="status"></p>
+  </form>
+</main>
+<script>
+document.getElementById('f').addEventListener('submit',function(ev){ev.preventDefault();var f=ev.target,d={},st=document.getElementById('st');
+  ['nombre','notif','fallo','sirvio','pagaria','recomienda','dispositivo'].forEach(function(k){d[k]=f[k].value});
+  ['instalo','claridad'].forEach(function(k){var x=f.querySelector('input[name="'+k+'"]:checked');d[k]=x?x.value:''});
+  st.textContent='Enviando…';f.querySelector('button').disabled=true;
+  fetch('/api/opinion.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(function(r){return r.json()}).then(function(j){
+    if(j.ok){f.innerHTML='<div class="card"><p class="ok"><b>¡Gracias! Recibimos tu opinión.</b></p><p>Si se te ocurre algo más, podés volver a escribir cuando quieras.</p></div>'}
+    else{st.innerHTML='<span class="err">'+(j.error==='vacio'?'Respondé al menos una pregunta.':'No se pudo enviar. Probá de nuevo en un rato.')+'</span>';f.querySelector('button').disabled=false}
+  }).catch(function(){st.innerHTML='<span class="err">Sin conexión. Probá de nuevo.</span>';f.querySelector('button').disabled=false})});
+</script>
+</body>
+</html>
