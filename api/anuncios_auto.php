@@ -10,7 +10,7 @@
      token, api ("v23.0"), prueba (true), hasta ("2026-12-14"), radio_km (40), horas_antes (6),
      paises: {br: {adset, niveles:[naranja,rojo]}, ar: {adset, niveles:[amarillo,naranja,rojo]}}
    El token nunca se muestra ni se escribe en el registro. */
-require __DIR__ . '/_comun.php';
+require_once __DIR__ . '/_comun.php';
 
 const EVENTOS = '/(granizo|tempestade|tormenta|chuva|lluvia|precipita|vendaval|viento|vento|rajada|raio|rayo|el[eé]ctric|tornado)/iu';
 
