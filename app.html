@@ -1551,7 +1551,7 @@
             document.getElementById('cqWaAj').addEventListener('click',function(){P.hidden=true;M.hidden=false});return}
           var on=!m[k];bt.disabled=true;
           fetch('/api/whatsapp.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'lugar',tel:tel,codigo:cod,lat:lg.lat,lon:lg.lon,nome:lg.n,on:on})}).then(function(r){return r.json()}).then(function(j){bt.disabled=false;
-            if(!j.ok){st.textContent=j.error==='limite'?L2('Ya tenés 10 lugares con aviso. Desactivá alguno.','Você já tem 10 lugares com aviso. Desative algum.'):L2('No se pudo guardar. Revisá tu WhatsApp en Ajustes.','Não foi possível salvar. Confira seu WhatsApp em Ajustes.');return}
+            if(!j.ok){st.textContent=j.error==='premium'?L2('Los avisos por WhatsApp son de Premium: activá Premium con tu cuenta y volvé a intentar.','Os avisos pelo WhatsApp são do Premium: ative o Premium com sua conta e tente de novo.'):j.error==='limite'?L2('Ya tenés 10 lugares con aviso. Desactivá alguno.','Você já tem 10 lugares com aviso. Desative algum.'):L2('No se pudo guardar. Revisá tu WhatsApp en Ajustes.','Não foi possível salvar. Confira seu WhatsApp em Ajustes.');return}
             if(on)m[k]={n:lg.n,lat:lg.lat,lon:lg.lon};else delete m[k];LS('waLug',JSON.stringify(m));ver();
             st.textContent=on?(j.estado==='ativo'?L2('Listo: si hay un aviso oficial para este lugar, te llega al WhatsApp.','Pronto: se houver um aviso oficial para este lugar, chega no seu WhatsApp.'):L2('Guardado. Se activa cuando confirmes tu WhatsApp.','Salvo. Ativa quando você confirmar seu WhatsApp.')):L2('Desactivado para este lugar.','Desativado para este lugar.')})
             .catch(function(){bt.disabled=false;st.textContent=L2('No se pudo guardar. Revisá la conexión.','Não foi possível salvar. Confira a conexão.')})})});
@@ -1576,7 +1576,7 @@
       var t=document.getElementById('waTel').value,d=t.replace(/\D/g,'');if(d.length<10){st.textContent=L2('Revisá el número: con código de área.','Confira o número: com DDD.');return}
       if(!document.getElementById('waOk').checked){st.textContent=L2('Marcá que aceptás recibir los avisos.','Marque que aceita receber os avisos.');return}
       var g=refPunto();go.disabled=true;st.textContent='';
-      fetch('/api/whatsapp.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'inscrever',tel:t,lat:g[0],lon:g[1],cidade:cid,lang:root.getAttribute('data-lang')})})
+      fetch('/api/whatsapp.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'inscrever',tel:t,lat:g[0],lon:g[1],cidade:cid,lang:root.getAttribute('data-lang'),pais:PAISM,token:LS('cuenta')||null})})
         .then(function(r){return r.json()}).then(function(j){go.disabled=false;if(!j.ok){st.textContent=j.error==='limite'?L2('Ya hay varias inscripciones desde esta conexión. Probá mañana.','Já há várias inscrições desta conexão. Tente amanhã.'):L2('No se pudo guardar. Revisá el número.','Não foi possível salvar. Confira o número.');return}
           LS('waTel',t);LS('waCod',j.codigo);LS('waEstado',j.estado);if(j.numero)LS('waNum',j.numero);waPintar();avWa()})
         .catch(function(){go.disabled=false;st.textContent=L2('No se pudo guardar. Revisá la conexión.','Não foi possível salvar. Confira a conexão.')})});

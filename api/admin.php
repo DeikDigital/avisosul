@@ -38,6 +38,9 @@ if ($acao === 'estado') {
         'google' => (leer('google.json')['client_id'] ?? GOOGLE_CLIENT_ID),
         'precios' => precios_cfg(), 'precios_hoy' => precios_para(''),
         'smtp' => !empty(leer('smtp.json')['pass']),
+        'whatsapp' => (function () { $w = leer('whatsapp.json'); if (empty($w['verify_token'])) { $w['verify_token'] = bin2hex(random_bytes(12)); escribir('whatsapp.json', $w); }
+            return ['activo' => !empty($w['activo']), 'phone_number_id' => $w['phone_number_id'] ?? '', 'numero_publico' => $w['numero_publico'] ?? '', 'plantilla' => $w['plantilla'] ?? 'aviso_clima',
+                    'token' => cola($w['token'] ?? ''), 'app_secret' => cola($w['app_secret'] ?? ''), 'verify_token' => $w['verify_token']]; })(),
         'pixel' => (leer('meta.json')['pixel'] ?? ''), 'embudo' => array_slice(leer('embudo.json'), -14, null, true),
         'ofertas_sin_plan' => array_values(array_unique(array_map('trim', $sin))),
         'eventos_hotmart' => array_map(fn($x) => ['t' => $x['t'], 'ev' => $x['ev'], 'off' => $x['off'], 'prod' => $x['prod'], 'email' => $x['email'] ? substr($x['email'], 0, 3) . '…' : ''], $ev),
@@ -116,6 +119,17 @@ if ($acao === 'precios') {
     if (!$c['br_ofertas']) $c['br_ofertas'] = (object)[];
     escribir('precios.json', $c); escribir('hotmart.json', $hm);
     salir(['ok' => true, 'precios_hoy' => precios_para('')]);
+}
+if ($acao === 'whatsapp') {   // datos de WhatsApp Business (Cloud API). Token y clave secreta: los pega Deik; vacío = conservar
+    $w = leer('whatsapp.json');
+    foreach (['phone_number_id' => '/^\d{6,25}$/', 'numero_publico' => '/^\d{10,15}$/', 'plantilla' => '/^[a-z0-9_]{1,60}$/'] as $k => $re) {
+        $v = preg_replace('/\s+/', '', (string)($e[$k] ?? '')); if ($k === 'numero_publico') $v = preg_replace('/\D/', '', $v);
+        if ($v === '') continue; if (!preg_match($re, $v)) salir(['ok' => false, 'error' => $k], 400); $w[$k] = $v;
+    }
+    foreach (['wa_token' => 'token', 'app_secret' => 'app_secret'] as $in => $k) { $v = trim((string)($e[$in] ?? '')); if ($v !== '') { if (strlen($v) > 600) salir(['ok' => false, 'error' => $k], 400); $w[$k] = $v; } }
+    $w['activo'] = !empty($e['activo']) && !empty($w['token']) && !empty($w['phone_number_id']);
+    escribir('whatsapp.json', $w);
+    salir(['ok' => true, 'activo' => $w['activo']]);
 }
 if ($acao === 'smtp') {   // contraseña del buzón contato@avisosul.com (la escribe Deik; nunca se devuelve)
     $pw = (string)($e['pass'] ?? '');

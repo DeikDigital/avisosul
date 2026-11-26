@@ -66,6 +66,17 @@
       <h3 style="font-size:15px">Embudo de los últimos 14 días (dispositivos por día · AR / BR)</h3><div style="overflow-x:auto"><table id="tEmb"></table></div>
     </section>
     <section class="card">
+      <h2>WhatsApp (avisos Premium) <span class="est" id="eWa"></span></h2>
+      <p class="mut">Los datos salen de Meta → WhatsApp → Configuración de la API. El token y la clave secreta los pegás vos (se guardan en el servidor y no se vuelven a mostrar completos). En la configuración del webhook de Meta usá la URL <code>https://avisosul.com/api/whatsapp_webhook.php</code> y este token de verificación: <code id="waVt"></code></p>
+      <label for="waPid">Identificador del número de teléfono (phone number ID)</label><input id="waPid" inputmode="numeric">
+      <label for="waNum">Número de WhatsApp de Aviso Sul (con código de país, solo números)</label><input id="waNum" inputmode="numeric" placeholder="549351…">
+      <label for="waPl">Nombre de la plantilla aprobada</label><input id="waPl" placeholder="aviso_clima">
+      <label for="waTok">Token de acceso permanente <span id="waTokV" class="mut"></span></label><input id="waTok" type="password" autocomplete="off" placeholder="vacío = conservar el guardado">
+      <label for="waSec">Clave secreta de la app (app secret) <span id="waSecV" class="mut"></span></label><input id="waSec" type="password" autocomplete="off" placeholder="vacío = conservar la guardada">
+      <p><label><input type="checkbox" id="waAct" style="width:auto"> Encender el envío de avisos por WhatsApp</label></p>
+      <button id="gWa">Guardar WhatsApp</button> <p id="waSt" class="mut"></p>
+    </section>
+    <section class="card">
       <h2>Mails (código de verificación) <span class="est" id="eSm"></span></h2>
       <p class="mut">Para que el código no caiga en spam, sale por el buzón contato@avisosul.com. Escribí acá la contraseña de ese buzón (la de Hostinger → Correos). Se guarda en el servidor y no se vuelve a mostrar. El botón también te manda un mail de prueba.</p>
       <label for="smPw">Contraseña del buzón contato@avisosul.com</label><input id="smPw" type="password" autocomplete="off" placeholder="vacío = conservar la guardada">
@@ -132,6 +143,7 @@
     $('eHm').textContent=hOk?'configurado':'pendiente';$('eHm').className='est '+(hOk?'si':'no');
     $('eMp').textContent=mOk?'configurado':'pendiente';$('eMp').className='est '+(mOk?'si':'no');
     if(j.precios)pxPintar(j.precios,j.precios_hoy);
+    if(j.whatsapp){var w=j.whatsapp;$('eWa').textContent=w.activo?'encendido':'apagado';$('eWa').className='est '+(w.activo?'si':'no');$('waVt').textContent=w.verify_token;$('waPid').value=w.phone_number_id;$('waNum').value=w.numero_publico;$('waPl').value=w.plantilla;$('waTokV').textContent=w.token?'(guardado '+w.token+')':'';$('waSecV').textContent=w.app_secret?'(guardada '+w.app_secret+')':'';$('waAct').checked=w.activo}
     $('eSm').textContent=j.smtp?'buzón conectado':'pendiente';$('eSm').className='est '+(j.smtp?'si':'no');
     $('pxIdV').textContent=j.pixel?'(guardado '+j.pixel+')':'(sin cargar)';
     (function(E){var P=['visita','registro','premium_ver','pago_inicio','compra','push_ok'],N={visita:'Visitas',registro:'Registros',premium_ver:'Vieron Premium',pago_inicio:'Iniciaron pago',compra:'Compras',push_ok:'Activaron avisos'},d=Object.keys(E||{}).sort().reverse();
@@ -159,6 +171,9 @@
       $('gSt').innerHTML=j.ok?'<span class="ok">Guardado. La app ya muestra el botón de Google.</span>':'<span class="err">'+(j.error==='formato_google'?'Ese no parece un Client ID de Google (termina en .apps.googleusercontent.com).':'No se pudo guardar.')+'</span>';if(j.ok){$('gCid').value='';estado()}})};
   $('gPush').onclick=function(){$('pushSt').textContent='Enviando…';api('/api/push.php',{acao:'prueba',token:tok}).then(function(j){
     $('pushSt').innerHTML=j.ok?(j.dispositivos?'<span class="ok">Enviada a '+j.enviadas+' de '+j.dispositivos+' dispositivos tuyos ('+(j.tipos||[]).join(', ')+').</span>':'<span class="err">Todavía no hay ningún dispositivo tuyo suscripto: abrí la app con tu cuenta y aceptá las notificaciones.</span>'):'<span class="err">No se pudo enviar.</span>'})};
+  $('gWa').onclick=function(){$('waSt').textContent='Guardando…';api('/api/admin.php',{acao:'whatsapp',token:tok,phone_number_id:$('waPid').value,numero_publico:$('waNum').value,plantilla:$('waPl').value,wa_token:$('waTok').value,app_secret:$('waSec').value,activo:$('waAct').checked}).then(function(j){$('waTok').value='';$('waSec').value='';
+    var e={phone_number_id:'Revisá el identificador del número.',numero_publico:'Revisá el número (solo dígitos, con código de país).',plantilla:'El nombre de la plantilla va en minúsculas, sin espacios.'};
+    $('waSt').innerHTML=j.ok?'<span class="ok">Guardado'+(j.activo?': envío encendido.':'. El envío queda apagado hasta tener token, número y la casilla marcada.')+'</span>':'<span class="err">'+(e[j.error]||'No se pudo guardar.')+'</span>';estado()})};
   $('gSm').onclick=function(){$('smSt').textContent='Enviando…';api('/api/admin.php',{acao:'smtp',token:tok,pass:$('smPw').value}).then(function(j){$('smPw').value='';$('smSt').innerHTML=j.ok?'<span class="ok">Mail de prueba enviado a tu email. Fijate que llegue a la bandeja de entrada.</span>':'<span class="err">No se pudo enviar. Revisá la contraseña.</span>';estado()})};
   $('gPix').onclick=function(){$('pixSt').textContent='Guardando…';api('/api/admin.php',{acao:'pixel',token:tok,pixel:$('pxId').value.trim()}).then(function(j){$('pixSt').innerHTML=j.ok?'<span class="ok">Guardado. La web y la app ya cargan el Píxel.</span>':'<span class="err">'+(j.error==='formato_pixel'?'El ID del Píxel son solo números (15 o 16 dígitos).':'No se pudo guardar.')+'</span>';if(j.ok){$('pxId').value='';estado()}})};
   /* ---- precios ---- */

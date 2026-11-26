@@ -12,16 +12,31 @@ function config_wa() {
     $c = file_exists($f) ? json_decode(file_get_contents($f), true) : null;
     return is_array($c) ? $c : [];
 }
-function tel_ok($t) {
-    $t = preg_replace('/\D+/', '', (string)$t);
+function tel_ok($t, $pais = '') {
+    $t = ltrim(preg_replace('/\D+/', '', (string)$t), '0');
+    if ($pais === 'ar' || (strpos($t, '54') === 0 && strlen($t) >= 12)) {   // Argentina: formato de WhatsApp 54 9 + área + número
+        if (strpos($t, '54') === 0) $t = substr($t, 2);
+        $t = ltrim($t, '0'); if (strpos($t, '9') === 0 && strlen($t) === 11) $t = substr($t, 1);
+        if (preg_match('/^(\d{2,4})15(\d{6,8})$/', $t, $m) && strlen($m[1] . $m[2]) === 10) $t = $m[1] . $m[2];   // quita el 15 del celular
+        return strlen($t) === 10 ? '549' . $t : null;
+    }
     if (strlen($t) === 10 || strlen($t) === 11) $t = '55' . $t;          // numero brasileno sin el 55
     return (strlen($t) >= 12 && strlen($t) <= 15) ? $t : null;
+}
+/* Solo Premium: cada mensaje de WhatsApp tiene costo. La cuenta tiene que estar verificada y con Premium vigente. */
+function email_premium($tok) {
+    $h = hash('sha256', (string)$tok); $em = null;
+    $f = dir_privado() . '/cuentas.json'; $d = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : [];
+    foreach ($d as $k => $c) if (isset($c['ses'][$h])) { $em = $k; break; }
+    if (!$em) return null;
+    $p = json_decode(@file_get_contents(dir_privado() . '/premium.json') ?: '{}', true) ?: [];
+    return (int)($p[$em]['hasta'] ?? 0) > time() ? $em : null;
 }
 $cfg = config_wa();
 $numero = $cfg['numero_publico'] ?? null;                               // numero de Aviso Sul, solo digitos
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $tel = tel_ok($_GET['tel'] ?? ''); $cod = (string)($_GET['codigo'] ?? '');
+    $tel = tel_ok($_GET['tel'] ?? '', $_GET['pais'] ?? ''); $cod = (string)($_GET['codigo'] ?? '');
     if (!$tel) salir(['ok' => false, 'error' => 'tel']);
     $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $cod) {
         $x = $d[$tel] ?? null;
@@ -31,21 +46,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 $e = entrada(); $acao = $e['acao'] ?? '';
-$tel = tel_ok($e['tel'] ?? '');
+$tel = tel_ok($e['tel'] ?? '', $e['pais'] ?? '');
 if (!$tel) salir(['ok' => false, 'error' => 'tel'], 400);
 
 if ($acao === 'inscrever') {
+    $email = email_premium($e['token'] ?? ''); if (!$email) salir(['ok' => false, 'error' => 'premium'], 403);
     $lat = round((float)($e['lat'] ?? 0), 2); $lon = round((float)($e['lon'] ?? 0), 2);
-    if ($lat < -35 || $lat > 6 || $lon < -75 || $lon > -30) salir(['ok' => false, 'error' => 'local'], 400);
+    if ($lat < -56 || $lat > 6 || $lon < -75 || $lon > -30) salir(['ok' => false, 'error' => 'local'], 400);
     $cidade = preg_replace('/[^a-z]/', '', (string)($e['cidade'] ?? ''));
     $lang = ($e['lang'] ?? 'pt') === 'es' ? 'es' : 'pt';
     $vis = visitante();
-    $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $lat, $lon, $cidade, $lang, $vis) {
+    $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $lat, $lon, $cidade, $lang, $vis, $email) {
         $n = 0; foreach ($d as $x) if (($x['vis'] ?? '') === $vis && time() - ($x['criado'] ?? 0) < 86400) $n++;
         if ($n >= 3 && !isset($d[$tel])) return [$d, ['ok' => false, 'error' => 'limite']];
         $cod = isset($d[$tel]) ? $d[$tel]['codigo'] : (string)random_int(1000, 9999);
         $d[$tel] = ['codigo' => $cod, 'estado' => ($d[$tel]['estado'] ?? 'pendente'), 'lat' => $lat, 'lon' => $lon,
-                    'cidade' => $cidade, 'lang' => $lang, 'criado' => $d[$tel]['criado'] ?? time(), 'vis' => $vis,
+                    'cidade' => $cidade, 'lang' => $lang, 'criado' => $d[$tel]['criado'] ?? time(), 'vis' => $vis, 'email' => $email,
                     'enviados' => $d[$tel]['enviados'] ?? []];
         return [$d, ['ok' => true, 'codigo' => $cod, 'estado' => $d[$tel]['estado']]];
     });

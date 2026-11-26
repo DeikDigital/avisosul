@@ -107,16 +107,37 @@ def main():
         fcntl.flock(h, fcntl.LOCK_EX)
         txt = h.read()
         ins = json.loads(txt) if txt.strip() else {}
+        prem = {}
+        try:
+            prem = json.load(open(os.path.join(PRIV, "premium.json")))
+        except Exception:
+            pass
+        ahora_ts = time.time()
+        ciudad_av = {}                                                    # avisos por ciudad (SMN y los que no traen contorno)
+        def de_ciudad(slug):
+            if slug not in ciudad_av:
+                try:
+                    d = json.load(open(os.path.join("datos", slug + ".json"), encoding="utf-8"))
+                except Exception:
+                    d = {}
+                ciudad_av[slug] = [dict(a, id="c:" + slug + ":" + (a.get("url") or "") + ":" + (a.get("desde") or ""))
+                                   for a in d.get("avisos", []) if a.get("hasta") and datetime.fromisoformat(a["hasta"]).timestamp() > ahora_ts]
+            return ciudad_av[slug]
         vigentes = {a["id"] for a in avisos}
         for tel, x in ins.items():
             if x.get("estado") != "ativo":
                 continue
-            x["enviados"] = [i for i in x.get("enviados", []) if i in vigentes]   # olvida los avisos que ya vencieron
+            if int((prem.get(x.get("email") or "") or {}).get("hasta", 0)) < ahora_ts:   # solo Premium vigente (cada mensaje cuesta)
+                continue
+            propios = de_ciudad(x.get("cidade") or "") if tel.startswith("54") else []   # Argentina: avisos SMN de su ciudad
+            x["enviados"] = [i for i in x.get("enviados", []) if i in vigentes or i in {p["id"] for p in propios}]   # olvida los vencidos
             puntos = [(x["lat"], x["lon"], x.get("cidade") or "")] + [(p["lat"], p["lon"], p.get("nome", "")) for p in (x.get("extras") or {}).values()]
-            for a in avisos:
+            for a in avisos + propios:
                 if a["id"] in x["enviados"] or enviados >= MAX_POR_CORRIDA:
                     continue
-                if not any(toca(la, lo, a) for la, lo, _ in puntos):
+                if a.get("poligonos") and not any(toca(la, lo, a) for la, lo, _ in puntos):
+                    continue
+                if not a.get("poligonos") and a not in propios:
                     continue
                 if not pasa(a, x.get("prefs")):
                     continue
