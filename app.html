@@ -632,7 +632,7 @@
   .ryB.n3,.punto,.pulse{animation:none!important}
 html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #pmoGo,html[data-twa] #pmoVf,html[data-twa] #pmoCod{display:none!important}html:not([data-twa]) .pmtwa{display:none}.pmtwa{margin:12px 0 4px;font-size:.95rem;opacity:.9;text-align:center}
 @media (max-width:380px){.top .brand{font-size:15px!important;gap:5px!important}.top .brand img{width:28px;height:28px}.brand .pl .crw{width:15px;height:15px}.brand .pl{margin-left:0}}
-</style>
+.vzdn{margin:6px 0 0;text-align:right}.vzdn button{background:none;border:0;color:inherit;opacity:.6;font-size:.78rem;text-decoration:underline;padding:4px;cursor:pointer}</style>
 <script src="/assets/medir.js?v=1" defer></script>
 </head>
 <body>
@@ -1463,7 +1463,9 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
       d.innerHTML='<div class="vzr1"><i class="vzi"><svg aria-hidden="true"><use href="#i-'+VZI[x.tipo]+'"/></svg></i><div class="vzt2"><b>'+esc(tit)+'</b><span>'+esc(sub)+'</span>'+
         (vzVal(x)?'<em>✓ '+L2('Validado','Validado')+' · '+x.coinc+L2(' reportes en 5 min',' relatos em 5 min')+'</em>':'<em class="p nv">'+L2('Sin validar','Não validado')+((x.coinc||1)>1?' · '+x.coinc+L2(' reportes coinciden',' relatos coincidem'):'')+(x.conf?' · '+x.conf+L2(' lo vieron',' viram'):'')+'</em>')+'</div>'+
         (x.meu?'':'<button type="button" data-c="'+esc(x.id)+'">'+L2('Yo también lo vi','Eu também vi')+'</button>')+'</div>'+
-        (x.texto?'<p class="vztx">'+esc(x.texto)+'</p>':'')+med;box.appendChild(d)});
+        (x.texto?'<p class="vztx">'+esc(x.texto)+'</p>':'')+med+(x.meu?'':'<p class="vzdn"><button type="button" data-dn="'+esc(x.id)+'">'+L2('Denunciar contenido inapropiado','Denunciar conteúdo impróprio')+'</button></p>');box.appendChild(d)});
+    box.querySelectorAll('[data-dn]').forEach(function(b){b.addEventListener('click',function(){var p=b.parentNode;b.disabled=true;
+      fetch('/api/reportes.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'denunciar',id:b.getAttribute('data-dn')})}).then(function(r){return r.json()}).then(function(){p.textContent=L2('Gracias. Lo revisamos y ya no lo vas a ver.','Obrigado. Vamos revisar e você não verá mais este relato.');setTimeout(vzCargar,1500)}).catch(function(){b.disabled=false})})});
     box.querySelectorAll('[data-c]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
       fetch('/api/reportes.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'confirmar',id:b.getAttribute('data-c')})}).then(function(r){return r.json()}).then(function(){vzCargar()}).catch(function(){b.disabled=false})})})}
   var VZPOS=null;

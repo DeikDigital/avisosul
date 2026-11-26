@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $res = con_archivo('vecinos.json', function ($d) use ($lat, $lon, $r, $yo) {
         $d = limpiar($d); $out = [];
         foreach ($d['rep'] as $x) {
+            if (count($x['dn'] ?? []) >= 3 || in_array($yo, $x['dn'] ?? [])) continue;   // denunciado: se oculta
             $k = km($lat, $lon, $x['lat'], $x['lon']);
             if ($k > $r) continue;
             $out[] = ['id' => $x['id'], 'tipo' => $x['tipo'], 'tam' => $x['tam'] ?? null, 'texto' => $x['tx'] ?? '', 'km' => round($k, 1),
@@ -89,6 +90,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             return [$d, ['ok' => true, 'id' => $id]];
         });
         salir($res, $res['ok'] ? 200 : 429);
+    }
+    if (($in['acao'] ?? '') === 'denunciar') {   // denuncia de contenido inapropiado: se oculta para quien denuncia; con 3 denuncias se oculta para todos
+        $id = preg_replace('/[^a-f0-9]/', '', (string)($in['id'] ?? ''));
+        $mot = mb_substr(strip_tags((string)($in['motivo'] ?? '')), 0, 200);
+        $res = con_archivo('vecinos.json', function ($d) use ($id, $yo) {
+            foreach ($d['rep'] as &$x) {
+                if ($x['id'] !== $id) continue;
+                if (!in_array($yo, $x['dn'] ?? [])) $x['dn'][] = $yo;
+                return [$d, ['ok' => true, 'n' => count($x['dn']), 'tx' => $x['tx'] ?? '', 'm' => $x['m'] ?? null]];
+            }
+            return [$d, ['ok' => false, 'error' => 'no']];
+        });
+        if ($res['ok']) @enviar_mail('contato@avisosul.com', 'Denuncia de reporte de vecinos (' . $res['n'] . ')', "Reporte $id\nDenuncias: {$res['n']} (con 3 se oculta para todos)\nTexto: {$res['tx']}\nArchivo: " . ($res['m'] ? 'https://avisosul.com/api/media.php?id=' . $id : 'no') . "\nMotivo: $mot");
+        salir(['ok' => $res['ok']]);
     }
     if (($in['acao'] ?? '') === 'confirmar') {
         $id = preg_replace('/[^a-f0-9]/', '', (string)($in['id'] ?? ''));
