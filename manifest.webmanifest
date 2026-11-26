@@ -1,4 +1,5 @@
 {
+  "id": "/app/",
   "name": "Aviso Sul — avisos de tempo severo",
   "short_name": "Aviso Sul",
   "description": "Avisos oficiais do INMET para o Sul do Brasil: granizo, chuva forte, vendaval e tempestade elétrica. Serviço independente e não oficial.",
@@ -25,5 +26,11 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "categories": [
+    "weather",
+    "utilities",
+    "news"
+  ],
+  "orientation": "portrait"
 }

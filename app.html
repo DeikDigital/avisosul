@@ -630,6 +630,7 @@
   /* ---------- sin resplandores: nada de sombras de color, brillos ni pulsos ---------- */
   *,*::before,*::after{box-shadow:none!important;text-shadow:none!important}
   .ryB.n3,.punto,.pulse{animation:none!important}
+html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #pmoGo,html[data-twa] #pmoVf,html[data-twa] #pmoCod{display:none!important}html:not([data-twa]) .pmtwa{display:none}.pmtwa{margin:12px 0 4px;font-size:.95rem;opacity:.9;text-align:center}
 </style>
 <script src="/assets/medir.js?v=1" defer></script>
 </head>
@@ -1130,6 +1131,7 @@
       <button type="button" role="radio" aria-checked="false" data-p="anual"><b><span class="pt">Anual</span><span class="es">Anual</span></b><span><em class="prb"><s class="preg">R$ 299,90</s><span class="p50">-70%</span>R$ 89,90</em><em class="pra"><s class="preg">$ 59.980</s><span class="p50">-50%</span>$ 29.990</em><small><span class="pt">/ano</span><span class="es">/año</span></small></span></button>
     </div>
     <p class="pmpg"><span class="prb"><span class="pt"><b class="promo">🔥 Oferta de lançamento: 70% de desconto até 25/12.</b> Pagamento seguro pela Hotmart: Pix, cartão ou boleto. Garantia de 7 dias. Use o mesmo e-mail da sua conta.</span><span class="es"><b class="promo">🔥 Oferta de lanzamiento: 70 % de descuento hasta el 25/12.</b> Pago seguro por Hotmart: Pix, tarjeta o boleto. 7 días de garantía. Usá el mismo email de tu cuenta.</span></span><span class="pra"><b class="promo">🔥 Oferta de lanzamiento: 50 % de descuento hasta el 25/12.</b> Pagás con Mercado Pago: dinero en cuenta, débito o tarjeta, en pesos. Cada plan es un pago único por el período: no se renueva solo.</span></p>
+    <p class="pmtwa"><span class="pt">Se você já é Premium, entre com a sua conta e tudo fica ativo aqui.</span><span class="es">Si ya sos Premium, entrá con tu cuenta y todo queda activo acá.</span></p>
     <button type="button" class="btn btn-wa" id="pmoGo"><span class="pt">Quero este plano</span><span class="es">Quiero este plan</span></button>
     <p class="pmvf" id="pmoVf" hidden><button type="button" class="lnk" id="pmoYa"><span class="pt">Já paguei: verificar meu Premium</span><span class="es">Ya pagué: verificar mi Premium</span></button></p>
     <p class="pmst" id="pmoSt"></p>
@@ -1194,6 +1196,8 @@
   root.className+=' js';
   function LS(k,v){try{if(v===undefined)return localStorage.getItem('avisosul-'+k);localStorage.setItem('avisosul-'+k,v)}catch(e){return null}}
   function safe(fn){try{fn()}catch(e){if(window.console)console.warn('avisosul',e)}}
+  /* App de Android (Play Store, TWA): Google Play no permite vender Premium con pagos externos dentro de la app -> se ocultan compra y códigos. sessionStorage: Chrome y la TWA comparten localStorage. */
+  var TWA=(function(){try{if((document.referrer||'').indexOf('android-app://com.avisosul.app')===0||/[?&]src=twa(&|$)/.test(location.search))sessionStorage.setItem('avisosul-twa','1');return sessionStorage.getItem('avisosul-twa')==='1'}catch(e){return false}})();if(TWA)root.setAttribute('data-twa','');
 
   /* ---- idioma ---- */
   function langAuto(){var ls=(navigator.languages||[navigator.language||'']).map(function(x){return String(x).toLowerCase()});
@@ -1921,7 +1925,7 @@
     document.getElementById('ctaT').innerHTML='<span class="pt">Confirme seu e-mail</span><span class="es">Confirmá tu email</span>';
     document.getElementById('ctaB1').innerHTML='<span class="pt">Receber código</span><span class="es">Recibir código</span>';
     document.getElementById('ctaSt').textContent=L2('Para pagar y activar Premium te mandamos un código de 6 números (o entrá con Google). Si no lo ves en 1 minuto, revisá la carpeta de spam o correo no deseado.','Para pagar e ativar o Premium enviamos um código de 6 números (ou entre com o Google). Se não aparecer em 1 minuto, confira a pasta de spam ou lixo eletrônico.');o.hidden=false}
-  function irPago(plan){var ar=PAGOP==='ar',u=!ar&&window.__HM&&window.__HM[plan];if(!ar&&!u)return;if(ar&&!window.__MP)return;
+  function irPago(plan){if(TWA)return;var ar=PAGOP==='ar',u=!ar&&window.__HM&&window.__HM[plan];if(!ar&&!u)return;if(ar&&!window.__MP)return;
     if(!LS('cuenta')){LS('pagoPend',plan);var c=document.getElementById('cta');if(c){c.hidden=false;toast(L2('Primero creá tu cuenta: el pago se activa con ese mismo email.','Primeiro crie sua conta: o pagamento é ativado com esse mesmo e-mail.'),false,7000)}return}
     if(LS('cuentaNv')==='1'){ctaVerificar(plan);return}
     LS('pagoPlan',plan);window.medir&&window.medir('pago_inicio','InitiateCheckout',(function(){var x=window.__PREC&&window.__PREC[PAGOP]&&window.__PREC[PAGOP][plan];return x?{value:x.precio,currency:PAGOP==='ar'?'ARS':'BRL',content_name:plan}:{content_name:plan}})());
