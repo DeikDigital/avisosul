@@ -77,6 +77,15 @@
       <button id="gWa">Guardar WhatsApp</button> <p id="waSt" class="mut"></p>
     </section>
     <section class="card">
+      <h2>Regalar Premium</h2>
+      <p class="mut">Para testers y socios. Si el email ya tiene Premium, se suman los días. Con 0 días se quita un regalo. La persona entra en la app con ese email (código por mail o Google) y lo ve activo.</p>
+      <label for="rgEm">Email</label><input id="rgEm" type="email" placeholder="nombre@gmail.com">
+      <label for="rgDias">Días</label><input id="rgDias" type="number" value="365" min="0" max="3650">
+      <label for="rgNota">Nota (opcional)</label><input id="rgNota" placeholder="tester alfa">
+      <button id="gRg">Regalar Premium</button> <p id="rgSt" class="mut"></p>
+      <div id="rgLista" class="mut"></div>
+    </section>
+    <section class="card">
       <h2>Cuenta para la revisión de Google Play</h2>
       <p class="mut">Crea una cuenta Premium de prueba (revisao@avisosul.com) con un código fijo, para cargarla en Play Console → Datos de inicio de sesión. Si la volvés a generar, el código cambia.</p>
       <button id="gRev">Generar cuenta de revisión</button> <p id="revSt" class="mut"></p>
@@ -143,7 +152,7 @@
   function login(){$('login').hidden=false;$('panel').hidden=true}
   function estado(){api('/api/admin.php',{acao:'estado',token:tok}).then(function(j){
     if(!j.ok){if(j.error==='no_admin'){$('lSt').textContent='Tu sesión no es de administrador. Entrá con el email de administrador.'}login();return}
-    $('login').hidden=true;$('panel').hidden=false;$('quien').textContent=j.admin;
+    $('login').hidden=true;$('panel').hidden=false;$('quien').textContent=j.admin;rgLista();
     var h=j.hotmart,m=j.mp,hOk=!!(h.hottok&&h.checkout&&Object.keys(h.checkout).length),mOk=!!m.access_token;
     $('eHm').textContent=hOk?'configurado':'pendiente';$('eHm').className='est '+(hOk?'si':'no');
     $('eMp').textContent=mOk?'configurado':'pendiente';$('eMp').className='est '+(mOk?'si':'no');
@@ -179,6 +188,8 @@
   $('gWa').onclick=function(){$('waSt').textContent='Guardando…';api('/api/admin.php',{acao:'whatsapp',token:tok,phone_number_id:$('waPid').value,numero_publico:$('waNum').value,plantilla:$('waPl').value,wa_token:$('waTok').value,app_secret:$('waSec').value,activo:$('waAct').checked}).then(function(j){$('waTok').value='';$('waSec').value='';
     var e={phone_number_id:'Revisá el identificador del número.',numero_publico:'Revisá el número (solo dígitos, con código de país).',plantilla:'El nombre de la plantilla va en minúsculas, sin espacios.'};
     $('waSt').innerHTML=j.ok?'<span class="ok">Guardado'+(j.activo?': envío encendido.':'. El envío queda apagado hasta tener token, número y la casilla marcada.')+'</span>':'<span class="err">'+(e[j.error]||'No se pudo guardar.')+'</span>';estado()})};
+  function rgLista(){api('/api/admin.php',{acao:'regalos',token:tok}).then(function(j){if(!j.ok)return;$('rgLista').innerHTML=j.lista.length?'<table>'+j.lista.map(function(x){return '<tr><td>'+x.email+'</td><td>hasta '+new Date(x.hasta*1000).toLocaleDateString('es-AR')+'</td><td>'+(x.nota||'')+'</td></tr>'}).join('')+'</table>':'Sin regalos todavía.'})}
+  $('gRg').onclick=function(){$('rgSt').textContent='Guardando…';api('/api/admin.php',{acao:'regalar',token:tok,email:$('rgEm').value.trim(),dias:+$('rgDias').value,nota:$('rgNota').value.trim()}).then(function(j){$('rgSt').innerHTML=j.ok?'<span class="ok">Listo: '+j.email+(j.hasta?' tiene Premium hasta el '+new Date(j.hasta*1000).toLocaleDateString('es-AR'):' sin regalo')+'.</span>':'<span class="err">Revisá el email y los días.</span>';if(j.ok){$('rgEm').value='';rgLista()}})};
   $('gRev').onclick=function(){$('revSt').textContent='Generando…';api('/api/admin.php',{acao:'revisor',token:tok}).then(function(j){$('revSt').innerHTML=j.ok?'<span class="ok">Usuario: <code>'+j.email+'</code> · Código: <code>'+j.codigo+'</code></span><br>Instrucciones para Google: "Toque em Entrar, escreva o e-mail e toque em Receber código. Use o código fixo acima (não chega e-mail). A conta já é Premium."':'<span class="err">No se pudo generar.</span>'})};
   $('gSm').onclick=function(){$('smSt').textContent='Enviando…';api('/api/admin.php',{acao:'smtp',token:tok,pass:$('smPw').value}).then(function(j){$('smPw').value='';$('smSt').innerHTML=j.ok?'<span class="ok">Mail de prueba enviado a tu email. Fijate que llegue a la bandeja de entrada.</span>':'<span class="err">No se pudo enviar. Revisá la contraseña.</span>';estado()})};
   $('gPix').onclick=function(){$('pixSt').textContent='Guardando…';api('/api/admin.php',{acao:'pixel',token:tok,pixel:$('pxId').value.trim()}).then(function(j){$('pixSt').innerHTML=j.ok?'<span class="ok">Guardado. La web y la app ya cargan el Píxel.</span>':'<span class="err">'+(j.error==='formato_pixel'?'El ID del Píxel son solo números (15 o 16 dígitos).':'No se pudo guardar.')+'</span>';if(j.ok){$('pxId').value='';estado()}})};

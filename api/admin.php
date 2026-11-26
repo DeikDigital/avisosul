@@ -143,6 +143,19 @@ if ($acao === 'pixel') {
     $m = leer('meta.json'); $m['pixel'] = $px ?: null; escribir('meta.json', $m);
     salir(['ok' => true]);
 }
+if ($acao === 'regalar') {   // Premium de regalo (testers, socios): email + días; 0 días = quitar
+    $em = strtolower(trim((string)($e['email'] ?? ''))); $dias = (int)($e['dias'] ?? 365);
+    if (!filter_var($em, FILTER_VALIDATE_EMAIL) || $dias < 0 || $dias > 3650) salir(['ok' => false, 'error' => 'datos'], 400);
+    $p = leer('premium.json');
+    if ($dias === 0) { if (($p[$em]['estado'] ?? '') === 'regalo') unset($p[$em]); }
+    else { $base = max(time(), (int)($p[$em]['hasta'] ?? 0)); $p[$em] = ['hasta' => $base + $dias * 86400, 'plan' => $p[$em]['plan'] ?? 'anual', 'estado' => $p[$em]['estado'] ?? 'regalo', 'regalo' => trim(mb_substr((string)($e['nota'] ?? ''), 0, 80))]; }
+    escribir('premium.json', $p);
+    salir(['ok' => true, 'email' => $em, 'hasta' => $p[$em]['hasta'] ?? null]);
+}
+if ($acao === 'regalos') {
+    $o = []; foreach (leer('premium.json') as $em => $x) if (($x['estado'] ?? '') === 'regalo' || ($x['estado'] ?? '') === 'revision') $o[] = ['email' => $em, 'hasta' => $x['hasta'] ?? 0, 'nota' => $x['regalo'] ?? ($x['estado'] ?? '')];
+    salir(['ok' => true, 'lista' => $o]);
+}
 if ($acao === 'revisor') {   // cuenta para que Google revise la app: email fijo, código fijo de 6 dígitos y Premium por 1 año
     $r = ['email' => 'revisao@avisosul.com', 'codigo' => (string)random_int(100000, 999999), 'creado' => time()];
     escribir('revisor.json', $r);
