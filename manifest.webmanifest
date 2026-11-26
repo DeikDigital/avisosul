@@ -32,5 +32,28 @@
     "utilities",
     "news"
   ],
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "screenshots": [
+    {
+      "src": "/assets/capturas/home.webp",
+      "sizes": "1080x2160",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Risco de granizo agora na sua cidade"
+    },
+    {
+      "src": "/assets/capturas/nowlist.webp",
+      "sizes": "1080x2160",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Avisos oficiais do INMET em vigor"
+    },
+    {
+      "src": "/assets/capturas/familia.webp",
+      "sizes": "1080x2160",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Avise a família com foto ou vídeo"
+    }
+  ]
 }
