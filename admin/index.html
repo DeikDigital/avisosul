@@ -74,7 +74,7 @@
       <label for="maHa">Se apaga todo el día</label><input id="maHa" type="date">
       <label for="maRa">Radio alrededor de cada ciudad (km)</label><input id="maRa" inputmode="numeric">
       <p><label><input type="checkbox" id="maPr" style="width:auto"> Modo prueba (no toca Meta: solo anota qué haría)</label></p>
-      <button id="gMa">Guardar</button> <p id="maSt" class="mut"></p>
+      <button id="gMa">Guardar</button> <button id="pMa" type="button">Probar conexión con Meta</button> <p id="maSt" class="mut"></p>
       <h3 style="font-size:15px">Ahora mismo</h3><div id="maPlan" class="mut"></div>
       <h3 style="font-size:15px">Últimos movimientos</h3><table id="maLog"></table>
     </section>
@@ -209,6 +209,7 @@
     $('maTokV').textContent=j.token?'(guardado '+j.token+')':'(sin cargar)';$('maBr').value=j.adset_br||'';$('maAr').value=j.adset_ar||'';$('maHa').value=j.hasta||'';$('maRa').value=j.radio_km||40;$('maPr').checked=!!j.prueba;
     var P=j.plan||{};$('maPlan').innerHTML=['br','ar'].map(function(p){var x=P[p]||{};return '<p><b>'+(p==='br'?'Brasil':'Argentina')+':</b> '+(x.activo?'prendido en '+x.ciudades.map(function(c){return c.nombre+' ('+c.aviso+')'}).join(', '):'pausado')+' · '+(x.motivo||'')+'</p>'}).join('');
     $('maLog').innerHTML=(j.log||[]).slice().reverse().map(function(x){return '<tr><td>'+new Date(x.t).toLocaleString('es-AR')+'</td><td>'+x.m.replace(/</g,'&lt;')+'</td></tr>'}).join('')||'<tr><td class="mut">Sin movimientos todavía.</td></tr>'}
+  $('pMa').onclick=function(){$('maSt').textContent='Probando…';api('/api/admin.php',{acao:'metaads_probar',token:tok}).then(function(j){$('maSt').innerHTML=j.ok?'<span class="ok">Conectado como '+j.quien+(j.adset_br?' · Brasil: '+j.adset_br:'')+'</span>':'<span class="err">'+(j.error==='sin_token'?'Falta el token.':'Meta respondió: '+(j.detalle||'error'))+'</span>'})};
   function maCargar(){api('/api/admin.php',{acao:'metaads_ver',token:tok}).then(maPintar)}
   $('gMa').onclick=function(){$('maSt').textContent='Guardando…';api('/api/admin.php',{acao:'metaads',token:tok,token_meta:$('maTok').value.trim(),adset_br:$('maBr').value.trim(),adset_ar:$('maAr').value.trim(),hasta:$('maHa').value,radio_km:$('maRa').value,prueba:$('maPr').checked}).then(function(j){
     $('maSt').innerHTML=j.ok?'<span class="ok">Guardado.</span>':'<span class="err">'+(j.error==='meta'?'Meta rechazó el token: '+(j.detalle||''):'No se pudo guardar.')+'</span>';if(j.ok){$('maTok').value='';maPintar(j)}})};

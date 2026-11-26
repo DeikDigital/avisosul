@@ -143,6 +143,12 @@ if ($acao === 'pixel') {
     $m = leer('meta.json'); $m['pixel'] = $px ?: null; escribir('meta.json', $m);
     salir(['ok' => true]);
 }
+if ($acao === 'metaads_probar') {   // comprueba el token contra Meta sin cambiar nada
+    require_once __DIR__ . '/anuncios_auto.php'; $c = ma_cfg();
+    if (!$c['token']) salir(['ok' => false, 'error' => 'sin_token']);
+    try { $me = graph($c, 'GET', 'me', ['fields' => 'id,name']); $ok = ['ok' => true, 'quien' => $me['name'] ?? $me['id'] ?? '']; if ($c['paises']['br']['adset']) { $as = graph($c, 'GET', $c['paises']['br']['adset'], ['fields' => 'name,status,effective_status']); $ok['adset_br'] = ($as['name'] ?? '') . ' · ' . ($as['effective_status'] ?? $as['status'] ?? ''); } salir($ok); }
+    catch (Exception $x) { salir(['ok' => false, 'error' => 'meta', 'detalle' => $x->getMessage()]); }
+}
 if ($acao === 'metaads' || $acao === 'metaads_ver') {   // anuncios que se prenden con temporal (api/anuncios_auto.php)
     require_once __DIR__ . '/anuncios_auto.php';
     $c = ma_cfg();
@@ -150,7 +156,7 @@ if ($acao === 'metaads' || $acao === 'metaads_ver') {   // anuncios que se prend
         $tk = trim((string)($e['token_meta'] ?? '')); if ($tk !== '') { if (strlen($tk) > 600 || preg_match('/\s/', $tk)) salir(['ok' => false, 'error' => 'formato_token'], 400); $c['token'] = $tk; }
         foreach (['br', 'ar'] as $p) { $v = preg_replace('/\D/', '', (string)($e['adset_' . $p] ?? '')); if ($v !== '' || isset($e['adset_' . $p])) $c['paises'][$p]['adset'] = $v; }
         if (isset($e['hasta']) && preg_match('/^\d{4}-\d\d-\d\d$/', $e['hasta'])) $c['hasta'] = $e['hasta'];
-        if (isset($e['radio_km'])) $c['radio_km'] = max(10, min(80, (int)$e['radio_km']));
+        if ((int)($e['radio_km'] ?? 0) > 0) $c['radio_km'] = max(10, min(80, (int)$e['radio_km']));
         $c['prueba'] = !empty($e['prueba']);
         ma_guardar($c);
         if ($c['token'] && !$c['prueba']) { try { graph($c, 'GET', 'me', ['fields' => 'id,name']); } catch (Exception $x) { salir(['ok' => false, 'error' => 'meta', 'detalle' => $x->getMessage()]); } }
