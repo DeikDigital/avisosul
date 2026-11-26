@@ -52,5 +52,255 @@
   "lat": -31.4201,
   "lon": -64.1888,
   "smn": "CORDOBA:Capital"
+ },
+ {
+  "slug": "londrina",
+  "nombre": "Londrina",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -23.3045,
+  "lon": -51.1696,
+  "inmet": "Norte Central Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "pontagrossa",
+  "nombre": "Ponta Grossa",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -25.0945,
+  "lon": -50.1633,
+  "inmet": "Centro Oriental Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "guarapuava",
+  "nombre": "Guarapuava",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -25.3935,
+  "lon": -51.4562,
+  "inmet": "Centro-Sul Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "franciscobeltrao",
+  "nombre": "Francisco Beltrão",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -26.0783,
+  "lon": -53.055,
+  "inmet": "Sudoeste Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "umuarama",
+  "nombre": "Umuarama",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -23.7656,
+  "lon": -53.3201,
+  "inmet": "Noroeste Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "campomourao",
+  "nombre": "Campo Mourão",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -24.0463,
+  "lon": -52.378,
+  "inmet": "Centro Ocidental Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "jacarezinho",
+  "nombre": "Jacarezinho",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -23.1606,
+  "lon": -49.9694,
+  "inmet": "Norte Pioneiro Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "uniaodavitoria",
+  "nombre": "União da Vitória",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -26.2304,
+  "lon": -51.0873,
+  "inmet": "Sudeste Paranaense",
+  "uf": "pr"
+ },
+ {
+  "slug": "joinville",
+  "nombre": "Joinville",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -26.3045,
+  "lon": -48.8487,
+  "inmet": "Norte Catarinense",
+  "uf": "sc"
+ },
+ {
+  "slug": "blumenau",
+  "nombre": "Blumenau",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -26.9194,
+  "lon": -49.0661,
+  "inmet": "Vale do Itajaí",
+  "uf": "sc"
+ },
+ {
+  "slug": "lages",
+  "nombre": "Lages",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -27.8157,
+  "lon": -50.3264,
+  "inmet": "Serrana",
+  "uf": "sc"
+ },
+ {
+  "slug": "criciuma",
+  "nombre": "Criciúma",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -28.6775,
+  "lon": -49.3697,
+  "inmet": "Sul Catarinense",
+  "uf": "sc"
+ },
+ {
+  "slug": "passofundo",
+  "nombre": "Passo Fundo",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -28.262,
+  "lon": -52.4083,
+  "inmet": "Noroeste Rio-grandense",
+  "uf": "rs"
+ },
+ {
+  "slug": "caxiasdosul",
+  "nombre": "Caxias do Sul",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -29.1678,
+  "lon": -51.1794,
+  "inmet": "Nordeste Rio-grandense",
+  "uf": "rs"
+ },
+ {
+  "slug": "santamaria",
+  "nombre": "Santa Maria",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -29.6868,
+  "lon": -53.8149,
+  "inmet": "Centro Ocidental Rio-grandense",
+  "uf": "rs"
+ },
+ {
+  "slug": "santacruzdosul",
+  "nombre": "Santa Cruz do Sul",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -29.7175,
+  "lon": -52.4258,
+  "inmet": "Centro Oriental Rio-grandense",
+  "uf": "rs"
+ },
+ {
+  "slug": "uruguaiana",
+  "nombre": "Uruguaiana",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -29.7547,
+  "lon": -57.0883,
+  "inmet": "Sudoeste Rio-grandense",
+  "uf": "rs"
+ },
+ {
+  "slug": "pelotas",
+  "nombre": "Pelotas",
+  "pais": "br",
+  "lang": "pt",
+  "lat": -31.7654,
+  "lon": -52.3376,
+  "inmet": "Sudeste Rio-grandense",
+  "uf": "rs"
+ },
+ {
+  "slug": "carlospaz",
+  "nombre": "Villa Carlos Paz",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.4241,
+  "lon": -64.4978,
+  "smn": "CORDOBA:Punilla",
+  "sierras": true
+ },
+ {
+  "slug": "vgbelgrano",
+  "nombre": "Villa General Belgrano",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.9786,
+  "lon": -64.56,
+  "smn": "CORDOBA:Calamuchita",
+  "sierras": true
+ },
+ {
+  "slug": "altagracia",
+  "nombre": "Alta Gracia",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.6529,
+  "lon": -64.4283,
+  "smn": "CORDOBA:Santa María",
+  "sierras": true
+ },
+ {
+  "slug": "minaclavero",
+  "nombre": "Mina Clavero",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.7212,
+  "lon": -65.0062,
+  "smn": "CORDOBA:San Alberto",
+  "sierras": true
+ },
+ {
+  "slug": "jesusmaria",
+  "nombre": "Jesús María",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -30.9815,
+  "lon": -64.0943,
+  "smn": "CORDOBA:Colón",
+  "sierras": true
+ },
+ {
+  "slug": "riocuarto",
+  "nombre": "Río Cuarto",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -33.1232,
+  "lon": -64.3493,
+  "smn": "CORDOBA:Río Cuarto",
+  "sierras": false
+ },
+ {
+  "slug": "villamaria",
+  "nombre": "Villa María",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.4075,
+  "lon": -63.24,
+  "smn": "CORDOBA:General San Martín",
+  "sierras": false
  }
 ]

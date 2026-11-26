@@ -11,7 +11,7 @@ Por defecto NO publica nada: imprime los borradores. Con TELEGRAM_TOKEN y
 TELEGRAM_OWNER envia los borradores al chat privado del titular. Solo publica
 en el canal si ademas PUBLICAR=1 y TELEGRAM_CANAL estan definidos.
 """
-import argparse, datetime as dt, html, json, os, re, sys, urllib.parse, urllib.request
+import argparse, datetime as dt, html, json, os, re, sys, unicodedata, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 
 FEED = "https://apiprevmet3.inmet.gov.br/avisos/rss"
@@ -82,8 +82,14 @@ def parsear(xml_bytes):
     return avisos
 
 
+def _n(s):
+    """Nombre de region comparable: sin acentos, sin guiones ni mayusculas (el feed y la lista pueden variar)."""
+    s = unicodedata.normalize("NFD", s or "")
+    return re.sub(r"[\s-]+", " ", "".join(c for c in s if unicodedata.category(c) != "Mn")).strip().lower()
+
+
 def de_la_region(avisos):
-    return [a for a in avisos if any(x.lower() == REGION.lower() for x in a["areas"]) and a["inicio"] and a["fin"]]
+    return [a for a in avisos if any(_n(x) == _n(REGION) for x in a["areas"]) and a["inicio"] and a["fin"]]
 
 
 def _cuando(a, lang):
@@ -201,7 +207,7 @@ def textos(xml_bytes):
 def zonas(todos, ahora, regiones):
     """Escribe datos/zonas.json con el contorno de cada aviso vigente que toca alguna ciudad; la pagina lo pinta en el mapa."""
     # todos los avisos vigentes; despues quedan los que tocan una ciudad o caen en el sur (PR, SC, RS)
-    reg = {r.lower() for r in regiones}
+    reg = {_n(r) for r in regiones}
     vig = [a for a in todos if a["inicio"] and a["fin"] and a["inicio"] <= ahora < a["fin"]]
     sur = lambda ps: any(-34.5 <= y <= -22.0 and -58.5 <= x <= -47.5 for p in ps for y, x in p)
     os.makedirs("cap", exist_ok=True)
@@ -219,7 +225,7 @@ def zonas(todos, ahora, regiones):
                 print("zonas: sin contorno para", a["id"], type(e).__name__)
                 continue
         polys = info["poligonos"]
-        if polys and (any(x.lower() in reg for x in a["areas"]) or sur(polys)):
+        if polys and (any(_n(x) in reg for x in a["areas"]) or sur(polys)):
             out.append({"id": a["id"], "nivel": NIVEL_ES.get(a["severidad"], ""),
                         "titulo_pt": f"{a['evento']} — aviso {NIVEL.get(a['severidad'], ('',))[0] or a['severidad']}",
                         "titulo_es": f"{EVENTO_ES.get(a['evento'], a['evento'])} — aviso {NIVEL_ES.get(a['severidad'], a['severidad'])}",

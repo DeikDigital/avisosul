@@ -20,7 +20,12 @@ function ma_cfg() {
     return array_replace_recursive([
         'token' => '', 'api' => 'v23.0', 'prueba' => true, 'hasta' => '2026-12-14', 'radio_km' => 40, 'horas_antes' => 6,
         'paises' => ['br' => ['adset' => '', 'niveles' => ['naranja', 'rojo']],
-                     'ar' => ['adset' => '', 'niveles' => ['amarillo', 'naranja', 'rojo']]],
+                     'ar' => ['adset' => '', 'niveles' => ['', 'amarillo', 'naranja', 'rojo']]],   // '' = aviso a muy corto plazo del SMN (no trae color)
+        // Reportes de vecinos: 2 o más personas distintas a menos de 'km' en las últimas 'horas' prenden la ciudad;
+        // con reportes en los últimos 'dias_hubo' días (aunque hoy no haya) también entra, como zona caliente.
+        'vecinos' => ['ar' => ['activo' => true, 'km' => 30, 'horas' => 6, 'min' => 2, 'dias_hubo' => 3],
+                      'br' => ['activo' => false, 'km' => 30, 'horas' => 6, 'min' => 2, 'dias_hubo' => 0]],
+        'radio_sierras_km' => 45,
     ], $c);
 }
 function ma_guardar($c) { $f = dir_privado() . '/meta_ads.json'; file_put_contents($f, json_encode($c, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)); @chmod($f, 0600); }
@@ -29,6 +34,21 @@ function ma_log($linea) {
         $d[] = ['t' => date('c'), 'm' => $linea];
         return [array_slice($d, -200), true];
     });
+}
+
+/* Reportes de vecinos cerca de una ciudad: [recientes (personas distintas), hubo en los últimos días]. */
+function vecinos_cerca($c, $v) {
+    static $rep = null;
+    if ($rep === null) { $f = dir_privado() . '/vecinos.json'; $rep = file_exists($f) ? ((json_decode(file_get_contents($f), true) ?: [])['rep'] ?? []) : []; }
+    $quien = []; $hubo = false; $ahora = time();
+    foreach ($rep as $x) {
+        if (!isset($x['lat'], $x['lon'], $x['t'])) continue;
+        $km = 6371 * 2 * asin(sqrt(pow(sin(deg2rad($x['lat'] - $c['lat']) / 2), 2) + cos(deg2rad($c['lat'])) * cos(deg2rad($x['lat'])) * pow(sin(deg2rad($x['lon'] - $c['lon']) / 2), 2)));
+        if ($km > (float)$v['km']) continue;
+        if ($x['t'] >= $ahora - 3600 * (float)$v['horas']) { $quien[$x['v'] ?? $x['id'] ?? uniqid()] = 1; foreach (($x['c'] ?? []) as $k => $_) $quien[is_string($k) ? $k : (string)$_] = 1; }
+        if ((float)$v['dias_hubo'] > 0 && $x['t'] >= $ahora - 86400 * (float)$v['dias_hubo']) $hubo = true;
+    }
+    return [count($quien), $hubo];
 }
 
 /* Ciudades de cada país con un aviso que corresponde, con el motivo. */
@@ -47,9 +67,16 @@ function ciudades_con_temporal($cfg) {
             if ($h <= $ahora || $d > $antes) continue;                          // vencido o todavía lejos
             if (!in_array($x['nivel'] ?? '', $niv, true)) continue;
             if (!preg_match(EVENTOS, ($x['titulo_pt'] ?? '') . ' ' . ($x['titulo_es'] ?? ''))) continue;   // ni calor, ni helada, ni humedad
-            $out[$p][$c['slug']] = ['slug' => $c['slug'], 'nombre' => $c['nombre'], 'lat' => $c['lat'], 'lon' => $c['lon'],
+            $out[$p][$c['slug']] = ['slug' => $c['slug'], 'nombre' => $c['nombre'], 'lat' => $c['lat'], 'lon' => $c['lon'], 'sierras' => !empty($c['sierras']),
                                     'aviso' => $x['titulo_es'] ?? $x['titulo_pt'] ?? '', 'hasta' => $x['hasta'] ?? ''];
             break;
+        }
+        $v = $cfg['vecinos'][$p] ?? ['activo' => false];
+        if (!isset($out[$p][$c['slug']]) && !empty($v['activo'])) {
+            [$n, $hubo] = vecinos_cerca($c, $v);
+            if ($n >= (int)$v['min'] || $hubo)
+                $out[$p][$c['slug']] = ['slug' => $c['slug'], 'nombre' => $c['nombre'], 'lat' => $c['lat'], 'lon' => $c['lon'], 'sierras' => !empty($c['sierras']),
+                                        'aviso' => $n >= (int)$v['min'] ? "$n vecinos reportan temporal" : 'hubo reportes de vecinos estos días', 'hasta' => ''];
         }
     }
     return $out;
@@ -97,7 +124,7 @@ function aplicar($cfg) {
             if ($x['activo']) {
                 $t = graph($cfg, 'GET', $x['adset'], ['fields' => 'targeting'])['targeting'] ?? [];
                 $t['geo_locations'] = ['custom_locations' => array_map(fn($c) => ['latitude' => $c['lat'], 'longitude' => $c['lon'],
-                    'radius' => (int)$cfg['radio_km'], 'distance_unit' => 'kilometer'], $x['ciudades']), 'location_types' => ['home', 'recent']];
+                    'radius' => (int)(!empty($c['sierras']) ? $cfg['radio_sierras_km'] : $cfg['radio_km']), 'distance_unit' => 'kilometer'], $x['ciudades']), 'location_types' => ['home', 'recent']];
                 graph($cfg, 'POST', $x['adset'], ['targeting' => json_encode($t), 'status' => 'ACTIVE']);
             } else {
                 graph($cfg, 'POST', $x['adset'], ['status' => 'PAUSED']);

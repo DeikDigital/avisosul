@@ -85,6 +85,10 @@ def main():
     ahora = dt.datetime.now(LOCAL)
     os.makedirs("datos", exist_ok=True)
     for slug, (lat, lon) in CIUDADES.items():
+        f = os.path.join("datos", slug + "_tiempo.json")
+        # con 30 ciudades, cada una se actualiza cada ~30 min (no cada 10) para no pasar el limite diario de Open-Meteo
+        if not prueba and os.path.exists(f) and (dt.datetime.now().timestamp() - os.path.getmtime(f)) < 25 * 60:
+            continue
         try:
             doc = leer(prueba or API.format(lat=lat, lon=lon))
             if prueba:
