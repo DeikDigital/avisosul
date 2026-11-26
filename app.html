@@ -2079,6 +2079,9 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
     var a=document.querySelectorAll('[data-canal]');
     for(var i=0;i<a.length;i++){var u=C.canales[a[i].getAttribute('data-canal')];
       if(u){a[i].setAttribute('href',u);a[i].setAttribute('target','_blank');a[i].setAttribute('rel','noopener')}else if(a[i].getAttribute('data-canal')!=='espera')a[i].style.display='none'}
+    /* sin canales reales: ocultar filas de botones vacias, el texto 'solo hay que seguir el canal' y la seccion final */
+    document.querySelectorAll('.btns').forEach(function(r){if([].some.call(r.children,function(c){return c.style.display!=='none'}))return;r.style.display='none';var s=r.nextElementSibling;while(s&&s.classList.contains('free')){s.style.display='none';s=s.nextElementSibling}});
+    var cs=document.getElementById('canais');if(cs&&cs.querySelector('.btns').style.display==='none')cs.style.display='none';
   });
 
   /* ---- instalación en el celular (solo funciona con la página publicada en https) ---- */
