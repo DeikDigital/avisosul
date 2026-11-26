@@ -7,7 +7,7 @@ LOGO = '<img src="/assets/logo-nube-96.png?v=2" alt="" width="40" height="40">'
 SYM = "".join(re.findall(r'<symbol id="i-(?:riesgo|granizo|chuva|vendaval|raios)".*?</symbol>', app, re.S))
 PIE = open(os.path.join(R, "assets", "pie.src.html"), encoding="utf-8").read().replace("{{LOGO}}", LOGO)
 CAB = open(os.path.join(R, "assets", "cab.src.html"), encoding="utf-8").read().replace("{{LOGO}}", LOGO)
-for src, dst in [("landing", "index.html"), ("planos", "planos/index.html"), ("instalar", "instalar/index.html"), ("privacidade", "privacidade/index.html")]:
+for src, dst in [("landing", "index.html"), ("planos", "planos/index.html"), ("instalar", "instalar/index.html"), ("privacidade", "privacidade/index.html"), ("termos", "termos/index.html")]:
     t = open(os.path.join(R, "assets", src + ".src.html"), encoding="utf-8").read()
     t = t.replace("{{CAB}}", CAB).replace("{{PIE}}", PIE).replace("{{LOGO}}", LOGO).replace("{{SYM}}", SYM)
     os.makedirs(os.path.dirname(os.path.join(R, dst)) or R, exist_ok=True)
