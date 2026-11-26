@@ -1224,7 +1224,7 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
   /* Lista de ciudades: [id, nombre, pais, idioma por defecto, lat, lon]. Para sumar una, agregar una linea aca
      y la misma ciudad en ciudades.json (la leen los agentes). */
   var LISTA=[['foz','Foz do Iguaçu','br','pt',-25.5478,-54.5882],['chapeco','Chapecó','br','pt',-27.1004,-52.6152],['florianopolis','Florianópolis','br','pt',-27.5954,-48.548],['curitiba','Curitiba','br','pt',-25.4284,-49.2733],['portoalegre','Porto Alegre','br','pt',-30.0346,-51.2177],['cordoba','Córdoba','ar','es',-31.4201,-64.1888]];
-  var OCULTAS=LS('paisIP')==='ar'?{}:{cordoba:1};   /* no aparece en la lista; se abre con avisosul.com/cordoba/ para pruebas */
+  var OCULTAS={cordoba:1};/* se muestran solo a quien usa la app desde Argentina */   /* no aparece en la lista; se abre con avisosul.com/cordoba/ para pruebas */
   /* PENDIENTE: enlaces reales por ciudad. Con 'espera' vacio la seccion del plan pago no se muestra. */
   var CANALES={};
   var CANAL_GEN={whatsapp:'https://whatsapp.com/channel/',telegram:'https://t.me/avisosul',espera:''};
@@ -1284,9 +1284,9 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
     e=document.querySelectorAll('[data-k]');for(i=0;i<e.length;i++){var k=e[i].getAttribute('data-k');if(t[k])e[i].textContent=t[k]}
     e=document.getElementById('fontes');if(e){e.innerHTML=C.fontes.map(function(f){return'<li>'+esc(f)+'</li>'}).join('')}
     e=document.getElementById('tels');if(e){e.innerHTML=C.tels.map(function(x){return'<a href="tel:'+x[0]+'">'+x[0]+' <small>'+esc(l==='es'?x[2]:x[1])+'</small></a>'}).join('')}
-    e=document.getElementById('selCity');if(e&&!e.options.length){var oh='';for(var id2 in CIUDAD){if(OCULTAS[id2]&&id2!==cid)continue;oh+='<option value="'+id2+'"'+(id2===cid?' selected':'')+'>'+esc(CIUDAD[id2].nombre)+'</option>'}e.innerHTML=oh;
+    e=document.getElementById('selCity');if(e&&!e.options.length){var oh='';for(var id2 in CIUDAD){if(OCULTAS[id2]&&id2!==cid&&PAISM!=='ar')continue;oh+='<option value="'+id2+'"'+(id2===cid?' selected':'')+'>'+esc(CIUDAD[id2].nombre)+'</option>'}e.innerHTML=oh;
       e.addEventListener('change',function(){LS('c',this.value);LS('cM','1');location.href=WEB?'/'+this.value+'/':'?c='+this.value})}
-    e=document.getElementById('cities');if(e){var h='';for(var id in CIUDAD){if(OCULTAS[id]&&id!==cid)continue;h+='<a href="'+(WEB?'/'+id+'/':'?c='+id)+'"'+(id===cid?' aria-current="true"':'')+'>'+esc(CIUDAD[id].nombre)+'</a>'}e.innerHTML=h}
+    e=document.getElementById('cities');if(e){var h='';for(var id in CIUDAD){if(OCULTAS[id]&&id!==cid&&PAISM!=='ar')continue;h+='<a href="'+(WEB?'/'+id+'/':'?c='+id)+'"'+(id===cid?' aria-current="true"':'')+'>'+esc(CIUDAD[id].nombre)+'</a>'}e.innerHTML=h}
     document.title=MARCA+' — '+C.nombre;
     e=document.getElementById('bShare');if(e){e.href='https://wa.me/?text='+encodeURIComponent(t.ej+'\n\n'+(l==='es'?'Avisos gratis en tu WhatsApp: ':'Avisos grátis no seu WhatsApp: ')+'https://avisosul.com/'+cid+'/')}
     safe(pintarAhora);safe(pintarWx);
@@ -1405,7 +1405,7 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
   /* ---- ciudad e idioma segun desde donde se usa (ubicacion aproximada por IP, sin pedir permiso) ---- */
   safe(function(){if(!WEB||LS('geoip'))return;LS('geoip','1');
     var ok=function(lat,lon,pais){var pp=pais==='AR'||pais==='UY'||pais==='PY'?'ar':pais==='BR'?'br':null;if(pp){var antes=LS('paisIP');LS('paisIP',pp);if(!PAISUSO&&pp!==PAISM&&antes!==pp){LS('geoip','');location.reload();return}}if(!LS('langM')&&!/[?&]lang=/.test(location.search)&&(pais==='BR'||pais==='AR'||pais==='UY'||pais==='PY')){var l2=pais==='BR'?'pt':'es';if(root.getAttribute('data-lang')!==l2)setLang(l2)}
-      if(LS('cM')||!isFinite(lat))return;var best=null,bd=1e9;for(var id in CIUDAD){if(OCULTAS[id])continue;var g=CIUDAD[id].geo,d=Math.pow(g[0]-lat,2)+Math.pow((g[1]-lon)*Math.cos(lat*Math.PI/180),2);if(d<bd){bd=d;best=id}}
+      if(LS('cM')||!isFinite(lat))return;var best=null,bd=1e9;for(var id in CIUDAD){if(OCULTAS[id]&&pp!=='ar')continue;var g=CIUDAD[id].geo,d=Math.pow(g[0]-lat,2)+Math.pow((g[1]-lon)*Math.cos(lat*Math.PI/180),2);if(d<bd){bd=d;best=id}}
       if(best&&Math.sqrt(bd)*111<600&&best!==cid){LS('c',best);location.replace('/'+best+'/'+location.search+location.hash)}};
     fetch('https://get.geojs.io/v1/ip/geo.json').then(function(r){return r.json()}).then(function(j){ok(+j.latitude,+j.longitude,String(j.country_code||'').toUpperCase())})
       .catch(function(){fetch('https://ipapi.co/json/').then(function(r){return r.json()}).then(function(j){ok(+j.latitude,+j.longitude,String(j.country_code||'').toUpperCase())}).catch(function(){})})});
