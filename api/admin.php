@@ -143,6 +143,13 @@ if ($acao === 'pixel') {
     $m = leer('meta.json'); $m['pixel'] = $px ?: null; escribir('meta.json', $m);
     salir(['ok' => true]);
 }
+if ($acao === 'revisor') {   // cuenta para que Google revise la app: email fijo, código fijo de 6 dígitos y Premium por 1 año
+    $r = ['email' => 'revisao@avisosul.com', 'codigo' => (string)random_int(100000, 999999), 'creado' => time()];
+    escribir('revisor.json', $r);
+    $p = leer('premium.json'); $p[$r['email']] = ['hasta' => time() + 365 * 86400, 'plan' => 'anual', 'estado' => 'revision'];
+    escribir('premium.json', $p);
+    salir(['ok' => true, 'email' => $r['email'], 'codigo' => $r['codigo']]);
+}
 if ($acao === 'google') {
     $cid = trim((string)($e['client_id'] ?? ''));
     if (!preg_match('/^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$/', $cid)) salir(['ok' => false, 'error' => 'formato_google'], 400);

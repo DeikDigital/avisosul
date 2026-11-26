@@ -20,6 +20,7 @@ function premium_de($em) {
 function checkout_br() { $f = dir_privado() . '/hotmart.json'; $c = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : []; $o = []; foreach (($c['checkout'] ?? []) as $k => $u) if (preg_match('#^https://(pay|go)\.hotmart\.com/#', (string)$u)) $o[$k] = $u; return $o ?: null; }
 function hm_links($c) { if (!checkout_br()) return null; $p = precios_para($c); $o = []; foreach (PLANES_P as $k) if (!empty($p['br'][$k]['link'])) $o[$k] = $p['br'][$k]['link']; return $o ?: null; }
 function mp_ok() { $f = dir_privado() . '/mercadopago.json'; $c = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : []; return !empty($c['access_token']); }
+function revisor() { $f = dir_privado() . '/revisor.json'; $r = file_exists($f) ? json_decode(file_get_contents($f), true) : null; return (!empty($r['email']) && !empty($r['codigo'])) ? $r : null; }
 function email_ok($e) { $e = strtolower(trim((string)$e)); return filter_var($e, FILTER_VALIDATE_EMAIL) && strlen($e) <= 120 ? $e : null; }
 function nueva_sesion($email) {
     $tok = bin2hex(random_bytes(24));
@@ -56,6 +57,7 @@ $e = entrada(); $acao = $e['acao'] ?? '';
 
 if ($acao === 'codigo') {
     $em = email_ok($e['email'] ?? ''); if (!$em) salir(['ok' => false, 'error' => 'email'], 400);
+    $rv = revisor(); if ($rv && $em === $rv['email']) salir(['ok' => true]);   // cuenta de revisión de Google: código fijo, no se manda mail
     $vis = visitante(); $cod = (string)random_int(100000, 999999);
     $r = con_archivo('cuentas_codigos.json', function ($d) use ($em, $cod, $vis) {
         $d = array_filter($d, fn($x) => $x['t'] > time() - 3600);
@@ -85,6 +87,12 @@ if ($acao === 'email') {
 if ($acao === 'verificar') {
     $em = email_ok($e['email'] ?? ''); $cod = preg_replace('/\D/', '', (string)($e['codigo'] ?? ''));
     if (!$em || strlen($cod) !== 6) salir(['ok' => false, 'error' => 'datos'], 400);
+    $rv = revisor();
+    if ($rv && $em === $rv['email']) {
+        $vis = visitante();
+        $bloq = con_archivo('revisor_fallos.json', function ($d) use ($vis) { $d = array_filter($d, fn($t) => max((array)$t) > time() - 3600); return [$d, count((array)($d[$vis] ?? [])) >= 8]; });
+        if ($bloq) salir(['ok' => false, 'error' => 'limite'], 429);
+        if (!hash_equals((string)$rv['codigo'], $cod)) { con_archivo('revisor_fallos.json', function ($d) use ($vis) { $d[$vis][] = time(); return [$d, true]; }); salir(['ok' => false, 'error' => 'codigo']); } salir(['ok' => true, 'token' => nueva_sesion($em), 'email' => $em, 'premium' => premium_de($em)]); }
     $ok = con_archivo('cuentas_codigos.json', function ($d) use ($em, $cod) {
         $x = $d[$em] ?? null;
         if (!$x || $x['t'] < time() - 900 || $x['i'] >= 5) return [$d, false];

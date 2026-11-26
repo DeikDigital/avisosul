@@ -77,6 +77,11 @@
       <button id="gWa">Guardar WhatsApp</button> <p id="waSt" class="mut"></p>
     </section>
     <section class="card">
+      <h2>Cuenta para la revisión de Google Play</h2>
+      <p class="mut">Crea una cuenta Premium de prueba (revisao@avisosul.com) con un código fijo, para cargarla en Play Console → Datos de inicio de sesión. Si la volvés a generar, el código cambia.</p>
+      <button id="gRev">Generar cuenta de revisión</button> <p id="revSt" class="mut"></p>
+    </section>
+    <section class="card">
       <h2>Mails (código de verificación) <span class="est" id="eSm"></span></h2>
       <p class="mut">Para que el código no caiga en spam, sale por el buzón contato@avisosul.com. Escribí acá la contraseña de ese buzón (la de Hostinger → Correos). Se guarda en el servidor y no se vuelve a mostrar. El botón también te manda un mail de prueba.</p>
       <label for="smPw">Contraseña del buzón contato@avisosul.com</label><input id="smPw" type="password" autocomplete="off" placeholder="vacío = conservar la guardada">
@@ -174,6 +179,7 @@
   $('gWa').onclick=function(){$('waSt').textContent='Guardando…';api('/api/admin.php',{acao:'whatsapp',token:tok,phone_number_id:$('waPid').value,numero_publico:$('waNum').value,plantilla:$('waPl').value,wa_token:$('waTok').value,app_secret:$('waSec').value,activo:$('waAct').checked}).then(function(j){$('waTok').value='';$('waSec').value='';
     var e={phone_number_id:'Revisá el identificador del número.',numero_publico:'Revisá el número (solo dígitos, con código de país).',plantilla:'El nombre de la plantilla va en minúsculas, sin espacios.'};
     $('waSt').innerHTML=j.ok?'<span class="ok">Guardado'+(j.activo?': envío encendido.':'. El envío queda apagado hasta tener token, número y la casilla marcada.')+'</span>':'<span class="err">'+(e[j.error]||'No se pudo guardar.')+'</span>';estado()})};
+  $('gRev').onclick=function(){$('revSt').textContent='Generando…';api('/api/admin.php',{acao:'revisor',token:tok}).then(function(j){$('revSt').innerHTML=j.ok?'<span class="ok">Usuario: <code>'+j.email+'</code> · Código: <code>'+j.codigo+'</code></span><br>Instrucciones para Google: "Toque em Entrar, escreva o e-mail e toque em Receber código. Use o código fixo acima (não chega e-mail). A conta já é Premium."':'<span class="err">No se pudo generar.</span>'})};
   $('gSm').onclick=function(){$('smSt').textContent='Enviando…';api('/api/admin.php',{acao:'smtp',token:tok,pass:$('smPw').value}).then(function(j){$('smPw').value='';$('smSt').innerHTML=j.ok?'<span class="ok">Mail de prueba enviado a tu email. Fijate que llegue a la bandeja de entrada.</span>':'<span class="err">No se pudo enviar. Revisá la contraseña.</span>';estado()})};
   $('gPix').onclick=function(){$('pixSt').textContent='Guardando…';api('/api/admin.php',{acao:'pixel',token:tok,pixel:$('pxId').value.trim()}).then(function(j){$('pixSt').innerHTML=j.ok?'<span class="ok">Guardado. La web y la app ya cargan el Píxel.</span>':'<span class="err">'+(j.error==='formato_pixel'?'El ID del Píxel son solo números (15 o 16 dígitos).':'No se pudo guardar.')+'</span>';if(j.ok){$('pxId').value='';estado()}})};
   /* ---- precios ---- */
