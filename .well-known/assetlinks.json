@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.avisosul.app",
+      "sha256_cert_fingerprints": ["F7:9B:81:B7:0F:56:3B:C4:EB:AA:33:4D:CF:BE:F4:A0:CC:D4:7F:82:64:2B:5A:97:D3:D0:E6:C7:15:C9:3F:4B"]
+    }
+  }
+]
