@@ -1227,7 +1227,7 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
   var OCULTAS={cordoba:1};/* se muestran solo a quien usa la app desde Argentina */   /* no aparece en la lista; se abre con avisosul.com/cordoba/ para pruebas */
   /* PENDIENTE: enlaces reales por ciudad. Con 'espera' vacio la seccion del plan pago no se muestra. */
   var CANALES={};
-  var CANAL_GEN={whatsapp:'https://whatsapp.com/channel/',telegram:'https://t.me/avisosul',espera:''};
+  var CANAL_GEN={whatsapp:'https://whatsapp.com/channel/',telegram:''/* PENDIENTE: crear el canal; vacio = boton oculto */,espera:''};
   /* ---- marca por pais: Argentina ve Alerta Sur (Mercado Pago), Brasil ve Aviso Sul (Hotmart) ---- */
   var PRECID=(function(){var q=/[?&]c=([a-z]+)\b/.exec(location.search)||/^\/([a-z]+)(\/|$)/.exec(location.pathname),id=q?q[1]:LS('c');for(var i=0;i<LISTA.length;i++)if(LISTA[i][0]===id)return LISTA[i];return null})();
   /* La marca y los pagos siguen al pais desde donde se usa la app (zona horaria del celular y, si no alcanza, la IP), no a la ciudad elegida. */
@@ -2078,7 +2078,7 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
   safe(function(){
     var a=document.querySelectorAll('[data-canal]');
     for(var i=0;i<a.length;i++){var u=C.canales[a[i].getAttribute('data-canal')];
-      if(u){a[i].setAttribute('href',u);a[i].setAttribute('target','_blank');a[i].setAttribute('rel','noopener')}}
+      if(u){a[i].setAttribute('href',u);a[i].setAttribute('target','_blank');a[i].setAttribute('rel','noopener')}else if(a[i].getAttribute('data-canal')==='telegram')a[i].style.display='none'}
   });
 
   /* ---- instalación en el celular (solo funciona con la página publicada en https) ---- */
