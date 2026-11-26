@@ -66,6 +66,19 @@
       <h3 style="font-size:15px">Embudo de los últimos 14 días (dispositivos por día · AR / BR)</h3><div style="overflow-x:auto"><table id="tEmb"></table></div>
     </section>
     <section class="card">
+      <h2>Anuncios que se prenden con temporal <span class="est" id="eMa"></span></h2>
+      <p class="mut">Cada 10 minutos se revisan los avisos oficiales (INMET en Brasil, SMN en Argentina). Si hay granizo, lluvia, viento o tormenta en una ciudad, el conjunto de anuncios de ese país se prende solo ahí (radio en km) y se pausa cuando el aviso vence. Brasil: avisos naranja o rojo. Argentina: amarillo o más. El token lo pegás vos: se guarda en el servidor y no se vuelve a mostrar.</p>
+      <label for="maTok">Token del usuario del sistema avisosul-bot <span id="maTokV" class="mut"></span></label><input id="maTok" type="password" autocomplete="off" placeholder="vacío = conservar el guardado">
+      <label for="maBr">ID del conjunto de anuncios de Brasil</label><input id="maBr" inputmode="numeric">
+      <label for="maAr">ID del conjunto de anuncios de Argentina (Córdoba)</label><input id="maAr" inputmode="numeric">
+      <label for="maHa">Se apaga todo el día</label><input id="maHa" type="date">
+      <label for="maRa">Radio alrededor de cada ciudad (km)</label><input id="maRa" inputmode="numeric">
+      <p><label><input type="checkbox" id="maPr" style="width:auto"> Modo prueba (no toca Meta: solo anota qué haría)</label></p>
+      <button id="gMa">Guardar</button> <p id="maSt" class="mut"></p>
+      <h3 style="font-size:15px">Ahora mismo</h3><div id="maPlan" class="mut"></div>
+      <h3 style="font-size:15px">Últimos movimientos</h3><table id="maLog"></table>
+    </section>
+    <section class="card">
       <h2>WhatsApp (avisos Premium) <span class="est" id="eWa"></span></h2>
       <p class="mut">Los datos salen de Meta → WhatsApp → Configuración de la API. El token y la clave secreta los pegás vos (se guardan en el servidor y no se vuelven a mostrar completos). En la configuración del webhook de Meta usá la URL <code>https://avisosul.com/api/whatsapp_webhook.php</code> y este token de verificación: <code id="waVt"></code></p>
       <label for="waPid">Identificador del número de teléfono (phone number ID)</label><input id="waPid" inputmode="numeric">
@@ -152,7 +165,7 @@
   function login(){$('login').hidden=false;$('panel').hidden=true}
   function estado(){api('/api/admin.php',{acao:'estado',token:tok}).then(function(j){
     if(!j.ok){if(j.error==='no_admin'){$('lSt').textContent='Tu sesión no es de administrador. Entrá con el email de administrador.'}login();return}
-    $('login').hidden=true;$('panel').hidden=false;$('quien').textContent=j.admin;rgLista();
+    $('login').hidden=true;$('panel').hidden=false;$('quien').textContent=j.admin;rgLista();maCargar();
     var h=j.hotmart,m=j.mp,hOk=!!(h.hottok&&h.checkout&&Object.keys(h.checkout).length),mOk=!!m.access_token;
     $('eHm').textContent=hOk?'configurado':'pendiente';$('eHm').className='est '+(hOk?'si':'no');
     $('eMp').textContent=mOk?'configurado':'pendiente';$('eMp').className='est '+(mOk?'si':'no');
@@ -192,6 +205,13 @@
   $('gRg').onclick=function(){$('rgSt').textContent='Guardando…';api('/api/admin.php',{acao:'regalar',token:tok,email:$('rgEm').value.trim(),dias:+$('rgDias').value,nota:$('rgNota').value.trim()}).then(function(j){$('rgSt').innerHTML=j.ok?'<span class="ok">Listo: '+j.email+(j.hasta?' tiene Premium hasta el '+new Date(j.hasta*1000).toLocaleDateString('es-AR'):' sin regalo')+'.</span>':'<span class="err">Revisá el email y los días.</span>';if(j.ok){$('rgEm').value='';rgLista()}})};
   $('gRev').onclick=function(){$('revSt').textContent='Generando…';api('/api/admin.php',{acao:'revisor',token:tok}).then(function(j){$('revSt').innerHTML=j.ok?'<span class="ok">Usuario: <code>'+j.email+'</code> · Código: <code>'+j.codigo+'</code></span><br>Instrucciones para Google: "Toque em Entrar, escreva o e-mail e toque em Receber código. Use o código fixo acima (não chega e-mail). A conta já é Premium."':'<span class="err">No se pudo generar.</span>'})};
   $('gSm').onclick=function(){$('smSt').textContent='Enviando…';api('/api/admin.php',{acao:'smtp',token:tok,pass:$('smPw').value}).then(function(j){$('smPw').value='';$('smSt').innerHTML=j.ok?'<span class="ok">Mail de prueba enviado a tu email. Fijate que llegue a la bandeja de entrada.</span>':'<span class="err">No se pudo enviar. Revisá la contraseña.</span>';estado()})};
+  function maPintar(j){if(!j||!j.ok)return;$('eMa').textContent=j.prueba?'modo prueba':(j.token?'encendido':'pendiente');$('eMa').className='est '+(!j.prueba&&j.token?'si':'no');
+    $('maTokV').textContent=j.token?'(guardado '+j.token+')':'(sin cargar)';$('maBr').value=j.adset_br||'';$('maAr').value=j.adset_ar||'';$('maHa').value=j.hasta||'';$('maRa').value=j.radio_km||40;$('maPr').checked=!!j.prueba;
+    var P=j.plan||{};$('maPlan').innerHTML=['br','ar'].map(function(p){var x=P[p]||{};return '<p><b>'+(p==='br'?'Brasil':'Argentina')+':</b> '+(x.activo?'prendido en '+x.ciudades.map(function(c){return c.nombre+' ('+c.aviso+')'}).join(', '):'pausado')+' · '+(x.motivo||'')+'</p>'}).join('');
+    $('maLog').innerHTML=(j.log||[]).slice().reverse().map(function(x){return '<tr><td>'+new Date(x.t).toLocaleString('es-AR')+'</td><td>'+x.m.replace(/</g,'&lt;')+'</td></tr>'}).join('')||'<tr><td class="mut">Sin movimientos todavía.</td></tr>'}
+  function maCargar(){api('/api/admin.php',{acao:'metaads_ver',token:tok}).then(maPintar)}
+  $('gMa').onclick=function(){$('maSt').textContent='Guardando…';api('/api/admin.php',{acao:'metaads',token:tok,token_meta:$('maTok').value.trim(),adset_br:$('maBr').value.trim(),adset_ar:$('maAr').value.trim(),hasta:$('maHa').value,radio_km:$('maRa').value,prueba:$('maPr').checked}).then(function(j){
+    $('maSt').innerHTML=j.ok?'<span class="ok">Guardado.</span>':'<span class="err">'+(j.error==='meta'?'Meta rechazó el token: '+(j.detalle||''):'No se pudo guardar.')+'</span>';if(j.ok){$('maTok').value='';maPintar(j)}})};
   $('gPix').onclick=function(){$('pixSt').textContent='Guardando…';api('/api/admin.php',{acao:'pixel',token:tok,pixel:$('pxId').value.trim()}).then(function(j){$('pixSt').innerHTML=j.ok?'<span class="ok">Guardado. La web y la app ya cargan el Píxel.</span>':'<span class="err">'+(j.error==='formato_pixel'?'El ID del Píxel son solo números (15 o 16 dígitos).':'No se pudo guardar.')+'</span>';if(j.ok){$('pxId').value='';estado()}})};
   /* ---- precios ---- */
   var PLS=['mensal','temporada','anual'],PN={mensal:'Mensual',temporada:'Temporada',anual:'Anual'};

@@ -143,6 +143,22 @@ if ($acao === 'pixel') {
     $m = leer('meta.json'); $m['pixel'] = $px ?: null; escribir('meta.json', $m);
     salir(['ok' => true]);
 }
+if ($acao === 'metaads' || $acao === 'metaads_ver') {   // anuncios que se prenden con temporal (api/anuncios_auto.php)
+    require_once __DIR__ . '/anuncios_auto.php';
+    $c = ma_cfg();
+    if ($acao === 'metaads') {
+        $tk = trim((string)($e['token_meta'] ?? '')); if ($tk !== '') { if (strlen($tk) > 600 || preg_match('/\s/', $tk)) salir(['ok' => false, 'error' => 'formato_token'], 400); $c['token'] = $tk; }
+        foreach (['br', 'ar'] as $p) { $v = preg_replace('/\D/', '', (string)($e['adset_' . $p] ?? '')); if ($v !== '' || isset($e['adset_' . $p])) $c['paises'][$p]['adset'] = $v; }
+        if (isset($e['hasta']) && preg_match('/^\d{4}-\d\d-\d\d$/', $e['hasta'])) $c['hasta'] = $e['hasta'];
+        if (isset($e['radio_km'])) $c['radio_km'] = max(10, min(80, (int)$e['radio_km']));
+        $c['prueba'] = !empty($e['prueba']);
+        ma_guardar($c);
+        if ($c['token'] && !$c['prueba']) { try { graph($c, 'GET', 'me', ['fields' => 'id,name']); } catch (Exception $x) { salir(['ok' => false, 'error' => 'meta', 'detalle' => $x->getMessage()]); } }
+    }
+    $log = leer('meta_ads_log.json');
+    salir(['ok' => true, 'token' => cola($c['token']), 'adset_br' => $c['paises']['br']['adset'], 'adset_ar' => $c['paises']['ar']['adset'],
+        'hasta' => $c['hasta'], 'radio_km' => $c['radio_km'], 'prueba' => $c['prueba'], 'plan' => plan($c), 'log' => array_slice($log, -15)]);
+}
 if ($acao === 'regalar') {   // Premium de regalo (testers, socios): email + días; 0 días = quitar
     $em = strtolower(trim((string)($e['email'] ?? ''))); $dias = (int)($e['dias'] ?? 365);
     if (!filter_var($em, FILTER_VALIDATE_EMAIL) || $dias < 0 || $dias > 3650) salir(['ok' => false, 'error' => 'datos'], 400);
