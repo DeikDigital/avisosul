@@ -131,6 +131,24 @@ if ($acao === 'whatsapp') {   // datos de WhatsApp Business (Cloud API). Token y
     escribir('whatsapp.json', $w);
     salir(['ok' => true, 'activo' => $w['activo']]);
 }
+if ($acao === 'wa_prueba') {   // manda UNA plantilla de prueba al numero que escribe Deik (cuesta como un aviso real)
+    $w = leer('whatsapp.json');
+    if (empty($w['token']) || empty($w['phone_number_id'])) salir(['ok' => false, 'error' => 'falta_config'], 400);
+    $to = preg_replace('/\D/', '', (string)($e['tel'] ?? '')); if (strlen($to) < 12 || strlen($to) > 15) salir(['ok' => false, 'error' => 'tel'], 400);
+    $es = strpos($to, '54') === 0;
+    $cuerpo = ['messaging_product' => 'whatsapp', 'to' => $to, 'type' => 'template',
+        'template' => ['name' => $w['plantilla'] ?? 'aviso_clima', 'language' => ['code' => $es ? 'es' : 'pt_BR'],
+            'components' => [['type' => 'body', 'parameters' => [
+                ['type' => 'text', 'text' => $es ? 'PRUEBA: tormentas fuertes' : 'TESTE: tempestade forte'],
+                ['type' => 'text', 'text' => (new DateTime('+3 hours', new DateTimeZone('America/Argentina/Buenos_Aires')))->format('d/m H:i')],
+                ['type' => 'text', 'text' => 'https://avisosul.com/' . ($es ? 'cordoba' : 'app') . '/']]]]]];
+    $ch = curl_init('https://graph.facebook.com/v21.0/' . $w['phone_number_id'] . '/messages');
+    curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20,
+        CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $w['token'], 'Content-Type: application/json'], CURLOPT_POSTFIELDS => json_encode($cuerpo)]);
+    $res = curl_exec($ch); $cod = curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
+    $j = json_decode((string)$res, true) ?: [];
+    salir(['ok' => $cod === 200, 'http' => $cod, 'id' => $j['messages'][0]['id'] ?? null, 'error' => $j['error']['message'] ?? null]);
+}
 if ($acao === 'smtp') {   // contraseña del buzón contato@avisosul.com (la escribe Deik; nunca se devuelve)
     $pw = (string)($e['pass'] ?? '');
     if ($pw !== '') { if (strlen($pw) > 200) salir(['ok' => false], 400); escribir('smtp.json', ['pass' => $pw]); }
