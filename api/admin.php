@@ -165,7 +165,20 @@ if ($acao === 'wa_estado') {   // estados de entrega que mando Meta al webhook +
         $num = json_decode((string)curl_exec($ch), true); curl_close($ch);
         if (isset($num['error'])) $num = ['error' => $num['error']['message'] ?? 'error'];
     }
-    salir(['ok' => true, 'numero' => $num, 'estados' => array_slice(leer('whatsapp_estados.json') ?: [], 0, 10), 'hits' => array_slice(leer('whatsapp_hits.json') ?: [], 0, 5)]);
+    $apps = null;
+    if (!empty($w['token'])) {
+        $waba = '2181588913236388';
+        if (!empty($e['suscribir'])) {   // conecta la app del token a la cuenta de WhatsApp para recibir webhooks
+            $ch = curl_init('https://graph.facebook.com/v21.0/' . $waba . '/subscribed_apps');
+            curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15, CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $w['token']]]);
+            curl_exec($ch); curl_close($ch);
+        }
+        $ch = curl_init('https://graph.facebook.com/v21.0/' . $waba . '/subscribed_apps');
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15, CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $w['token']]]);
+        $r = json_decode((string)curl_exec($ch), true); curl_close($ch);
+        $apps = isset($r['error']) ? ('error: ' . ($r['error']['message'] ?? '')) : implode(', ', array_map(function ($a) { return ($a['whatsapp_business_api_data']['name'] ?? '?') . ' (' . ($a['whatsapp_business_api_data']['id'] ?? '') . ')'; }, $r['data'] ?? []));
+    }
+    salir(['ok' => true, 'apps' => $apps, 'numero' => $num, 'estados' => array_slice(leer('whatsapp_estados.json') ?: [], 0, 10), 'hits' => array_slice(leer('whatsapp_hits.json') ?: [], 0, 5)]);
 }
 if ($acao === 'smtp') {   // contraseña del buzón contato@avisosul.com (la escribe Deik; nunca se devuelve)
     $pw = (string)($e['pass'] ?? '');
