@@ -127,9 +127,17 @@ if ($acao === 'whatsapp') {   // datos de WhatsApp Business (Cloud API). Token y
         if ($v === '') continue; if (!preg_match($re, $v)) salir(['ok' => false, 'error' => $k], 400); $w[$k] = $v;
     }
     foreach (['wa_token' => 'token', 'app_secret' => 'app_secret'] as $in => $k) { $v = trim((string)($e[$in] ?? '')); if ($v !== '') { if (strlen($v) > 600) salir(['ok' => false, 'error' => $k], 400); $w[$k] = $v; } }
+    if (empty($w['phone_number_id']) && !empty($w['token'])) {   // busca solo el numero de la cuenta de WhatsApp de Aviso Sul
+        $waba = $w['waba_id'] ?? '2181588913236388';
+        $ch = curl_init('https://graph.facebook.com/v21.0/' . $waba . '/phone_numbers?fields=id,display_phone_number,verified_name');
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15, CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $w['token']]]);
+        $j = json_decode((string)curl_exec($ch), true) ?: []; curl_close($ch);
+        if (!empty($j['data'][0]['id'])) { $w['phone_number_id'] = $j['data'][0]['id']; $w['numero_publico'] = $w['numero_publico'] ?? preg_replace('/\D/', '', $j['data'][0]['display_phone_number'] ?? ''); }
+        else $w['error_api'] = $j['error']['message'] ?? 'sin_numero';
+    }
     $w['activo'] = !empty($e['activo']) && !empty($w['token']) && !empty($w['phone_number_id']);
     escribir('whatsapp.json', $w);
-    salir(['ok' => true, 'activo' => $w['activo']]);
+    salir(['ok' => true, 'activo' => $w['activo'], 'phone_number_id' => $w['phone_number_id'] ?? '', 'numero_publico' => $w['numero_publico'] ?? '', 'error_api' => $w['error_api'] ?? null]);
 }
 if ($acao === 'wa_prueba') {   // manda UNA plantilla de prueba al numero que escribe Deik (cuesta como un aviso real)
     $w = leer('whatsapp.json');
