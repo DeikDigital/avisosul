@@ -165,7 +165,7 @@ if ($acao === 'wa_estado') {   // estados de entrega que mando Meta al webhook +
         $num = json_decode((string)curl_exec($ch), true); curl_close($ch);
         if (isset($num['error'])) $num = ['error' => $num['error']['message'] ?? 'error'];
     }
-    salir(['ok' => true, 'numero' => $num, 'estados' => array_slice(leer('whatsapp_estados.json') ?: [], 0, 10)]);
+    salir(['ok' => true, 'numero' => $num, 'estados' => array_slice(leer('whatsapp_estados.json') ?: [], 0, 10), 'hits' => array_slice(leer('whatsapp_hits.json') ?: [], 0, 5)]);
 }
 if ($acao === 'smtp') {   // contraseña del buzón contato@avisosul.com (la escribe Deik; nunca se devuelve)
     $pw = (string)($e['pass'] ?? '');

@@ -14,11 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     http_response_code(403); echo 'no'; exit;
 }
 $raw = file_get_contents('php://input') ?: '';
+function wa_log($r) { con_archivo('whatsapp_hits.json', function ($d) use ($r) { array_unshift($d, ['t' => time(), 'r' => $r]); return [array_slice($d, 0, 20), true]; }); }
 if (!empty($cfg['app_secret'])) {   // firma de Meta: descarta pedidos que no vienen de WhatsApp
     $sig = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
-    if (!hash_equals('sha256=' . hash_hmac('sha256', $raw, $cfg['app_secret']), $sig)) salir(['ok' => false], 403);
+    if (!hash_equals('sha256=' . hash_hmac('sha256', $raw, $cfg['app_secret']), $sig)) { wa_log('firma_invalida'); salir(['ok' => false], 403); }
 }
 $j = json_decode($raw, true) ?: [];
+wa_log('ok ' . substr(implode(',', array_map(function ($e) { return implode('+', array_map(function ($c) { return ($c['field'] ?? '') . ':' . (isset($c['value']['statuses']) ? 'st' : '') . (isset($c['value']['messages']) ? 'msg' : ''); }, $e['changes'] ?? [])); }, $j['entry'] ?? [])), 0, 120));
 
 function responder($cfg, $para, $texto) {
     if (empty($cfg['token']) || empty($cfg['phone_number_id'])) return;
