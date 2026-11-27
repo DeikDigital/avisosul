@@ -42,8 +42,17 @@ def cerca(lat, lon, poly, km=5.0):
     return False
 
 
-def toca(lat, lon, aviso):
-    return any(dentro(lat, lon, p) or cerca(lat, lon, p) for p in aviso["poligonos"])
+def toca(lat, lon, aviso, km=5.0):
+    return any(dentro(lat, lon, p) or cerca(lat, lon, p, km) for p in aviso["poligonos"])
+
+
+def dist_km(a, b, c, d):
+    k = math.cos(math.radians((a + c) / 2))
+    return math.hypot((a - c) * 111, (b - d) * 111 * k)
+
+
+MAX_DIA = 3          # tope por persona por dia (los rojos no cuentan)
+MAX_DIA_LUGAR = 1    # Argentina: un aviso por dia por cada lugar de familia (los rojos no cuentan)
 
 
 from datetime import timezone as _tz, timedelta as _td
@@ -63,13 +72,12 @@ def fenomenos(a):
 def pasa(a, pr):
     """Preferencias de Ajustes: nivel minimo, fenomenos y silencio de noche (salvo nivel extremo).
     Si un aviso cae en el horario de silencio no se marca como enviado: sale a la mañana si sigue vigente."""
-    if not pr:
-        return True
+    pr = pr or {}
     n = {"rojo": 3, "naranja": 2}.get(a.get("nivel"), 1)
-    if n < pr.get("nivel", 1):
+    if n < pr.get("nivel", 2):                                           # por defecto: naranja y rojo
         return False
     f = fenomenos(a)
-    if f and not any(x in pr.get("fen", []) for x in f):
+    if f and not any(x in pr.get("fen", ["granizo", "chuva", "vento", "raios"]) for x in f):
         return False
     if pr.get("noche") and n < 3:
         h = datetime.now(LOCAL).hour if LOCAL else datetime.now().hour
@@ -124,26 +132,53 @@ def main():
                                    for a in d.get("avisos", []) if a.get("hasta") and datetime.fromisoformat(a["hasta"]).timestamp() > ahora_ts]
             return ciudad_av[slug]
         vigentes = {a["id"] for a in avisos}
+        try:
+            CIUD = [c for c in json.load(open(os.path.join(RAIZ, "ciudades.json"), encoding="utf-8")) if c.get("pais") == "ar"]
+        except Exception:
+            CIUD = []
+        def ciudades_cerca(la, lo, km):
+            """Argentina: el SMN avisa por ciudad/zona; tomamos las ciudades cuyo centro esta a menos de km + 15 del punto."""
+            return [c["slug"] for c in CIUD if dist_km(la, lo, c["lat"], c["lon"]) <= km + 15]
+        hoy = datetime.now(LOCAL).strftime("%Y-%m-%d")
         for tel, x in ins.items():
             if x.get("estado") != "ativo":
                 continue
             if int((prem.get(x.get("email") or "") or {}).get("hasta", 0)) < ahora_ts:   # solo Premium vigente (cada mensaje cuesta)
                 continue
-            propios = de_ciudad(x.get("cidade") or "") if tel.startswith("54") else []   # Argentina: avisos SMN de su ciudad
-            x["enviados"] = [i for i in x.get("enviados", []) if i in vigentes or i in {p["id"] for p in propios}]   # olvida los vencidos
-            puntos = [(x["lat"], x["lon"], x.get("cidade") or "")] + [(p["lat"], p["lon"], p.get("nome", "")) for p in (x.get("extras") or {}).values()]
-            for a in avisos + propios:
+            pr = x.get("prefs") or {}
+            km = float(pr.get("km", 5))
+            ar = tel.startswith("54")
+            if (x.get("dia") or {}).get("f") != hoy:
+                x["dia"] = {"f": hoy, "n": 0, "lug": {}}
+            dia = x["dia"]
+            # puntos: el principal (se actualiza solo al abrir la app y cada hora) y los lugares de familia activos
+            puntos = [("", x["lat"], x["lon"], x.get("cidade") or "")] + \
+                     [(k, p["lat"], p["lon"], p.get("nome", "")) for k, p in (x.get("extras") or {}).items() if not p.get("mute")]
+            cand = []                                                    # (aviso, clave del punto) en orden: principal primero
+            for clave, la, lo, _ in puntos:
+                if ar:
+                    slugs = ciudades_cerca(la, lo, km) + ([x.get("cidade")] if clave == "" and x.get("cidade") else [])
+                    for s in dict.fromkeys(slugs):
+                        cand += [(a, clave) for a in de_ciudad(s)]
+                cand += [(a, clave) for a in avisos if a.get("poligonos") and toca(la, lo, a, km)]
+            ids_vivos = {a["id"] for a, _ in cand}
+            x["enviados"] = [i for i in x.get("enviados", []) if i in vigentes or i in ids_vivos]   # olvida los vencidos
+            for a, clave in cand:
                 if a["id"] in x["enviados"] or enviados >= MAX_POR_CORRIDA:
                     continue
-                if a.get("poligonos") and not any(toca(la, lo, a) for la, lo, _ in puntos):
+                if not pasa(a, pr):
                     continue
-                if not a.get("poligonos") and a not in propios:
+                rojo = a.get("nivel") == "rojo"
+                if not rojo and dia["n"] >= MAX_DIA:
                     continue
-                if not pasa(a, x.get("prefs")):
+                if not rojo and ar and clave and dia["lug"].get(clave, 0) >= MAX_DIA_LUGAR:
                     continue
                 es = x.get("lang") == "es"
                 hasta = datetime.fromisoformat(a["hasta"]).strftime("%d/%m %H:%M")
-                params = [a["titulo_es" if es else "titulo_pt"], hasta, "https://avisosul.com/" + (x.get("cidade") or "app") + "/"]
+                lugar = next((n for k, _, _, n in puntos if k == clave), "")
+                titulo = a["titulo_es" if es else "titulo_pt"] + ((" — " + lugar) if clave and lugar else "")
+                dest = a["id"].split(":")[1] if a["id"].startswith("c:") else (x.get("cidade") or "app")
+                params = [titulo, hasta, "https://avisosul.com/" + dest + "/"]
                 if PRUEBA:
                     print("PRUEBA ->", tel[:4] + "…" + tel[-2:], params)
                 else:
@@ -152,6 +187,10 @@ def main():
                     except Exception as e:                               # un envio fallido no frena al resto
                         print("whatsapp: error con", tel[-2:], type(e).__name__); continue
                 x["enviados"].append(a["id"]); enviados += 1
+                if not rojo:
+                    dia["n"] += 1
+                    if clave:
+                        dia["lug"][clave] = dia["lug"].get(clave, 0) + 1
         if not PRUEBA:
             h.seek(0); h.truncate(); h.write(json.dumps(ins, ensure_ascii=False))
         fcntl.flock(h, fcntl.LOCK_UN)

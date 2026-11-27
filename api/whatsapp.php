@@ -71,7 +71,8 @@ if ($acao === 'inscrever') {
 if ($acao === 'prefs') {   /* nivel minimo (1-3), fenomenos y silencio de noche, elegidos en Ajustes */
     $cod = (string)($e['codigo'] ?? '');
     $fen = array_values(array_intersect((array)($e['fen'] ?? []), ['granizo', 'chuva', 'vento', 'raios']));
-    $pr = ['nivel' => max(1, min(3, (int)($e['nivel'] ?? 1))), 'fen' => $fen ?: ['granizo', 'chuva', 'vento', 'raios'],
+    $km = (int)($e['km'] ?? 5); if (!in_array($km, [5, 10, 20, 50], true)) $km = 5;
+    $pr = ['nivel' => max(1, min(3, (int)($e['nivel'] ?? 2))), 'km' => $km, 'fen' => $fen ?: ['granizo', 'chuva', 'vento', 'raios'],
            'noche' => !empty($e['noche']), 'desde' => max(0, min(23, (int)($e['desde'] ?? 23))), 'hasta' => max(0, min(23, (int)($e['hasta'] ?? 7)))];
     $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $cod, $pr) {
         if (!isset($d[$tel]) || !hash_equals($d[$tel]['codigo'], $cod)) return [$d, ['ok' => false, 'error' => 'tel']];
@@ -91,6 +92,15 @@ if ($acao === 'lugar') {   /* avisar también por otro lugar consultado (Premium
         $d[$tel]['extras'] = $ex; return [$d, ['ok' => true, 'on' => $on, 'estado' => $d[$tel]['estado']]];
     });
     salir($r);
+}
+if ($acao === 'ubicar') {   /* la app manda la ubicacion actual al abrirse y cada hora: el punto principal del aviso sigue a la persona */
+    $cod = (string)($e['codigo'] ?? ''); $lat = round((float)($e['lat'] ?? 0), 3); $lon = round((float)($e['lon'] ?? 0), 3);
+    if ($lat < -60 || $lat > 15 || $lon < -90 || $lon > -30) salir(['ok' => false, 'error' => 'local'], 400);
+    $r = con_archivo('whatsapp_inscritos.json', function ($d) use ($tel, $cod, $lat, $lon) {
+        if (!isset($d[$tel]) || !hash_equals($d[$tel]['codigo'], $cod)) return [$d, ['ok' => false, 'error' => 'tel']];
+        $d[$tel]['lat'] = $lat; $d[$tel]['lon'] = $lon; $d[$tel]['ubic_ts'] = time(); return [$d, ['ok' => true]];
+    });
+    salir($r, $r['ok'] ? 200 : 403);
 }
 if ($acao === 'cancelar') {
     $cod = (string)($e['codigo'] ?? '');
