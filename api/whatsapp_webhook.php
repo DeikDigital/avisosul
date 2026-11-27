@@ -28,6 +28,15 @@ function responder($cfg, $para, $texto) {
         CURLOPT_POSTFIELDS => json_encode(['messaging_product' => 'whatsapp', 'to' => $para, 'type' => 'text', 'text' => ['body' => $texto]])]);
     curl_exec($ch); curl_close($ch);
 }
+// estados de entrega (enviado, entregado, leido, fallido): se guardan los ultimos 40 para verlos en /admin
+$est = [];
+foreach (($j['entry'] ?? []) as $en) foreach (($en['changes'] ?? []) as $ch) foreach (($ch['value']['statuses'] ?? []) as $st) {
+    $er = $st['errors'][0] ?? null;
+    $est[] = ['t' => (int)($st['timestamp'] ?? time()), 'id' => (string)($st['id'] ?? ''), 'estado' => (string)($st['status'] ?? ''),
+        'para' => substr(preg_replace('/\D+/', '', (string)($st['recipient_id'] ?? '')), -4),
+        'error' => $er ? (($er['code'] ?? '') . ' ' . ($er['title'] ?? '') . ' ' . ($er['error_data']['details'] ?? '')) : null];
+}
+if ($est) con_archivo('whatsapp_estados.json', function ($d) use ($est) { $d = array_slice(array_merge($est, $d), 0, 40); return [$d, true]; });
 foreach (($j['entry'] ?? []) as $en) foreach (($en['changes'] ?? []) as $ch) foreach (($ch['value']['messages'] ?? []) as $m) {
     $de = preg_replace('/\D+/', '', (string)($m['from'] ?? ''));
     $txt = strtoupper(trim((string)($m['text']['body'] ?? '')));

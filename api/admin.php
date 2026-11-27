@@ -157,6 +157,16 @@ if ($acao === 'wa_prueba') {   // manda UNA plantilla de prueba al numero que es
     $j = json_decode((string)$res, true) ?: [];
     salir(['ok' => $cod === 200, 'http' => $cod, 'id' => $j['messages'][0]['id'] ?? null, 'error' => $j['error']['message'] ?? null]);
 }
+if ($acao === 'wa_estado') {   // estados de entrega que mando Meta al webhook + salud del numero
+    $w = leer('whatsapp.json'); $num = null;
+    if (!empty($w['token']) && !empty($w['phone_number_id'])) {
+        $ch = curl_init('https://graph.facebook.com/v21.0/' . $w['phone_number_id'] . '?fields=display_phone_number,verified_name,status,name_status,quality_rating,account_mode,messaging_limit_tier');
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15, CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $w['token']]]);
+        $num = json_decode((string)curl_exec($ch), true); curl_close($ch);
+        if (isset($num['error'])) $num = ['error' => $num['error']['message'] ?? 'error'];
+    }
+    salir(['ok' => true, 'numero' => $num, 'estados' => array_slice(leer('whatsapp_estados.json') ?: [], 0, 10)]);
+}
 if ($acao === 'smtp') {   // contraseña del buzón contato@avisosul.com (la escribe Deik; nunca se devuelve)
     $pw = (string)($e['pass'] ?? '');
     if ($pw !== '') { if (strlen($pw) > 200) salir(['ok' => false], 400); escribir('smtp.json', ['pass' => $pw]); }
