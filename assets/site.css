@@ -147,7 +147,8 @@ p{margin:0 0 12px}
 /* barra fija en el celular */
 .barra{position:fixed;left:12px;right:12px;bottom:12px;z-index:40;display:none}
 .barra .btn{width:100%}
-@media (max-width:760px){.barra{display:block}}
+@media (max-width:760px){.barra.on{display:block}}
+html[data-pais="ar"] [data-solo="br"],html:not([data-pais="ar"]) [data-solo="ar"]{display:none!important}
 /* paginas internas */
 .pag{padding:54px 0 70px}
 .pag .cab{max-width:760px;margin-bottom:26px}
@@ -287,7 +288,7 @@ html[lang="es"] .historia .pt,html:not([lang="es"]) .historia .es{display:none}
 .vivo.franja #vAt{grid-area:at;margin:0}
 @media (max-width:860px){
 .hero .wrap{display:grid;grid-template-columns:1fr;gap:8px}
-.hero .wrap>div{order:2}.hero .escena{order:1;padding:8px 0 4px}
+.hero .wrap>div{order:1}.hero .escena{order:2;padding:18px 0 4px}
 .hero .escena .pvhero{width:min(190px,calc(36vh * 9 / 16));min-width:140px}
 .hero .escena .logo3d{width:110px;top:-6px;right:calc(50% - 185px)}
 .hero .escena .halo{width:300px;height:300px}

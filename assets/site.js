@@ -18,10 +18,11 @@ try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!loc
   function T(pt,es){return lang==='es'?es:pt}
   function aplicarIdioma(){
     root.lang=lang==='es'?'es':'pt-BR';
-    document.querySelectorAll('[data-es]').forEach(function(e){if(e.dataset.pt===undefined)e.dataset.pt=e.innerHTML;e.innerHTML=lang==='es'?e.dataset.es:e.dataset.pt});
+    var AR=root.getAttribute('data-pais')==='ar';   /* Argentina: textos propios (SMN, Córdoba) en data-ar */
+    document.querySelectorAll('[data-es]').forEach(function(e){if(e.dataset.pt===undefined)e.dataset.pt=e.innerHTML;e.innerHTML=lang==='es'?(AR&&e.dataset.ar!==undefined?e.dataset.ar:e.dataset.es):e.dataset.pt});
     document.querySelectorAll('[data-es-aria]').forEach(function(e){if(e.dataset.ptAria===undefined)e.dataset.ptAria=e.getAttribute('aria-label')||'';e.setAttribute('aria-label',lang==='es'?e.dataset.esAria:e.dataset.ptAria)});
     document.querySelectorAll('.idi button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===lang?'true':'false')});
-    if(document.body.dataset.titEs){if(!document.body.dataset.titPt)document.body.dataset.titPt=document.title;document.title=lang==='es'?document.body.dataset.titEs:document.body.dataset.titPt}
+    if(document.body.dataset.titEs){if(!document.body.dataset.titPt)document.body.dataset.titPt=document.title;document.title=lang==='es'?(AR&&document.body.dataset.titAr?document.body.dataset.titAr:document.body.dataset.titEs):document.body.dataset.titPt}
     safe(pintarVivo);safe(videosIdioma);safe(marcaPais);
   }
   function marcaPais(){if(root.getAttribute('data-pais')!=='ar')return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;while(n=w.nextNode()){if(n.nodeValue.indexOf('Aviso Sul')>-1&&!/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName))n.nodeValue=n.nodeValue.replace(/Aviso Sul/g,'Alerta Sur')}}
@@ -124,4 +125,7 @@ try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!loc
     fetch('/api/interesse.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:b.dataset.plano,pais:PAGOP})}).catch(function(){});
     b.disabled=true;setTimeout(function(){location.href='/app/?plan='+encodeURIComponent(b.dataset.plano)+'&pago='+PAGOP+'#premium'},150)})});
   aplicarIdioma();cargar();setInterval(cargar,10*60000);
+  /* barra fija del celular: aparece recién cuando los botones del inicio ya no se ven */
+  safe(function(){var b=document.querySelector('.barra'),h=document.querySelector('.hero .btns');if(!b||!h||!window.IntersectionObserver)return;
+    new IntersectionObserver(function(e){b.classList.toggle('on',!e[0].isIntersecting&&e[0].boundingClientRect.top<0)}).observe(h)});
 })();
