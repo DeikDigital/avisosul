@@ -1127,7 +1127,7 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
   <div class="onbc gl pmoc">
     <button type="button" class="pmx" id="pmoX" aria-label="Fechar / Cerrar">×</button>
     <h2 id="pmoT"><span class="pt">Passe para o Premium</span><span class="es">Pasate a Premium</span></h2>
-    <div class="pmvid"><video id="pmoV" muted loop playsinline preload="none" poster="/media/promo/v2/poster.jpg" aria-label="Video: personas que usan Premium"></video><p><span class="pt">Aja a tempo. Sua família, tranquila.</span><span class="es">Actuá a tiempo. Tu familia, tranquila.</span></p></div>
+    <div class="pmvid"><video id="pmoV" muted loop playsinline preload="none" poster="/media/promo/v3/poster.jpg" aria-label="Video: personas que usan Premium"></video><p><span class="pt">Aja a tempo. Sua família, tranquila.</span><span class="es">Actuá a tiempo. Tu familia, tranquila.</span></p></div>
     <ul class="pmb">
       <li><span class="pt">Compartilhar alertas com a família e os amigos pelo WhatsApp, com foto e vídeo</span><span class="es">Compartir alertas con tu familia y amigos por WhatsApp, con foto y video</span></li>
       <li><span class="pt">Alertas no seu WhatsApp</span><span class="es">Alertas en tu WhatsApp</span></li>
@@ -2061,7 +2061,7 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
     var w=document.getElementById('lgWa');if(w)w.addEventListener('click',function(){location.hash='#ajustes';setTimeout(function(){var x=document.getElementById('waBox');if(x){x.scrollIntoView({behavior:'smooth',block:'center'});var t=x.querySelector('input[type=tel]');if(t)t.focus()}},350)})});
   safe(function(){var o=document.getElementById('pmo');if(!o)return;var st=document.getElementById('pmoSt'),plan='temporada';
     var pv=document.getElementById('pmoV');if(pv&&'MutationObserver' in window)new MutationObserver(function(){if(o.hidden){try{pv.pause()}catch(e){}return}window.medir&&window.medir('premium_ver','ViewContent',{content_name:'Premium'});
-      var src='/media/promo/v2/web_'+(PAISM==='ar'?'ar':root.getAttribute('data-lang')==='es'?'es':'pt')+'.mp4';if(pv.getAttribute('src')!==src){pv.src=src}pv.muted=true;var pr=pv.play();if(pr&&pr.catch)pr.catch(function(){})}).observe(o,{attributes:true,attributeFilter:['hidden']});
+      var src='/media/promo/v3/web_'+(PAISM==='ar'?'ar':root.getAttribute('data-lang')==='es'?'es':'pt')+'.mp4';if(pv.getAttribute('src')!==src){pv.src=src}pv.muted=true;var pr=pv.play();if(pr&&pr.catch)pr.catch(function(){})}).observe(o,{attributes:true,attributeFilter:['hidden']});
     function cerrar(){o.hidden=true;if(location.hash==='#premium')history.replaceState(null,'',location.pathname+location.search)}
     document.getElementById('pmoX').addEventListener('click',cerrar);
     o.querySelectorAll('#pmPais [data-pp]').forEach(function(b){b.addEventListener('click',function(){PAGOP=b.dataset.pp;LS('pagoPais',PAGOP);root.setAttribute('data-pago',PAGOP);st.textContent='';pagoBoton()})});pagoBoton();o.addEventListener('click',function(e){if(e.target===o)cerrar()});
