@@ -41,7 +41,7 @@ if ($acao === 'estado') {
         'whatsapp' => (function () { $w = leer('whatsapp.json'); if (empty($w['verify_token'])) { $w['verify_token'] = bin2hex(random_bytes(12)); escribir('whatsapp.json', $w); }
             return ['activo' => !empty($w['activo']), 'phone_number_id' => $w['phone_number_id'] ?? '', 'numero_publico' => $w['numero_publico'] ?? '', 'plantilla' => $w['plantilla'] ?? 'aviso_clima',
                     'token' => cola($w['token'] ?? ''), 'app_secret' => cola($w['app_secret'] ?? ''), 'verify_token' => $w['verify_token']]; })(),
-        'pixel' => (leer('meta.json')['pixel'] ?? ''), 'embudo' => array_slice(leer('embudo.json'), -14, null, true),
+        'pixel' => (leer('meta.json')['pixel'] ?? ''), 'capi' => ['token' => cola(leer('meta.json')['capi_token'] ?? ''), 'log' => array_slice(leer('capi_log.json'), -6)], 'embudo' => array_slice(leer('embudo.json'), -14, null, true),
         'ofertas_sin_plan' => array_values(array_unique(array_map('trim', $sin))),
         'eventos_hotmart' => array_map(fn($x) => ['t' => $x['t'], 'ev' => $x['ev'], 'off' => $x['off'], 'prod' => $x['prod'], 'email' => $x['email'] ? substr($x['email'], 0, 3) . '…' : ''], $ev),
         'eventos_mp' => array_map(fn($x) => ['t' => $x['t'], 'estado' => $x['estado'], 'plan' => $x['plan'], 'monto' => $x['monto']], $evm)]);
@@ -191,6 +191,16 @@ if ($acao === 'pixel') {
     if ($px !== '' && (strlen($px) < 10 || strlen($px) > 20)) salir(['ok' => false, 'error' => 'formato_pixel'], 400);
     $m = leer('meta.json'); $m['pixel'] = $px ?: null; escribir('meta.json', $m);
     salir(['ok' => true]);
+}
+if ($acao === 'capi') {   // token de la API de conversiones: lo pega Deik; vacío = conservar. Después manda un evento de prueba.
+    $tk = trim((string)($e['token_capi'] ?? '')); $tc = preg_replace('/[^A-Za-z0-9]/', '', (string)($e['test_code'] ?? ''));
+    if (strlen($tk) > 600) salir(['ok' => false], 400);
+    $m = leer('meta.json'); if ($tk !== '') $m['capi_token'] = $tk; escribir('meta.json', $m);
+    if (empty($m['pixel'])) salir(['ok' => false, 'error' => 'sin_pixel']);
+    if (empty($m['capi_token'])) salir(['ok' => false, 'error' => 'sin_token']);
+    require_once __DIR__ . '/capi.php';
+    [$ok, $det] = capi_enviar(capi_armar('ViewContent', 'prueba-' . bin2hex(random_bytes(6)), 'https://avisosul.com/admin/', ['content_name' => 'Prueba desde admin']), $tc ?: null);
+    salir(['ok' => $ok, 'detalle' => $det, 'prueba' => $tc !== '']);
 }
 if ($acao === 'metaads_probar') {   // comprueba el token contra Meta sin cambiar nada
     require_once __DIR__ . '/anuncios_auto.php'; $c = ma_cfg();

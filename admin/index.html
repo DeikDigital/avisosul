@@ -63,6 +63,12 @@
       <p class="mut">Píxel de Meta: lo crea Deik en Meta Business → Administrador de eventos. El ID es público (son solo números). Con el Píxel, Meta sabe quién se registró, inició el pago o compró, y optimiza los anuncios.</p>
       <label for="pxId">ID del Píxel <span id="pxIdV" class="mut"></span></label><input id="pxId" inputmode="numeric" placeholder="1234567890123456">
       <button id="gPix">Guardar Píxel</button> <p id="pixSt" class="mut"></p>
+      <h3 style="font-size:15px">API de conversiones (aviso desde el servidor) <span class="est" id="eCapi"></span></h3>
+      <p class="mut">Hace que Meta reciba los registros y pagos aunque el navegador bloquee el Píxel. Token: Administrador de eventos → tu Píxel → Configuración → API de conversiones → <b>Generar token de acceso</b>. Pegalo acá y tocá el botón: se guarda y manda un evento de prueba. El código de prueba es opcional (pestaña "Probar eventos").</p>
+      <label for="capiTk">Token de acceso <span id="capiTkV" class="mut"></span></label><input id="capiTk" type="password" autocomplete="off" placeholder="EAA…">
+      <label for="capiTc">Código de prueba (opcional)</label><input id="capiTc" autocomplete="off" placeholder="TEST12345">
+      <button id="gCapi">Guardar y probar</button> <p id="capiSt" class="mut"></p>
+      <pre id="capiLog" class="mut" style="white-space:pre-wrap;font-size:12px"></pre>
       <h3 style="font-size:15px">Embudo de los últimos 14 días (dispositivos por día · AR / BR)</h3><div style="overflow-x:auto"><table id="tEmb"></table></div>
     </section>
     <section class="card">
@@ -175,6 +181,8 @@
     if(j.whatsapp){var w=j.whatsapp;$('eWa').textContent=w.activo?'encendido':'apagado';$('eWa').className='est '+(w.activo?'si':'no');$('waVt').textContent=w.verify_token;$('waPid').value=w.phone_number_id;$('waNum').value=w.numero_publico;$('waPl').value=w.plantilla;$('waTokV').textContent=w.token?'(guardado '+w.token+')':'';$('waSecV').textContent=w.app_secret?'(guardada '+w.app_secret+')':'';$('waAct').checked=w.activo}
     $('eSm').textContent=j.smtp?'buzón conectado':'pendiente';$('eSm').className='est '+(j.smtp?'si':'no');
     $('pxIdV').textContent=j.pixel?'(guardado '+j.pixel+')':'(sin cargar)';
+    (function(c){var on=!!(c&&c.token);$('eCapi').textContent=on?'conectada':'pendiente';$('eCapi').className='est '+(on?'si':'no');$('capiTkV').textContent=on?'(guardado '+c.token+')':'';
+      $('capiLog').textContent=(c&&c.log||[]).slice().reverse().map(function(x){return x.t.slice(5,16).replace('T',' ')+'  '+x.ev+'  '+(x.ok?'✓ ':'✗ ')+x.det}).join('\n')})(j.capi);
     (function(E){var P=['visita','registro','premium_ver','pago_inicio','compra','push_ok'],N={visita:'Visitas',registro:'Registros',premium_ver:'Vieron Premium',pago_inicio:'Iniciaron pago',compra:'Compras',push_ok:'Activaron avisos'},d=Object.keys(E||{}).sort().reverse();
       $('tEmb').innerHTML=d.length?'<tr><td>Día</td>'+P.map(function(k){return '<td>'+N[k]+'</td>'}).join('')+'</tr>'+d.map(function(x){return '<tr><td>'+x.slice(5).split('-').reverse().join('/')+'</td>'+P.map(function(k){var v=(E[x][k]||{});return '<td>'+(v.ar||0)+' / '+(v.br||0)+'</td>'}).join('')+'</tr>'}).join(''):'<tr><td>Todavía sin datos.</td></tr>'})(j.embudo);
     var gOk=!!j.google;$('eGo').textContent=gOk?'activo':'pendiente';$('eGo').className='est '+(gOk?'si':'no');$('gCidV').textContent=gOk?'(guardado '+j.google+')':'';
@@ -217,6 +225,8 @@
   function maCargar(){api('/api/admin.php',{acao:'metaads_ver',token:tok}).then(maPintar)}
   $('gMa').onclick=function(){$('maSt').textContent='Guardando…';api('/api/admin.php',{acao:'metaads',token:tok,token_meta:$('maTok').value.trim(),adset_br:$('maBr').value.trim(),adset_ar:$('maAr').value.trim(),hasta:$('maHa').value,radio_km:$('maRa').value,prueba:$('maPr').checked}).then(function(j){
     $('maSt').innerHTML=j.ok?'<span class="ok">Guardado.</span>':'<span class="err">'+(j.error==='meta'?'Meta rechazó el token: '+(j.detalle||''):'No se pudo guardar.')+'</span>';if(j.ok){$('maTok').value='';maPintar(j)}})};
+  $('gCapi').onclick=function(){$('capiSt').textContent='Guardando y probando…';api('/api/admin.php',{acao:'capi',token:tok,token_capi:$('capiTk').value.trim(),test_code:$('capiTc').value.trim()}).then(function(j){$('capiTk').value='';
+    $('capiSt').innerHTML=j.ok?'<span class="ok">Listo: Meta recibió el evento de prueba'+(j.prueba?' (miralo en "Probar eventos")':'')+'. Desde ahora la web avisa también desde el servidor.</span>':'<span class="err">'+(j.error==='sin_token'?'Falta pegar el token.':j.error==='sin_pixel'?'Primero guardá el ID del Píxel.':'Meta respondió: '+(j.detalle||'error'))+'</span>';estado()})};
   $('gPix').onclick=function(){$('pixSt').textContent='Guardando…';api('/api/admin.php',{acao:'pixel',token:tok,pixel:$('pxId').value.trim()}).then(function(j){$('pixSt').innerHTML=j.ok?'<span class="ok">Guardado. La web y la app ya cargan el Píxel.</span>':'<span class="err">'+(j.error==='formato_pixel'?'El ID del Píxel son solo números (15 o 16 dígitos).':'No se pudo guardar.')+'</span>';if(j.ok){$('pxId').value='';estado()}})};
   /* ---- precios ---- */
   var PLS=['mensal','temporada','anual'],PN={mensal:'Mensual',temporada:'Temporada',anual:'Anual'};

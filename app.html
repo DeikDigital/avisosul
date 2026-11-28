@@ -633,7 +633,7 @@
 html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #pmoGo,html[data-twa] #pmoVf,html[data-twa] #pmoCod{display:none!important}html:not([data-twa]) .pmtwa{display:none}html[data-twa] #bInst{display:none!important}html[data-twa] .btn-tg .nt,html:not([data-twa]) .btn-tg .st{display:none}.pmtwa{margin:12px 0 4px;font-size:.95rem;opacity:.9;text-align:center}
 @media (max-width:380px){.top .brand{font-size:15px!important;gap:5px!important}.top .brand img{width:28px;height:28px}.brand .pl .crw{width:15px;height:15px}.brand .pl{margin-left:0}}
 .vzdn{margin:6px 0 0;text-align:right}.vzdn button{background:none;border:0;color:inherit;opacity:.6;font-size:.78rem;text-decoration:underline;padding:4px;cursor:pointer}</style>
-<script src="/assets/medir.js?v=1" defer></script>
+<script src="/assets/medir.js?v=2" defer></script>
 </head>
 <body>
 
@@ -1988,7 +1988,7 @@ html[data-twa] #pmPais,html[data-twa] .pmp,html[data-twa] .pmpg,html[data-twa] #
     if(/[?&]pago=ok\b/.test(location.search)||(+LS('pagoEspera')||0)>Date.now()-3600000)setTimeout(function(){pagoVerificar(false)},1200);
     else if(LS('cuenta')&&WEB)fetch('/api/cuenta.php?token='+encodeURIComponent(LS('cuenta')),{cache:'no-store'}).then(function(r){return r.json()}).then(premSync).catch(function(){})});
   function planGratis(){LS('plan','gratis');LS('planHasta','');LS('planFuente','');LS('planCodEmail','');root.setAttribute('data-plan','gratis');try{carMarca()}catch(e){}safe(trTxt)}
-  function ctaEntrar(tok,email,nv){var prev=LS('cuentaEmail')||LS('cuentaUlt')||'';if(!prev)window.medir&&window.medir('registro','CompleteRegistration',null);if(prev&&prev!==email)planGratis();else if(LS('plan')==='premium'&&LS('planFuente')!=='hotmart'&&!LS('planCodEmail'))LS('planCodEmail',email);LS('cuentaUlt',email);LS('cuenta',tok);setTimeout(function(){pushSuscribir(true)},1500);LS('cuentaEmail',email);LS('cuentaNv',nv?'1':'');
+  function ctaEntrar(tok,email,nv){var prev=LS('cuentaEmail')||LS('cuentaUlt')||'';if(!prev)window.medir&&window.medir('registro','CompleteRegistration',null,email);if(prev&&prev!==email)planGratis();else if(LS('plan')==='premium'&&LS('planFuente')!=='hotmart'&&!LS('planCodEmail'))LS('planCodEmail',email);LS('cuentaUlt',email);LS('cuenta',tok);setTimeout(function(){pushSuscribir(true)},1500);LS('cuentaEmail',email);LS('cuentaNv',nv?'1':'');
     fetch('/api/cuenta.php?token='+encodeURIComponent(tok),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){premSync(j);if(LS('pagoPend')){var pp=LS('pagoPend');LS('pagoPend','');irPago(pp);return}var aj=j.ajustes||{},n=0;
       for(var k in aj){if(CTA_K.indexOf(k)>=0&&!LS(k)){LS(k,aj[k]);n++}}if(n)location.reload();else ctaSubir()}).catch(function(){});ctaPintar()}
   function ctaPintar(){var b=document.getElementById('ctaAj');if(!b)return;var em=LS('cuentaEmail');
