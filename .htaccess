@@ -3,4 +3,4 @@ DirectoryIndex index.html
 # la app: /app/ y una pagina por ciudad (las ciudades viejas siguen abriendo la app)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(app|foz|chapeco|florianopolis|curitiba|portoalegre|cordoba|saopaulo|rio|iguazu|londrina|pontagrossa|guarapuava|franciscobeltrao|umuarama|campomourao|jacarezinho|uniaodavitoria|joinville|blumenau|lages|criciuma|passofundo|caxiasdosul|santamaria|santacruzdosul|uruguaiana|pelotas|carlospaz|vgbelgrano|altagracia|minaclavero|jesusmaria|riocuarto|villamaria)/?$ /app.html [L]
+RewriteRule ^(app|foz|chapeco|florianopolis|curitiba|portoalegre|cordoba|saopaulo|rio|iguazu|londrina|pontagrossa|guarapuava|franciscobeltrao|umuarama|campomourao|jacarezinho|uniaodavitoria|joinville|blumenau|lages|criciuma|passofundo|caxiasdosul|santamaria|santacruzdosul|uruguaiana|pelotas|carlospaz|vgbelgrano|altagracia|minaclavero|jesusmaria|riocuarto|villamaria|sanfrancisco|marcosjuarez|bellville|generaldeheza|hernando|generalroca|rosario|santafe|rafaela|esperanza|venadotuerto|casilda|canadadegomez|sanlorenzo|lasrosas|pergamino|sannicolas|junin|rojas|arrecifes|colonba|sanpedro)/?$ /app.html [L]

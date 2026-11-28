@@ -302,5 +302,225 @@
   "lon": -63.24,
   "smn": "CORDOBA:General San Martín",
   "sierras": false
+ },
+ {
+  "slug": "sanfrancisco",
+  "nombre": "San Francisco",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.4283,
+  "lon": -62.0828,
+  "smn": "CORDOBA:San Justo",
+  "sierras": false
+ },
+ {
+  "slug": "marcosjuarez",
+  "nombre": "Marcos Juárez",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.6978,
+  "lon": -62.1067,
+  "smn": "CORDOBA:Marcos Juárez",
+  "sierras": false
+ },
+ {
+  "slug": "bellville",
+  "nombre": "Bell Ville",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.6259,
+  "lon": -62.6887,
+  "smn": "CORDOBA:Unión",
+  "sierras": false
+ },
+ {
+  "slug": "generaldeheza",
+  "nombre": "General Deheza",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.7558,
+  "lon": -63.7886,
+  "smn": "CORDOBA:Juárez Celman",
+  "sierras": false
+ },
+ {
+  "slug": "hernando",
+  "nombre": "Hernando",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.4266,
+  "lon": -63.7333,
+  "smn": "CORDOBA:Tercero Arriba",
+  "sierras": false
+ },
+ {
+  "slug": "generalroca",
+  "nombre": "General Roca (Córdoba)",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.7317,
+  "lon": -61.9162,
+  "smn": "CORDOBA:Marcos Juárez",
+  "sierras": false
+ },
+ {
+  "slug": "rosario",
+  "nombre": "Rosario",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.9468,
+  "lon": -60.6393,
+  "smn": "SANTA FE:Rosario",
+  "sierras": false
+ },
+ {
+  "slug": "santafe",
+  "nombre": "Santa Fe",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.6333,
+  "lon": -60.7,
+  "smn": "SANTA FE:La Capital",
+  "sierras": false
+ },
+ {
+  "slug": "rafaela",
+  "nombre": "Rafaela",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.2503,
+  "lon": -61.4867,
+  "smn": "SANTA FE:Castellanos",
+  "sierras": false
+ },
+ {
+  "slug": "esperanza",
+  "nombre": "Esperanza",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -31.4488,
+  "lon": -60.9317,
+  "smn": "SANTA FE:Las Colonias",
+  "sierras": false
+ },
+ {
+  "slug": "venadotuerto",
+  "nombre": "Venado Tuerto",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -33.7456,
+  "lon": -61.9688,
+  "smn": "SANTA FE:General López",
+  "sierras": false
+ },
+ {
+  "slug": "casilda",
+  "nombre": "Casilda",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -33.0442,
+  "lon": -61.1681,
+  "smn": "SANTA FE:Caseros",
+  "sierras": false
+ },
+ {
+  "slug": "canadadegomez",
+  "nombre": "Cañada de Gómez",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.8164,
+  "lon": -61.3949,
+  "smn": "SANTA FE:Iriondo",
+  "sierras": false
+ },
+ {
+  "slug": "sanlorenzo",
+  "nombre": "San Lorenzo",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.7451,
+  "lon": -60.737,
+  "smn": "SANTA FE:San Lorenzo",
+  "sierras": false
+ },
+ {
+  "slug": "lasrosas",
+  "nombre": "Las Rosas",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -32.4767,
+  "lon": -61.5804,
+  "smn": "SANTA FE:Belgrano",
+  "sierras": false
+ },
+ {
+  "slug": "pergamino",
+  "nombre": "Pergamino",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -33.8895,
+  "lon": -60.5736,
+  "smn": "BUENOS AIRES:Pergamino",
+  "sierras": false
+ },
+ {
+  "slug": "sannicolas",
+  "nombre": "San Nicolás",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -33.3333,
+  "lon": -60.2167,
+  "smn": "BUENOS AIRES:San Nicolás",
+  "sierras": false
+ },
+ {
+  "slug": "junin",
+  "nombre": "Junín",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -34.5939,
+  "lon": -60.9464,
+  "smn": "BUENOS AIRES:Junín",
+  "sierras": false
+ },
+ {
+  "slug": "rojas",
+  "nombre": "Rojas",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -34.1953,
+  "lon": -60.7347,
+  "smn": "BUENOS AIRES:Rojas",
+  "sierras": false
+ },
+ {
+  "slug": "arrecifes",
+  "nombre": "Arrecifes",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -34.0638,
+  "lon": -60.1031,
+  "smn": "BUENOS AIRES:Arrecifes",
+  "sierras": false
+ },
+ {
+  "slug": "colonba",
+  "nombre": "Colón (Buenos Aires)",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -33.8953,
+  "lon": -61.0991,
+  "smn": "BUENOS AIRES:Colón",
+  "sierras": false
+ },
+ {
+  "slug": "sanpedro",
+  "nombre": "San Pedro",
+  "pais": "ar",
+  "lang": "es",
+  "lat": -33.6797,
+  "lon": -59.6669,
+  "smn": "BUENOS AIRES:San Pedro",
+  "sierras": false
  }
 ]
