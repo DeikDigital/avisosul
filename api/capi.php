@@ -15,6 +15,10 @@ function capi_hash($v) { $v = strtolower(trim((string)$v)); return $v === '' ? n
 /* Manda un evento a Meta. $test = código de prueba del Administrador de eventos (opcional). Devuelve [ok, respuesta]. */
 function capi_enviar(array $ev, $test = null) {
     $m = capi_cfg(); $px = $m['pixel'] ?? ''; $tk = $m['capi_token'] ?? '';
+    if (!$tk) {   // sin token propio: usa el de los anuncios automáticos (mismo portfolio, ya tiene acceso al Píxel)
+        $f = dir_privado() . '/meta_ads.json'; $a = file_exists($f) ? (json_decode(file_get_contents($f), true) ?: []) : [];
+        $tk = $a['token'] ?? '';
+    }
     if (!$px || !$tk) return [false, 'sin_configurar'];
     $body = ['data' => json_encode([$ev], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 'access_token' => $tk];
     if ($test ?: ($m['capi_test'] ?? '')) $body['test_event_code'] = $test ?: $m['capi_test'];

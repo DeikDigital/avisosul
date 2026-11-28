@@ -41,7 +41,7 @@ if ($acao === 'estado') {
         'whatsapp' => (function () { $w = leer('whatsapp.json'); if (empty($w['verify_token'])) { $w['verify_token'] = bin2hex(random_bytes(12)); escribir('whatsapp.json', $w); }
             return ['activo' => !empty($w['activo']), 'phone_number_id' => $w['phone_number_id'] ?? '', 'numero_publico' => $w['numero_publico'] ?? '', 'plantilla' => $w['plantilla'] ?? 'aviso_clima',
                     'token' => cola($w['token'] ?? ''), 'app_secret' => cola($w['app_secret'] ?? ''), 'verify_token' => $w['verify_token']]; })(),
-        'pixel' => (leer('meta.json')['pixel'] ?? ''), 'capi' => ['token' => cola(leer('meta.json')['capi_token'] ?? ''), 'log' => array_slice(leer('capi_log.json'), -6)], 'embudo' => array_slice(leer('embudo.json'), -14, null, true),
+        'pixel' => (leer('meta.json')['pixel'] ?? ''), 'capi' => ['token' => cola(leer('meta.json')['capi_token'] ?? '') ?: (!empty(leer('meta_ads.json')['token']) ? 'el de anuncios' : ''), 'log' => array_slice(leer('capi_log.json'), -6)], 'embudo' => array_slice(leer('embudo.json'), -14, null, true),
         'ofertas_sin_plan' => array_values(array_unique(array_map('trim', $sin))),
         'eventos_hotmart' => array_map(fn($x) => ['t' => $x['t'], 'ev' => $x['ev'], 'off' => $x['off'], 'prod' => $x['prod'], 'email' => $x['email'] ? substr($x['email'], 0, 3) . 'â€¦' : ''], $ev),
         'eventos_mp' => array_map(fn($x) => ['t' => $x['t'], 'estado' => $x['estado'], 'plan' => $x['plan'], 'monto' => $x['monto']], $evm)]);
@@ -197,7 +197,7 @@ if ($acao === 'capi') {   // token de la API de conversiones: lo pega Deik; vacÃ
     if (strlen($tk) > 600) salir(['ok' => false], 400);
     $m = leer('meta.json'); if ($tk !== '') $m['capi_token'] = $tk; escribir('meta.json', $m);
     if (empty($m['pixel'])) salir(['ok' => false, 'error' => 'sin_pixel']);
-    if (empty($m['capi_token'])) salir(['ok' => false, 'error' => 'sin_token']);
+    if (empty($m['capi_token']) && empty(leer('meta_ads.json')['token'])) salir(['ok' => false, 'error' => 'sin_token']);
     require_once __DIR__ . '/capi.php';
     [$ok, $det] = capi_enviar(capi_armar('ViewContent', 'prueba-' . bin2hex(random_bytes(6)), 'https://avisosul.com/admin/', ['content_name' => 'Prueba desde admin']), $tc ?: null);
     salir(['ok' => $ok, 'detalle' => $det, 'prueba' => $tc !== '']);
